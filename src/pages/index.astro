@@ -1,0 +1,32 @@
+---
+/**
+ * Accueil (squelette, ticket #2). Les sections suivantes viennent avec leurs
+ * tickets : carrousel des Actualités, widget messes.info, Nos églises,
+ * Lettre d'information.
+ */
+import MiseEnPage from '../layouts/MiseEnPage.astro';
+import { HORAIRES_DES_MESSES, NOUS_CONTACTER } from '../lib/navigation';
+---
+
+<MiseEnPage titre="Accueil">
+  <section class="bg-vert-profond text-ivoire">
+    <div class="conteneur flex flex-col items-center gap-4 py-12 text-center lg:py-18">
+      <div class="h-0.5 w-16 bg-or-doux" aria-hidden="true"></div>
+      <h1 class="text-4xl text-ivoire lg:text-5xl">
+        Bienvenue à la paroisse<br class="hidden md:inline" /> Saint-Géraud des Vallées en Fumélois
+      </h1>
+      <p class="max-w-2xl text-xl text-vert-pale">
+        Paroisse du diocèse d’Agen : horaires des messes, églises, actualités et contacts.
+      </p>
+      <div class="h-0.5 w-16 bg-or-doux" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="titre-acces-rapides" class="conteneur py-12">
+    <h2 id="titre-acces-rapides" class="text-3xl uppercase">Accès rapides</h2>
+    <ul class="mt-6 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
+      <li><a class="bouton-principal" href={HORAIRES_DES_MESSES.href}>{HORAIRES_DES_MESSES.libelle}</a></li>
+      <li><a class="bouton-secondaire" href={NOUS_CONTACTER.href}>{NOUS_CONTACTER.libelle}</a></li>
+    </ul>
+  </section>
+</MiseEnPage>
