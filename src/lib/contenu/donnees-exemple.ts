@@ -13,7 +13,7 @@
  */
 import type { EnregistrementAirtable } from '../airtable/client';
 import type { DonneesAirtable } from '../airtable/client-en-memoire';
-import { ACTUALITES, EGLISES, type TableAirtable } from '../airtable/schema';
+import { ACTUALITES, EGLISES, INFOS_PRATIQUES, type TableAirtable } from '../airtable/schema';
 import { PREFIXE_IMAGE_EXEMPLE } from './images';
 
 type Valeurs<T extends TableAirtable> = { [K in keyof T['champs']]?: unknown };
@@ -71,7 +71,48 @@ export function eglise(id: string, valeurs: Valeurs<typeof EGLISES> = {}): Enreg
   });
 }
 
+/** Info pratique Active ; les valeurs passées remplacent ces valeurs par défaut. */
+export function infoPratique(id: string, valeurs: Valeurs<typeof INFOS_PRATIQUES> = {}): EnregistrementAirtable {
+  return enregistrement(INFOS_PRATIQUES, id, {
+    libelle: `Info pratique ${id}`,
+    rubrique: 'Contacts',
+    active: true,
+    ...valeurs,
+  });
+}
+
 export const DONNEES_EXEMPLE: DonneesAirtable = {
+  // Valeurs d'exemple, pas les vraies coordonnées. Pas de photo du Curé : on
+  // n'invente pas le portrait d'une personne (la photo d'Église couvre le
+  // chemin des images).
+  infosPratiques: [
+    infoPratique('recExempleCure', {
+      rubrique: 'Curé',
+      libelle: 'Curé',
+      valeur: 'Père [Nom du Curé]',
+      description: 'Curé de la paroisse Saint-Géraud des Vallées en Fumélois\n[Autres fonctions à confirmer]',
+      ordre: 1,
+    }),
+    infoPratique('recExempleAdresse', { rubrique: 'Presbytère', libelle: 'Adresse', valeur: '[Adresse à confirmer], 47500 Fumel', ordre: 1 }),
+    infoPratique('recExempleTelephone', { rubrique: 'Presbytère', libelle: 'Téléphone', telephone: '05 53 00 00 00', ordre: 2 }),
+    infoPratique('recExempleEmail', { rubrique: 'Presbytère', libelle: 'E-mail', valeur: 'paroisse@example.org', ordre: 3 }),
+    infoPratique('recExempleLundi', { rubrique: 'Presbytère', libelle: 'Lundi', valeur: '9 h 30 – 12 h', description: 'Permanence d’accueil', ordre: 4 }),
+    infoPratique('recExempleMercredi', { rubrique: 'Presbytère', libelle: 'Mercredi', valeur: '14 h – 17 h', description: 'Permanence d’accueil', ordre: 5 }),
+    infoPratique('recExempleSamedi', { rubrique: 'Presbytère', libelle: 'Samedi', valeur: '10 h – 12 h', description: 'Permanence d’accueil', ordre: 6 }),
+    infoPratique('recExempleBapteme', { rubrique: 'Contacts', libelle: 'Baptême', valeur: 'bapteme@example.org', ordre: 1 }),
+    infoPratique('recExempleMariage', { rubrique: 'Contacts', libelle: 'Mariage', valeur: 'mariage@example.org', ordre: 2 }),
+    infoPratique('recExempleObseques', {
+      rubrique: 'Contacts',
+      libelle: 'Obsèques',
+      valeur: 'obseques@example.org',
+      telephone: '05 53 00 00 01',
+      description: 'Les familles peuvent appeler à toute heure.',
+      ordre: 3,
+    }),
+    infoPratique('recExempleCatechisme', { rubrique: 'Contacts', libelle: 'Catéchisme', valeur: 'catechisme@example.org', ordre: 4 }),
+    // Jamais affichée : inactive.
+    infoPratique('recExempleInactive', { rubrique: 'Contacts', libelle: 'Contact masqué', valeur: 'masque@example.org', active: false }),
+  ],
   eglises: [
     eglise('recEgliseSaintAntoine', {
       nom: 'Église Saint-Antoine',

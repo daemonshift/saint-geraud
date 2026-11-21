@@ -30,6 +30,12 @@ export const LETTRE_D_INFORMATION: Rubrique = { libelle: 'Lettre d’information
 /** Formulaire papier d'Inscription à la Lettre d'information, servi depuis `public/`. */
 export const FORMULAIRE_LETTRE_D_INFORMATION = '/formulaire-lettre-d-information.pdf';
 
+/** Liens externes (en-tête, pied de page, La paroisse). URL du diocèse à confirmer (en attente diocèse). */
+export const LIENS_EXTERNES = {
+  diocese: 'https://agen.catholique.fr/',
+  messesInfo: 'https://messes.info/',
+};
+
 export const PAGES_LEGALES: Rubrique[] = [
   { libelle: 'Mentions légales', href: '/mentions-legales' },
   { libelle: 'Confidentialité', href: '/confidentialite' },

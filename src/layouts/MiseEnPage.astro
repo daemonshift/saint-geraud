@@ -15,7 +15,7 @@ import EnTete from '../components/EnTete.astro';
 import PiedDePage from '../components/PiedDePage.astro';
 import BoutonTailleTexte from '../components/BoutonTailleTexte.astro';
 import { CLE_TAILLE_DU_TEXTE, TAILLE_GRANDE } from '../lib/taille-du-texte';
-import { LIENS_EXTERNES, PRESBYTERE_PROVISOIRE } from '../lib/contenu-provisoire';
+import { contenuDuSite } from '../lib/contenu/site';
 
 interface Props {
   /** Titre propre à la page ; « Accueil » donne le nom seul de la paroisse. */
@@ -25,6 +25,7 @@ interface Props {
 
 const NOM_DU_SITE = 'Paroisse Saint-Géraud des Vallées en Fumélois';
 const { titre, description = 'Site de la paroisse Saint-Géraud des Vallées en Fumélois (diocèse d’Agen) : horaires des messes, églises, actualités et contacts.' } = Astro.props;
+const { infosPratiques } = await contenuDuSite();
 const titreComplet = titre === 'Accueil' ? NOM_DU_SITE : `${titre} — ${NOM_DU_SITE}`;
 ---
 
@@ -57,6 +58,6 @@ const titreComplet = titre === 'Accueil' ? NOM_DU_SITE : `${titre} — ${NOM_DU_
     <main id="contenu" tabindex="-1" class="flex-1 focus:outline-none">
       <slot />
     </main>
-    <PiedDePage presbytere={PRESBYTERE_PROVISOIRE} liens={LIENS_EXTERNES} />
+    <PiedDePage presbytere={infosPratiques.presbytere} />
   </body>
 </html>

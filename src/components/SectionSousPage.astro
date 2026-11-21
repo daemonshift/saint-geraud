@@ -1,0 +1,25 @@
+---
+/**
+ * Section d'une sous-page (modèle « Prier et célébrer ») : ancre, titre H2
+ * centré en capitales avec filet doré, puis le contenu.
+ *
+ *   <SectionSousPage id="contacts" titre="Contacts">…</SectionSousPage>
+ */
+interface Props {
+  /** Ancre de la section, reprise par le sommaire. */
+  id: string;
+  titre: string;
+}
+
+const { id, titre } = Astro.props;
+---
+
+<section id={id} aria-labelledby={`titre-${id}`} class="scroll-mt-6 pt-12 pb-6 lg:pt-16">
+  <div class="conteneur flex flex-col gap-8">
+    <div class="flex flex-col items-center gap-2">
+      <h2 id={`titre-${id}`} class="max-w-full text-center text-3xl tracking-wide break-words text-vert-profond uppercase lg:text-4xl">{titre}</h2>
+      <div class="h-0.5 w-12 bg-or-doux" aria-hidden="true"></div>
+    </div>
+    <slot />
+  </div>
+</section>
