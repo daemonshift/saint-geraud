@@ -5,7 +5,7 @@
  * tuiles OpenStreetMap et le script Vercel Web Analytics peuvent être chargés
  * depuis un autre domaine ; tout autre domaine, dont Google, fait échouer.
  *
- * Ce contrôle lit le HTML et le CSS de `dist/`. Les requêtes faites par le
+ * Ce contrôle lit le HTML et le CSS de `dist/client/` (pages pré-rendues). Les requêtes faites par le
  * JavaScript (tuiles de carte, widget) sont vérifiées en plus par le test
  * Playwright `tests/e2e/domaines.spec.ts`, qui observe le réseau du navigateur.
  *
@@ -94,7 +94,7 @@ function lister(dossier: string): string[] {
 }
 
 function principal() {
-  const dossier = process.argv[2] ?? 'dist';
+  const dossier = process.argv[2] ?? 'dist/client';
   let chemins: string[];
   try {
     chemins = lister(dossier);
