@@ -1,0 +1,12 @@
+#!/bin/sh
+# Détection de secrets avant chaque commit (gitleaks).
+# Activé par `npm install` (script `prepare` : git config core.hooksPath .githooks).
+# Les secrets vivent uniquement dans Vercel ; la CI refait ce contrôle sur tout l'historique.
+
+if ! command -v gitleaks >/dev/null 2>&1; then
+  echo "gitleaks absent : contrôle des secrets sauté en local (la CI le fera)." >&2
+  echo "Installation : brew install gitleaks" >&2
+  exit 0
+fi
+
+exec gitleaks git --pre-commit --staged --redact --no-banner

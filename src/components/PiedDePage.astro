@@ -1,0 +1,58 @@
+---
+/**
+ * Pied de page « Nous contacter » (ADR 0003 : liens tel: et mailto:, adresse e-mail affichée en clair).
+ * Les coordonnées sont passées par la mise en page ; elles viendront des Infos pratiques (#4).
+ */
+import { lienEmail, lienTelephone } from '../lib/contact';
+import type { CoordonneesPresbytere } from '../lib/contenu-provisoire';
+import { HORAIRES_DES_MESSES, PAGES_LEGALES } from '../lib/navigation';
+
+interface Props {
+  presbytere: CoordonneesPresbytere;
+  liens: { diocese: string; messesInfo: string };
+}
+
+const { presbytere, liens } = Astro.props;
+const annee = new Date().getFullYear();
+const lien = 'flex min-h-12 items-center text-ivoire underline hover:text-or-pale';
+---
+
+<footer class="bg-encre pt-12 pb-6 text-ivoire">
+  <div class="conteneur grid gap-10 md:grid-cols-3">
+    <section id="nous-contacter" aria-labelledby="titre-nous-contacter" class="scroll-mt-6">
+      <h2 id="titre-nous-contacter" class="font-titre text-3xl font-bold text-ivoire">Nous contacter</h2>
+      <address class="mt-3 text-gris-clair not-italic">
+        <strong class="text-ivoire">{presbytere.adresse[0]}</strong>
+        {presbytere.adresse.slice(1).map((ligne) => <><br />{ligne}</>)}
+      </address>
+      <ul class="mt-4 flex flex-col gap-1">
+        <li>
+          <a class={lien} href={lienTelephone(presbytere.telephone)}>Appeler le {presbytere.telephone}</a>
+        </li>
+        <li>
+          <a class={`${lien} break-all`} href={lienEmail(presbytere.email)}>Écrire à {presbytere.email}</a>
+        </li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="titre-liens">
+      <h2 id="titre-liens" class="font-texte text-base font-bold tracking-wider text-or-pale uppercase">Liens</h2>
+      <ul class="mt-3 flex flex-col gap-1">
+        <li><a class={lien} href={liens.diocese}>Diocèse d’Agen (site du diocèse)</a></li>
+        <li><a class={lien} href={liens.messesInfo}>Horaires sur messes.info (site messes.info)</a></li>
+        <li><a class={lien} href={HORAIRES_DES_MESSES.href}>{HORAIRES_DES_MESSES.libelle}</a></li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="titre-informations">
+      <h2 id="titre-informations" class="font-texte text-base font-bold tracking-wider text-or-pale uppercase">Informations</h2>
+      <ul class="mt-3 flex flex-col gap-1">
+        {PAGES_LEGALES.map(({ libelle, href }) => <li><a class={lien} href={href}>{libelle}</a></li>)}
+      </ul>
+    </section>
+  </div>
+
+  <div class="conteneur mt-10">
+    <p class="border-t border-vert-gris pt-4 text-gris-clair">© {annee} Paroisse Saint-Géraud des Vallées en Fumélois</p>
+  </div>
+</footer>

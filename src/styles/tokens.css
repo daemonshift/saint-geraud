@@ -1,0 +1,63 @@
+/*
+ * Tokens de la charte design v2 (docs/context/charte-design.md).
+ *
+ * SEUL fichier du dépôt autorisé à contenir une valeur hexadécimale : le
+ * contrôle `npm run check:couleurs` fait échouer la CI partout ailleurs.
+ * Dans le code, on n'emploie que les classes Tailwind qui en découlent
+ * (`bg-vert-profond`, `text-encre`…) ou `var(--color-…)`.
+ */
+@theme {
+  /* La palette par défaut de Tailwind est retirée : seules ces couleurs existent. */
+  --color-*: initial;
+
+  /* Couleurs principales */
+  --color-vert-profond: #315B43; /* boutons, titres, cartes actus */
+  --color-vert-sauge: #A9BE9D; /* fonds doux ; texte en encre uniquement */
+  --color-ivoire: #F5F2E9; /* fond du site */
+  --color-or-doux: #C5A66A; /* filets, décor ; jamais en texte sur clair */
+  --color-or-fonce: #7A5F2A; /* texte doré sur ivoire ou blanc */
+  --color-encre: #1F2A24; /* texte courant, pied de page */
+
+  /* Couleurs secondaires : chacune n'a que l'usage indiqué */
+  --color-gris-vert: #4A564F; /* texte secondaire sur ivoire ou blanc */
+  --color-or-pale: #E8D9B5; /* texte sur vert profond ou encre */
+  --color-vert-pale: #E8EDE4; /* texte sur vert profond ; fond de badge (texte encre) */
+  --color-gris-clair: #D9DED9; /* texte discret sur encre */
+  --color-beige-filet: #E4DCC8; /* bordures et filets sur fond clair (décor) */
+  --color-vert-gris: #3A4A40; /* filets sur fond encre (décor) */
+  --color-vert-survol: #244634; /* survol et état actif des boutons vert profond */
+
+  /* Neutre : fond des cartes et de l'en-tête des maquettes (« sur ivoire ou blanc »). */
+  --color-blanc: #FFFFFF;
+
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  /* Typographie (polices auto-hébergées, voir global.css) */
+  --font-*: initial;
+  --font-titre: 'Cormorant Garamond', Georgia, serif;
+  --font-texte: 'Source Sans 3', system-ui, sans-serif;
+
+  /*
+   * Échelle de texte en rem. La racine vaut 18 px (112,5 % du réglage du
+   * navigateur) : `text-base` est le minimum autorisé. Le bouton « Aa » agrandit
+   * tout le site en changeant la taille de la racine. Aucune taille sous
+   * 1rem, sauf `text-logotype` réservé au logotype (`data-logotype`).
+   */
+  --text-*: initial;
+  --text-logotype: 0.8rem;
+  --text-base: 1rem;
+  --text-base--line-height: 1.6;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.5;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.4;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 1.25;
+  --text-3xl: 1.75rem;
+  --text-3xl--line-height: 1.2;
+  --text-4xl: 2.25rem;
+  --text-4xl--line-height: 1.1;
+  --text-5xl: 3.125rem;
+  --text-5xl--line-height: 1.1;
+}
