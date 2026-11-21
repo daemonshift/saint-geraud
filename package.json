@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "node tests/e2e/serveur-statique.ts dist 4321",
+    "preview": "node tests/e2e/serveur-statique.ts dist/client 4321",
     "check": "astro check && npm run check:couleurs",
     "check:couleurs": "node scripts/controles/couleurs.ts",
     "check:domaines": "node scripts/controles/domaines.ts",

@@ -21,7 +21,7 @@ export default defineConfig({
     { name: 'ordinateur', use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } } },
   ],
   webServer: {
-    command: `node tests/e2e/serveur-statique.ts dist ${PORT}`,
+    command: `node tests/e2e/serveur-statique.ts dist/client ${PORT}`,
     url: `http://localhost:${PORT}`,
     reuseExistingServer: !process.env.CI,
   },
