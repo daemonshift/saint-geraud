@@ -1,0 +1,43 @@
+---
+/**
+ * Bouton « Aa » de l'en-tête : agrandit tout le texte du site (18 → 22 px).
+ * Le réglage est appliqué avant l'affichage par le script de `MiseEnPage.astro` ;
+ * cet îlot ne fait que basculer et mémoriser le choix. L'aspect enfoncé suit
+ * `<html data-taille="grand">` pour ne pas changer après l'affichage.
+ */
+---
+
+<button
+  id="bouton-taille-texte"
+  type="button"
+  class="flex size-12 shrink-0 items-center justify-center rounded-lg border-2 border-vert-profond bg-blanc font-titre text-xl font-bold text-vert-profond in-data-[taille=grand]:bg-vert-profond in-data-[taille=grand]:text-ivoire lg:order-last"
+  aria-pressed="false"
+  aria-label="Agrandir le texte"
+>
+  Aa
+</button>
+
+<script>
+  import { CLE_TAILLE_DU_TEXTE, TAILLE_GRANDE } from '../lib/taille-du-texte';
+
+  const bouton = document.getElementById('bouton-taille-texte');
+  const racine = document.documentElement;
+
+  if (bouton) {
+    const estGrand = () => racine.dataset.taille === TAILLE_GRANDE;
+    bouton.setAttribute('aria-pressed', String(estGrand()));
+
+    bouton.addEventListener('click', () => {
+      const grand = !estGrand();
+      if (grand) racine.dataset.taille = TAILLE_GRANDE;
+      else delete racine.dataset.taille;
+      bouton.setAttribute('aria-pressed', String(grand));
+      try {
+        if (grand) localStorage.setItem(CLE_TAILLE_DU_TEXTE, TAILLE_GRANDE);
+        else localStorage.removeItem(CLE_TAILLE_DU_TEXTE);
+      } catch {
+        // Stockage indisponible : le choix vaut pour la page en cours seulement.
+      }
+    });
+  }
+</script>
