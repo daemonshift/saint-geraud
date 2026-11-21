@@ -16,7 +16,10 @@ Ce site est édité pour la paroisse Saint-Géraud des Vallées en Fumélois, pa
 
 ## Hébergeur
 
-Le site est hébergé par Vercel Inc., 440 N Barranca Avenue #4133, Covina, CA 91723, États-Unis. Site de l’hébergeur : [vercel.com (site de Vercel)](https://vercel.com).
+<!-- Adresse relevée dans la politique de confidentialité de Vercel (mise à jour du 1er juin 2026).
+     « &#35; » affiche « # » sans être pris pour une couleur par le contrôle CI. -->
+
+Le site est hébergé par Vercel Inc., 440 N Barranca Avenue &#35;4133, Covina, CA 91723, États-Unis. Site de l’hébergeur : [vercel.com (site de Vercel)](https://vercel.com).
 
 ## Réalisation
 
