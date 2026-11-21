@@ -1,10 +1,13 @@
 ---
 /**
  * Accueil (squelette, ticket #2). Les sections suivantes viennent avec leurs
- * tickets : carrousel des Actualités, widget messes.info, Nos églises,
- * Lettre d'information.
+ * tickets : carrousel des Actualités, widget messes.info, Nos églises.
+ * L'encart Lettre d'information (#16) prend l'e-mail provisoire du presbytère
+ * en attendant les Infos pratiques (#4).
  */
 import MiseEnPage from '../layouts/MiseEnPage.astro';
+import EncartLettreInformation from '../components/EncartLettreInformation.astro';
+import { PRESBYTERE_PROVISOIRE } from '../lib/contenu-provisoire';
 import { HORAIRES_DES_MESSES, NOUS_CONTACTER } from '../lib/navigation';
 ---
 
@@ -29,4 +32,6 @@ import { HORAIRES_DES_MESSES, NOUS_CONTACTER } from '../lib/navigation';
       <li><a class="bouton-secondaire" href={NOUS_CONTACTER.href}>{NOUS_CONTACTER.libelle}</a></li>
     </ul>
   </section>
+
+  <EncartLettreInformation email={PRESBYTERE_PROVISOIRE.email} />
 </MiseEnPage>

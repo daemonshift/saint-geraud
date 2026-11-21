@@ -22,6 +22,12 @@ export const HORAIRES_DES_MESSES: Rubrique = { libelle: 'Horaires des messes', h
 /** Ancre du bloc « Nous contacter » du pied de page, présent sur toutes les pages. */
 export const NOUS_CONTACTER: Rubrique = { libelle: 'Nous contacter', href: '#nous-contacter' };
 
+/** Ancre de l'encart « Recevoir la Lettre d'information » de l'Accueil, joignable depuis toute page. */
+export const LETTRE_D_INFORMATION: Rubrique = { libelle: 'Lettre d’information', href: '/#lettre-d-information' };
+
+/** Formulaire papier d'Inscription à la Lettre d'information, servi depuis `public/`. */
+export const FORMULAIRE_LETTRE_D_INFORMATION = '/formulaire-lettre-d-information.pdf';
+
 export const PAGES_LEGALES: Rubrique[] = [
   { libelle: 'Mentions légales', href: '/mentions-legales' },
   { libelle: 'Confidentialité', href: '/confidentialite' },
