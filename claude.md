@@ -1,3 +1,9 @@
+## Projet
+
+- **Périmètre** : site statique, aucun service payant, aucun formulaire ni donnée personnelle collectée, aucune bannière cookies. Lire `docs/adr/0003-aucune-donnee-personnelle-collectee.md` avant de proposer une fonctionnalité.
+- **Airtable** (lecture, IDs de champs, règles de publication) : `docs/context/schema-airtable.md`.
+- **Interface** (couleurs, typographie, tailles, maquettes) : `docs/context/charte-design.md` et les planches de `docs/context/maquettes/planches/` (1440 = ordinateur, 390 = mobile). Après une nouvelle maquette source, relancer `python3 -I scripts/extraire-maquettes.py`.
+
 ## Agent skills
 
 ### Issue tracker

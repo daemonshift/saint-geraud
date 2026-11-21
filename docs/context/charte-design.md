@@ -1,6 +1,6 @@
 # Charte design — Site Paroisse Saint-Géraud (v2, 21/11/2026)
 
-Maquettes : https://claude.ai/artifact/93qsek2Kb9UVtk2K4P2VqY (ordinateur 1440 px et mobile 390 px ; source : dossier projet `maquettes/`).
+Maquettes : planches lisibles dans `docs/context/maquettes/planches/` (1440 = ordinateur, 390 = mobile), extraites de `maquettes-source.html` par `scripts/extraire-maquettes.py`. Le dépôt fait référence ; l'artifact https://claude.ai/artifact/93qsek2Kb9UVtk2K4P2VqY n'est qu'un aperçu.
 
 **Mobile first** : la version mobile sert de base, l'ordinateur l'enrichit. La maquette mobile fait référence pour le mobile, la maquette ordinateur pour l'ordinateur.
 
