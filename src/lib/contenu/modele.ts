@@ -45,7 +45,40 @@ export interface Actualite {
   image: ImageDuSite | null;
 }
 
+/** Actualité Archivée : seul son identifiant sert, pour rediriger son ancienne adresse ; son titre n'est jamais repris. */
+export interface ActualiteArchivee {
+  id: string;
+}
+
+/** Image retenue (première pièce jointe, avec texte alternatif), téléchargée au build. */
+export interface ImageDuSite {
+  /** Chemin public de l'image servie par le site. */
+  chemin: string;
+  texteAlternatif: string;
+}
+
+/** Église affichée sur Nos églises : Active et placée sur la carte. */
+export interface Eglise {
+  /** Identifiant de l'enregistrement Airtable : fonde l'ancre de l'Église sur Nos églises. */
+  id: string;
+  nom: string;
+  commune: string;
+  /** Lignes de l'adresse postale ; vide si absente. */
+  adresse: string[];
+  latitude: number;
+  longitude: number;
+  accesPmr: boolean;
+  /** Horaires de l'Église sur messes.info, ou null. */
+  lienMessesInfo: string | null;
+  /** Photo de l'Église (affichée sur Nos églises), ou null. */
+  photo: ImageDuSite | null;
+}
+
 export interface ContenuDuSite {
   /** Actualités En ligne : Mises en avant d'abord, puis Date de publication décroissante. */
   actualites: Actualite[];
+  /** Actualités Archivées : leur adresse redirige (302) vers `/actualites/terminee`. */
+  actualitesArchivees: ActualiteArchivee[];
+  /** Églises affichées (Active, coordonnées renseignées), triées par Ordre. */
+  eglises: Eglise[];
 }

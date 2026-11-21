@@ -66,17 +66,19 @@ test.describe('Détail d’une Actualité', () => {
   });
 });
 
+// L'Archivée n'a pas de page non plus : elle redirige (actualites-terminees.spec.ts).
 test('aucune page pour une Actualité non En ligne', async ({ request }) => {
-  for (const id of ['recExempleBrouillon', 'recExempleProgrammee', 'recExempleArchivee']) {
+  for (const id of ['recExempleBrouillon', 'recExempleProgrammee']) {
     expect((await request.get(`/actualites/${id}`)).status()).toBe(404);
   }
+  expect((await request.get('/actualites/recExempleArchivee', { maxRedirects: 0 })).status()).toBe(302);
 });
 
 test.describe('Images des Actualités', () => {
   /** L'image est servie par le site (jamais par Airtable) et réellement chargée. */
   async function attendreImageServieParLeSite(image: Locator) {
     await image.scrollIntoViewIfNeeded();
-    await expect(image).toHaveAttribute('src', /^\/_astro\/.+\.webp$/);
+    await expect(image).toHaveAttribute('src', /^\/images-du-site\/[\w-]+\.webp$/);
     await expect.poll(() => image.evaluate((img: HTMLImageElement) => (img.complete ? img.naturalWidth : 0))).toBeGreaterThan(0);
   }
 

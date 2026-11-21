@@ -10,20 +10,31 @@ import { booleen, liens, texte } from './valeurs';
 
 const c = ACTUALITES.champs;
 
+/** Validée, avec un titre et une Date de publication : sinon c'est un Brouillon, ignoré par le site. */
+function estValidee(e: EnregistrementAirtable): boolean {
+  return booleen(e, c.valide) && texte(e, c.titre) !== '' && texte(e, c.datePublication) !== '';
+}
+
 /**
  * En ligne : Validée ET Date de publication ≤ aujourd'hui ET (Fin d'affichage
  * vide OU ≥ aujourd'hui). Une Actualité sans titre est traitée comme un Brouillon.
  */
 export function estEnLigne(e: EnregistrementAirtable, aujourdhui: string): boolean {
-  const datePublication = texte(e, c.datePublication);
   const finAffichage = texte(e, c.finAffichage);
   return (
-    booleen(e, c.valide) &&
-    texte(e, c.titre) !== '' &&
-    datePublication !== '' &&
-    datePublication <= aujourdhui &&
+    estValidee(e) &&
+    texte(e, c.datePublication) <= aujourdhui &&
     (finAffichage === '' || finAffichage >= aujourdhui)
   );
+}
+
+/**
+ * Archivée : Validée ET Fin d'affichage < aujourd'hui. Seule une Archivée
+ * produit une redirection ; toute autre Actualité absente du site mène à la 404.
+ */
+export function estArchivee(e: EnregistrementAirtable, aujourdhui: string): boolean {
+  const finAffichage = texte(e, c.finAffichage);
+  return estValidee(e) && finAffichage !== '' && finAffichage < aujourdhui;
 }
 
 /** Mises en avant d'abord, puis Date de publication décroissante. */

@@ -4,7 +4,8 @@ import { controlerSchema } from './controle-schema';
 import { jourAParis } from './dates';
 import type { ContenuDuSite } from './modele';
 import { imageRetenue } from './images';
-import { estEnLigne, trierActualites, versActualite, versEgliseLiee } from './actualites';
+import { estArchivee, estEnLigne, trierActualites, versActualite, versEgliseLiee } from './actualites';
+import { eglisesAffichees } from './eglises';
 
 /** Rend l'instant présent (fixé dans les tests). */
 export type Horloge = () => Date;
@@ -41,6 +42,8 @@ export async function chargerContenuDuSite({ client, horloge, images }: Dependan
           ),
       ),
     ),
+    actualitesArchivees: actualites.filter((e) => estArchivee(e, aujourdhui)).map((e) => ({ id: e.id })),
+    eglises: await eglisesAffichees(eglises, images),
   };
 }
 

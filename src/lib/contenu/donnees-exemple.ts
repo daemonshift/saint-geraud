@@ -50,7 +50,7 @@ export function actualite(id: string, valeurs: Valeurs<typeof ACTUALITES> = {}):
 /**
  * Pièce jointe au format de l'API (champ `multipleAttachments`). Pour les
  * données d'exemple, l'URL désigne une image locale : `exemple:<fichier>`
- * (fichier de `src/assets/exemple/`), voir `creerStockageImagesDuSite` (stockage-images.ts).
+ * (fichier de `src/assets/exemple/`), voir `creerStockageImagesSurDisque` (stockage-images.ts).
  */
 export function pieceJointe(
   id: string,
@@ -80,7 +80,10 @@ export const DONNEES_EXEMPLE: DonneesAirtable = {
       latitude: 44.4986,
       longitude: 0.9653,
       accesPmr: true,
+      lienMessesInfo: 'https://messes.info/lieu/47/fumel/eglise-saint-antoine',
       ordre: 1,
+      photo: [pieceJointe('attExempleEglise', { url: imageExemple('eglise-saint-antoine.jpg'), filename: 'eglise-saint-antoine.jpg' })],
+      texteAlternatif: 'Façade de l’église Saint-Antoine et son clocher',
     }),
     eglise('recEgliseSaintGeraud', {
       nom: 'Église Saint-Géraud',
@@ -90,6 +93,18 @@ export const DONNEES_EXEMPLE: DonneesAirtable = {
       longitude: 0.9411,
       ordre: 2,
     }),
+    eglise('recEgliseSaintMartin', {
+      nom: 'Église Saint-Martin',
+      commune: 'Cuzorn',
+      adresse: 'Le Bourg\n47500 Cuzorn',
+      latitude: 44.5317,
+      longitude: 0.9381,
+      lienMessesInfo: 'https://messes.info/lieu/47/cuzorn/eglise-saint-martin',
+      ordre: 3,
+    }),
+    // Ces deux Églises ne doivent jamais apparaître sur Nos églises.
+    eglise('recEgliseInactive', { nom: 'Église masquée', latitude: 44.5, longitude: 0.95, active: false, ordre: 4 }),
+    eglise('recEgliseSansCoordonnees', { nom: 'Église sans coordonnées', ordre: 5 }),
   ],
   actualites: [
     actualite('recExempleMesseDeNoel', {

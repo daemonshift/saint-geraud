@@ -8,12 +8,14 @@ export interface Rubrique {
   href: string;
 }
 
+export const NOS_EGLISES: Rubrique = { libelle: 'Nos églises', href: '/nos-eglises' };
+
 export const RUBRIQUES: Rubrique[] = [
   { libelle: 'Accueil', href: '/' },
   { libelle: 'La paroisse', href: '/la-paroisse' },
   { libelle: 'Prier et célébrer', href: '/prier-et-celebrer' },
   { libelle: 'Actualités', href: '/actualites' },
-  { libelle: 'Nos églises', href: '/nos-eglises' },
+  NOS_EGLISES,
 ];
 
 /** Mise en avant à part (bouton) : toujours visible, y compris en mobile sans ouvrir le menu. */
@@ -43,4 +45,22 @@ export function estPageCourante(href: string, cheminCourant: string): boolean {
 /** Adresse du détail d'une Actualité : fondée sur l'identifiant de l'enregistrement Airtable, stable même si le titre change. */
 export function lienActualite(id: string): string {
   return `/actualites/${id}`;
+}
+
+/** Page vers laquelle redirige (302) l'adresse d'une Actualité Archivée. Route statique : prioritaire sur `/actualites/[id]`. */
+export const ACTUALITE_TERMINEE = '/actualites/terminee';
+
+/** Ancre d'une Église sur Nos églises (attribut `id`), fondée sur l'identifiant de l'enregistrement Airtable. */
+export function ancreEglise(id: string): string {
+  return `eglise-${id}`;
+}
+
+/** Position d'une Église sur Nos églises : depuis le détail d'une Actualité (#9), l'Accueil… */
+export function lienEglise(id: string): string {
+  return `${NOS_EGLISES.href}#${ancreEglise(id)}`;
+}
+
+/** Itinéraire Google Maps vers une Église ; libellé attendu : « Itinéraire (Google Maps) ». */
+export function lienItineraire({ latitude, longitude }: { latitude: number; longitude: number }): string {
+  return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${latitude},${longitude}`)}`;
 }

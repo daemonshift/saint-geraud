@@ -5,11 +5,13 @@
  *
  * Le chargement n'a lieu qu'une fois par build, quel que soit le nombre de pages.
  */
+import { join } from 'node:path';
 import { creerClientAirtable, type ClientAirtable } from '../airtable/client';
 import { creerClientEnMemoire } from '../airtable/client-en-memoire';
-import { chargerContenuDuSite } from './charger';
+import { chargerContenuDuSite, type StockageImages } from './charger';
 import { DONNEES_EXEMPLE } from './donnees-exemple';
 import type { ContenuDuSite } from './modele';
+import { creerStockageImagesSurDisque } from './stockage-images';
 
 interface Environnement {
   /** Token Airtable en lecture seule ; secret, présent uniquement dans Vercel. */
@@ -31,17 +33,36 @@ export function clientSelonEnvironnement(env: Environnement, fetch: typeof globa
   return creerClientEnMemoire(DONNEES_EXEMPLE);
 }
 
-let chargement: Promise<ContenuDuSite> | undefined;
+/**
+ * Images : écrites dans `public/images-du-site/`, servies à `/images-du-site/…`.
+ * Le stockage n'est créé qu'au premier chargement (il vide ce dossier).
+ */
+function stockageImagesDuSite(): StockageImages {
+  return creerStockageImagesSurDisque({
+    dossier: join(process.cwd(), 'public', 'images-du-site'),
+    prefixePublic: '/images-du-site',
+    dossierExemples: join(process.cwd(), 'src', 'assets', 'exemple'),
+  });
+}
+
+/**
+ * Chargement partagé par tout le processus de build : la configuration
+ * d'Astro (redirections, plan du site) et le rendu des pages chargent ce
+ * module dans deux graphes de modules distincts. Mémoïsé sur `globalThis`,
+ * Airtable n'est lu qu'une fois.
+ *
+ * Le premier chargement a lieu dans `astro:config:setup`
+ * (src/integrations/contenu-du-site.ts) : les images sont alors écrites dans
+ * `public/` avant qu'Astro ne le copie dans le site produit.
+ */
+const CLE = Symbol.for('saint-geraud.contenuDuSite');
+const memoire = globalThis as { [CLE]?: Promise<ContenuDuSite> };
 
 export function contenuDuSite(): Promise<ContenuDuSite> {
-  chargement ??= (async () => {
-    // Import dynamique : `astro:assets` n'existe que dans Astro (pas dans Vitest).
-    const { stockageImagesAstro } = await import('./stockage-images-astro');
-    return chargerContenuDuSite({
-      client: clientSelonEnvironnement(process.env),
-      horloge: () => new Date(),
-      images: stockageImagesAstro,
-    });
-  })();
-  return chargement;
+  memoire[CLE] ??= chargerContenuDuSite({
+    client: clientSelonEnvironnement(process.env),
+    horloge: () => new Date(),
+    images: stockageImagesDuSite(),
+  });
+  return memoire[CLE];
 }

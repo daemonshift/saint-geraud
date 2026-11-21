@@ -1,0 +1,85 @@
+---
+/**
+ * Nos églises : carte et liste texte équivalente, toujours côte à côte (en
+ * mobile, la liste suit la carte). Chaque Église a une ancre (`lienEglise(id)`)
+ * pour y renvoyer depuis le détail d'une Actualité (#9).
+ * Photo de l’Église en tête de sa fiche, si elle a un texte alternatif.
+ */
+import BandeauTitre from '../components/BandeauTitre.astro';
+import CarteEglises from '../components/CarteEglises.astro';
+import MiseEnPage from '../layouts/MiseEnPage.astro';
+import { contenuDuSite } from '../lib/contenu/site';
+import { ancreEglise, lienItineraire } from '../lib/navigation';
+
+const { eglises } = await contenuDuSite();
+---
+
+<MiseEnPage
+  titre="Nos églises"
+  description="Les églises de la paroisse Saint-Géraud des Vallées en Fumélois : carte, adresses, accès PMR, horaires des messes et itinéraires."
+>
+  <BandeauTitre titre="Nos églises" />
+
+  <div class="conteneur py-10 lg:py-14">
+    {
+      eglises.length === 0 ? (
+        <p class="max-w-[68ch] text-lg">Aucune église à afficher pour le moment.</p>
+      ) : (
+        <div class="grid gap-8 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+          <div class="lg:sticky lg:top-6 lg:self-start">
+            <CarteEglises eglises={eglises} class="h-80 lg:h-[560px]" />
+          </div>
+          <ul aria-label="Liste des églises" class="flex flex-col gap-4">
+            {eglises.map((eglise) => (
+              <li
+                id={ancreEglise(eglise.id)}
+                class="flex scroll-mt-6 flex-col gap-3 rounded-xl border border-beige-filet bg-blanc p-5 target:border-or-doux target:ring-2 target:ring-or-doux"
+              >
+                {eglise.photo && (
+                  <img
+                    class="aspect-video w-full rounded-lg bg-vert-sauge object-cover"
+                    src={eglise.photo.chemin}
+                    alt={eglise.photo.texteAlternatif}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                )}
+                <div class="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
+                  <h2 class="text-2xl leading-tight">{eglise.nom}</h2>
+                  {eglise.accesPmr && (
+                    <p class="rounded-full bg-vert-pale px-3 py-0.5 font-bold whitespace-nowrap text-encre">Accès PMR</p>
+                  )}
+                </div>
+                <p class="font-semibold text-gris-vert">{eglise.commune}</p>
+                {eglise.adresse.length > 0 && (
+                  <p>
+                    {eglise.adresse.map((ligne, i) => (
+                      <>
+                        {i > 0 && <br />}
+                        {ligne}
+                      </>
+                    ))}
+                  </p>
+                )}
+                <ul class="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                  {eglise.lienMessesInfo && (
+                    <li>
+                      <a class="bouton-principal" href={eglise.lienMessesInfo}>
+                        Horaires des messes (site messes.info)<span class="sr-only">, {eglise.nom}</span>
+                      </a>
+                    </li>
+                  )}
+                  <li>
+                    <a class="bouton-secondaire" href={lienItineraire(eglise)}>
+                      Itinéraire (Google Maps)<span class="sr-only">, {eglise.nom}</span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+  </div>
+</MiseEnPage>
