@@ -1,8 +1,8 @@
 ---
 /**
  * Carte d'une Actualité (liste des Actualités ; le carrousel de l'Accueil, #6,
- * la reprend) : Catégorie, date, titre (lien vers le détail) et lieu.
- * L'image arrive avec le ticket #5.
+ * la reprend) : image (si elle a un texte alternatif), Catégorie, date, titre
+ * (lien vers le détail) et lieu. Sans image, la carte commence par la Catégorie.
  *
  * Usage : <CarteActualite actualite={a} niveauTitre="h2" />
  */
@@ -16,22 +16,33 @@ interface Props {
 }
 
 const { actualite, niveauTitre: Titre = 'h3' } = Astro.props;
+const badge = 'rounded-full bg-ivoire px-3 py-0.5 font-bold tracking-[0.06em] text-vert-profond uppercase';
 const date = actualite.evenement?.enLettres ?? `Publiée le ${actualite.datePublicationEnLettres}`;
 ---
 
-<article class="flex h-full flex-col gap-3 overflow-hidden rounded-xl border-t-4 border-or-doux bg-vert-profond px-6 pt-5 pb-6">
+<article class="flex h-full flex-col overflow-hidden rounded-xl border-t-4 border-or-doux bg-vert-profond">
   {
-    actualite.categorie && (
-      <p class="self-start rounded-full bg-ivoire px-3 py-0.5 font-bold tracking-[0.06em] text-vert-profond uppercase">
-        {actualite.categorie}
-      </p>
+    actualite.image && (
+      <div class="relative">
+        <img
+          class="aspect-4/3 w-full bg-vert-sauge object-cover"
+          src={actualite.image.src}
+          alt={actualite.image.alt}
+          loading="lazy"
+          decoding="async"
+        />
+        {actualite.categorie && <p class={`absolute top-3 left-3 ${badge}`}>{actualite.categorie}</p>}
+      </div>
     )
   }
-  <p class="font-semibold text-or-pale">{date}</p>
-  <Titre class="text-2xl tracking-wide text-ivoire uppercase">
-    <a class="flex min-h-12 items-center text-ivoire no-underline hover:underline" href={lienActualite(actualite.id)}>
-      {actualite.titre}
-    </a>
-  </Titre>
-  {actualite.lieu && <p class="text-vert-pale">{actualite.lieu}</p>}
+  <div class="flex grow flex-col gap-3 px-6 pt-5 pb-6">
+    {actualite.categorie && !actualite.image && <p class={`self-start ${badge}`}>{actualite.categorie}</p>}
+    <p class="font-semibold text-or-pale">{date}</p>
+    <Titre class="text-2xl tracking-wide text-ivoire uppercase">
+      <a class="flex min-h-12 items-center text-ivoire no-underline hover:underline" href={lienActualite(actualite.id)}>
+        {actualite.titre}
+      </a>
+    </Titre>
+    {actualite.lieu && <p class="text-vert-pale">{actualite.lieu}</p>}
+  </div>
 </article>
