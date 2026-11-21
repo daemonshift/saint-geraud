@@ -4,6 +4,7 @@ import { controlerSchema } from './controle-schema';
 import { jourAParis } from './dates';
 import type { ContenuDuSite } from './modele';
 import { estEnLigne, trierActualites, versActualite, versEgliseLiee } from './actualites';
+import { eglisesAffichees } from './eglises';
 
 /** Rend l'instant présent (fixé dans les tests). */
 export type Horloge = () => Date;
@@ -19,7 +20,7 @@ export interface DependancesContenu {
   images: StockageImages;
 }
 
-export async function chargerContenuDuSite({ client, horloge }: DependancesContenu): Promise<ContenuDuSite> {
+export async function chargerContenuDuSite({ client, horloge, images }: DependancesContenu): Promise<ContenuDuSite> {
   const aujourdhui = jourAParis(horloge());
   controlerSchema(await client.lireSchema(), TABLES);
   const [actualites, eglises] = await Promise.all([lireTable(client, ACTUALITES.id), lireTable(client, EGLISES.id)]);
@@ -29,6 +30,7 @@ export async function chargerContenuDuSite({ client, horloge }: DependancesConte
     actualites: trierActualites(
       actualites.filter((e) => estEnLigne(e, aujourdhui)).map((e) => versActualite(e, eglisesParId)),
     ),
+    eglises: await eglisesAffichees(eglises, images),
   };
 }
 
