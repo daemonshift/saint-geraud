@@ -66,7 +66,9 @@ Conventions de contenu :
 | Type | fld7OYZwcDmH9ZgRh | singleSelect | Association (`selAIQxnU9dF04Gt5`) · Mouvement (`selrmPjnXxwKyGd5p`) · Équipe paroissiale (`selGmJ3oSyT3pfNe5`) |
 | Description | fldgB5Rmic3ph8Dic | multilineText | 2 ou 3 lignes |
 | Contact | fldUFwRd5ffHOLVwG | singleLineText | E-mail ou site du groupe, sinon le presbytère ; jamais un contact personnel |
-| Site_Web | fldjBvI6jxQTMguWm | url | Facultatif |
+| Site_Web | fldjBvI6jxQTMguWm | url | Facultatif ; lien de la carte du groupe |
+| Image | fld1RmSMUTjg6CuKQ | multipleAttachments | Facultatif : logo ou lieu, **jamais de personne reconnaissable** ; téléchargée au build ; sans image → pictogramme selon Type |
+| Texte_Alternatif | fldpxDeIgTumM1ik3 | singleLineText | Obligatoire si Image, sinon l'image est ignorée |
 | Ordre | flddC8HbMuZHGZWoC | number (entier) | Ordre d'affichage |
 | Active | fldVfx3rILg4wd7Fl | checkbox | Masquer sans supprimer |
 
