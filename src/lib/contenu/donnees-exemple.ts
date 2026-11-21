@@ -64,6 +64,7 @@ export const DONNEES_EXEMPLE: DonneesAirtable = {
       latitude: 44.4986,
       longitude: 0.9653,
       accesPmr: true,
+      lienMessesInfo: 'https://messes.info/lieu/47/fumel/eglise-saint-antoine',
       ordre: 1,
     }),
     eglise('recEgliseSaintGeraud', {
@@ -74,6 +75,18 @@ export const DONNEES_EXEMPLE: DonneesAirtable = {
       longitude: 0.9411,
       ordre: 2,
     }),
+    eglise('recEgliseSaintMartin', {
+      nom: 'Église Saint-Martin',
+      commune: 'Cuzorn',
+      adresse: 'Le Bourg\n47500 Cuzorn',
+      latitude: 44.5317,
+      longitude: 0.9381,
+      lienMessesInfo: 'https://messes.info/lieu/47/cuzorn/eglise-saint-martin',
+      ordre: 3,
+    }),
+    // Ces deux Églises ne doivent jamais apparaître sur Nos églises.
+    eglise('recEgliseInactive', { nom: 'Église masquée', latitude: 44.5, longitude: 0.95, active: false, ordre: 4 }),
+    eglise('recEgliseSansCoordonnees', { nom: 'Église sans coordonnées', ordre: 5 }),
   ],
   actualites: [
     actualite('recExempleMesseDeNoel', {
