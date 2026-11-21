@@ -1,0 +1,36 @@
+---
+/**
+ * Sommaire d'ancres des sous-pages (« Aller à : »), modèle « Prier et célébrer ».
+ * Chaque entrée renvoie à l'`id` d'une `SectionSousPage`.
+ */
+export interface EntreeSommaire {
+  id: string;
+  titre: string;
+}
+
+interface Props {
+  entrees: EntreeSommaire[];
+}
+
+const { entrees } = Astro.props;
+---
+
+<nav aria-labelledby="titre-sommaire" class="border-b border-beige-filet bg-blanc">
+  <div class="conteneur flex flex-col gap-2 py-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
+    <p id="titre-sommaire" class="font-bold">Aller à :</p>
+    <ul class="flex flex-wrap gap-2 sm:gap-3">
+      {
+        entrees.map(({ id, titre }) => (
+          <li>
+            <a
+              href={`#${id}`}
+              class="inline-flex min-h-12 items-center rounded-full border border-vert-profond px-4 font-semibold text-vert-profond no-underline hover:bg-vert-pale"
+            >
+              {titre}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</nav>

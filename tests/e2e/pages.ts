@@ -8,6 +8,7 @@ export const PAGES: { nom: string; chemin: string }[] = [
   { nom: 'Accueil', chemin: '/' },
   { nom: 'Actualités', chemin: '/actualites' },
   { nom: 'Détail d’une Actualité', chemin: '/actualites/recExempleMesseDeNoel' },
+  { nom: 'La paroisse', chemin: '/la-paroisse' },
   { nom: 'Mentions légales', chemin: '/mentions-legales' },
   { nom: 'Confidentialité', chemin: '/confidentialite' },
   { nom: 'Accessibilité', chemin: '/accessibilite' },
