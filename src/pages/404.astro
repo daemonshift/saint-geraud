@@ -1,0 +1,18 @@
+---
+/**
+ * Page 404 : adresse inconnue, Actualité retirée ou dévalidée. Elle ne nomme
+ * jamais ce qui a été demandé.
+ */
+import BandeauTitre from '../components/BandeauTitre.astro';
+import BoutonsRetour from '../components/BoutonsRetour.astro';
+import MiseEnPage from '../layouts/MiseEnPage.astro';
+---
+
+<MiseEnPage titre="Page introuvable" description="Cette page n’existe pas ou n’existe plus sur le site de la paroisse.">
+  <meta slot="head" name="robots" content="noindex" />
+  <BandeauTitre titre="Page introuvable" />
+  <div class="conteneur flex flex-col items-center gap-8 py-12 text-center lg:py-16">
+    <p class="max-w-[40ch] text-2xl">Cette page n’existe pas ou n’existe plus.</p>
+    <BoutonsRetour />
+  </div>
+</MiseEnPage>

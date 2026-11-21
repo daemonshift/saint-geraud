@@ -38,13 +38,20 @@ const imagesNonBranchees: StockageImages = {
   },
 };
 
-let chargement: Promise<ContenuDuSite> | undefined;
+/**
+ * Chargement partagé par tout le processus de build : la configuration
+ * d'Astro (redirections, plan du site) et le rendu des pages chargent ce
+ * module dans deux graphes de modules distincts. Mémoïsé sur `globalThis`,
+ * Airtable n'est lu qu'une fois.
+ */
+const CLE = Symbol.for('saint-geraud.contenuDuSite');
+const memoire = globalThis as { [CLE]?: Promise<ContenuDuSite> };
 
 export function contenuDuSite(): Promise<ContenuDuSite> {
-  chargement ??= chargerContenuDuSite({
+  memoire[CLE] ??= chargerContenuDuSite({
     client: clientSelonEnvironnement(process.env),
     horloge: () => new Date(),
     images: imagesNonBranchees,
   });
-  return chargement;
+  return memoire[CLE];
 }

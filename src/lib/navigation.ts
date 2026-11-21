@@ -44,3 +44,6 @@ export function estPageCourante(href: string, cheminCourant: string): boolean {
 export function lienActualite(id: string): string {
   return `/actualites/${id}`;
 }
+
+/** Page vers laquelle redirige (302) l'adresse d'une Actualité Archivée. Route statique : prioritaire sur `/actualites/[id]`. */
+export const ACTUALITE_TERMINEE = '/actualites/terminee';

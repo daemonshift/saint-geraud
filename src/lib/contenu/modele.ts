@@ -36,7 +36,14 @@ export interface Actualite {
   lieu: string | null;
 }
 
+/** Actualité Archivée : seul son identifiant sert, pour rediriger son ancienne adresse ; son titre n'est jamais repris. */
+export interface ActualiteArchivee {
+  id: string;
+}
+
 export interface ContenuDuSite {
   /** Actualités En ligne : Mises en avant d'abord, puis Date de publication décroissante. */
   actualites: Actualite[];
+  /** Actualités Archivées : leur adresse redirige (302) vers `/actualites/terminee`. */
+  actualitesArchivees: ActualiteArchivee[];
 }
