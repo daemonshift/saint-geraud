@@ -36,7 +36,86 @@ export interface Actualite {
   lieu: string | null;
 }
 
+/** Image téléchargée au build et servie par le site ; jamais sans texte alternatif. */
+export interface ImageDuSite {
+  /** Chemin public rendu par le stockage des images. */
+  src: string;
+  alt: string;
+}
+
+/** Rubriques des Infos pratiques (choix du champ `Rubrique`). */
+export type RubriqueInfoPratique = 'Curé' | 'Presbytère' | 'Contacts';
+
+/** Une Info pratique active, telle que saisie dans Airtable. */
+export interface InfoPratique {
+  id: string;
+  libelle: string;
+  valeur: string;
+  /** Numéro affiché (« 05 53 00 00 00 »), ou null. */
+  telephone: string | null;
+  /** Texte long ; pour le Curé, ses fonctions (une par ligne). */
+  description: string;
+  /** Retenue uniquement pour la Rubrique « Curé », avec un texte alternatif. */
+  image: ImageDuSite | null;
+}
+
+/** Le Curé : seule personne nommée et, avec son accord écrit, photographiée. */
+export interface Cure {
+  /** Libellé de la ligne (« Curé »). */
+  titre: string;
+  /** Nom (« Père … »). */
+  nom: string;
+  fonctions: string[];
+  photo: ImageDuSite | null;
+}
+
+/** Une permanence d'accueil du presbytère : un jour et ses horaires. */
+export interface Permanence {
+  jour: string;
+  horaires: string;
+}
+
+/** Le presbytère : coordonnées de la paroisse et permanences d'accueil (« Accueil »). */
+export interface Presbytere {
+  adresse: string | null;
+  telephone: string | null;
+  email: string | null;
+  /** Lignes « Permanence d'accueil », une par jour, dans l'ordre. */
+  accueil: Permanence[];
+  /** Autres lignes de la Rubrique (ni coordonnée, ni permanence), dans l'ordre. */
+  autres: { libelle: string; valeur: string }[];
+}
+
+/**
+ * Contact d'un sacrement ou d'une démarche : un rôle (jamais un nom de
+ * bénévole) et ses deux moyens de contact. Source unique, reprise par
+ * La paroisse (`#contacts`) et Prier et célébrer.
+ */
+export interface ContactDemarche {
+  id: string;
+  /** Rôle ou démarche (« Baptême », « Préparation au mariage »). */
+  role: string;
+  /** Ancre stable tirée du rôle (« bapteme ») : retrouver un contact depuis une page. */
+  cle: string;
+  /** E-mail (Valeur), à défaut celui du presbytère. */
+  email: string | null;
+  /** Téléphone propre, à défaut celui du presbytère. */
+  telephone: string | null;
+  /** Précision facultative (Description). */
+  precision: string;
+}
+
+/** Infos pratiques actives, triées par Ordre et regroupées par Rubrique. */
+export interface InfosPratiques {
+  parRubrique: Record<RubriqueInfoPratique, InfoPratique[]>;
+  /** Première ligne active de la Rubrique « Curé », ou null. */
+  cure: Cure | null;
+  presbytere: Presbytere;
+  contacts: ContactDemarche[];
+}
+
 export interface ContenuDuSite {
   /** Actualités En ligne : Mises en avant d'abord, puis Date de publication décroissante. */
   actualites: Actualite[];
+  infosPratiques: InfosPratiques;
 }

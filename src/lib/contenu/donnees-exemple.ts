@@ -13,7 +13,7 @@
  */
 import type { EnregistrementAirtable } from '../airtable/client';
 import type { DonneesAirtable } from '../airtable/client-en-memoire';
-import { ACTUALITES, EGLISES, type TableAirtable } from '../airtable/schema';
+import { ACTUALITES, EGLISES, INFOS_PRATIQUES, type TableAirtable } from '../airtable/schema';
 
 type Valeurs<T extends TableAirtable> = { [K in keyof T['champs']]?: unknown };
 
@@ -50,6 +50,16 @@ export function eglise(id: string, valeurs: Valeurs<typeof EGLISES> = {}): Enreg
   return enregistrement(EGLISES, id, {
     nom: `Église ${id}`,
     commune: 'Fumel',
+    active: true,
+    ...valeurs,
+  });
+}
+
+/** Info pratique Active ; les valeurs passées remplacent ces valeurs par défaut. */
+export function infoPratique(id: string, valeurs: Valeurs<typeof INFOS_PRATIQUES> = {}): EnregistrementAirtable {
+  return enregistrement(INFOS_PRATIQUES, id, {
+    libelle: `Info pratique ${id}`,
+    rubrique: 'Contacts',
     active: true,
     ...valeurs,
   });

@@ -1,9 +1,10 @@
 import type { ClientAirtable, EnregistrementAirtable } from '../airtable/client';
-import { ACTUALITES, EGLISES, TABLES } from '../airtable/schema';
+import { ACTUALITES, EGLISES, INFOS_PRATIQUES, TABLES } from '../airtable/schema';
 import { controlerSchema } from './controle-schema';
 import { jourAParis } from './dates';
 import type { ContenuDuSite } from './modele';
 import { estEnLigne, trierActualites, versActualite, versEgliseLiee } from './actualites';
+import { versInfosPratiques } from './infos-pratiques';
 
 /** Rend l'instant présent (fixé dans les tests). */
 export type Horloge = () => Date;
@@ -19,16 +20,21 @@ export interface DependancesContenu {
   images: StockageImages;
 }
 
-export async function chargerContenuDuSite({ client, horloge }: DependancesContenu): Promise<ContenuDuSite> {
+export async function chargerContenuDuSite({ client, horloge, images }: DependancesContenu): Promise<ContenuDuSite> {
   const aujourdhui = jourAParis(horloge());
   controlerSchema(await client.lireSchema(), TABLES);
-  const [actualites, eglises] = await Promise.all([lireTable(client, ACTUALITES.id), lireTable(client, EGLISES.id)]);
+  const [actualites, eglises, infosPratiques] = await Promise.all([
+    lireTable(client, ACTUALITES.id),
+    lireTable(client, EGLISES.id),
+    lireTable(client, INFOS_PRATIQUES.id),
+  ]);
   const eglisesParId = new Map(eglises.map((e) => [e.id, versEgliseLiee(e)]));
 
   return {
     actualites: trierActualites(
       actualites.filter((e) => estEnLigne(e, aujourdhui)).map((e) => versActualite(e, eglisesParId)),
     ),
+    infosPratiques: await versInfosPratiques(infosPratiques, images),
   };
 }
 
