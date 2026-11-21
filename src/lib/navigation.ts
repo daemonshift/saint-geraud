@@ -39,3 +39,8 @@ export function estPageCourante(href: string, cheminCourant: string): boolean {
   const normaliser = (c: string) => (c.length > 1 ? c.replace(/\/$/, '') : c);
   return normaliser(href) === normaliser(cheminCourant);
 }
+
+/** Adresse du détail d'une Actualité : fondée sur l'identifiant de l'enregistrement Airtable, stable même si le titre change. */
+export function lienActualite(id: string): string {
+  return `/actualites/${id}`;
+}

@@ -1,0 +1,37 @@
+---
+/**
+ * Carte d'une Actualité (liste des Actualités ; le carrousel de l'Accueil, #6,
+ * la reprend) : Catégorie, date, titre (lien vers le détail) et lieu.
+ * L'image arrive avec le ticket #5.
+ *
+ * Usage : <CarteActualite actualite={a} niveauTitre="h2" />
+ */
+import type { Actualite } from '../lib/contenu';
+import { lienActualite } from '../lib/navigation';
+
+interface Props {
+  actualite: Actualite;
+  /** Niveau du titre de la carte selon la page qui l'accueille. */
+  niveauTitre?: 'h2' | 'h3';
+}
+
+const { actualite, niveauTitre: Titre = 'h3' } = Astro.props;
+const date = actualite.evenement?.enLettres ?? `Publiée le ${actualite.datePublicationEnLettres}`;
+---
+
+<article class="flex h-full flex-col gap-3 overflow-hidden rounded-xl border-t-4 border-or-doux bg-vert-profond px-6 pt-5 pb-6">
+  {
+    actualite.categorie && (
+      <p class="self-start rounded-full bg-ivoire px-3 py-0.5 font-bold tracking-[0.06em] text-vert-profond uppercase">
+        {actualite.categorie}
+      </p>
+    )
+  }
+  <p class="font-semibold text-or-pale">{date}</p>
+  <Titre class="text-2xl tracking-wide text-ivoire uppercase">
+    <a class="flex min-h-12 items-center text-ivoire no-underline hover:underline" href={lienActualite(actualite.id)}>
+      {actualite.titre}
+    </a>
+  </Titre>
+  {actualite.lieu && <p class="text-vert-pale">{actualite.lieu}</p>}
+</article>
