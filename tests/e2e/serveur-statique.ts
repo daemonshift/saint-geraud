@@ -3,6 +3,11 @@
  * sert les pages pré-rendues (`/page` → `page/index.html` ou `page.html`,
  * page inconnue → `404.html` avec le statut 404).
  *
+ * Il applique aussi, avant les fichiers, les redirections que le build écrit
+ * pour Vercel dans `.vercel/output/config.json` (routes avec `status` 3xx et
+ * en-tête `Location`, comme celles des Actualités Archivées) : les tests
+ * portent sur la configuration réellement produite, pas sur une copie.
+ *
  * Usage : node tests/e2e/serveur-statique.ts [dossier] [port]
  */
 import { createServer } from 'node:http';
@@ -11,6 +16,28 @@ import { extname, join, normalize, resolve } from 'node:path';
 
 const racine = resolve(process.argv[2] ?? 'dist');
 const port = Number(process.argv[3] ?? 4321);
+
+interface RouteVercel {
+  src?: string;
+  status?: number;
+  headers?: Record<string, string>;
+}
+
+/** Redirections de la sortie Vercel (Build Output API v3) ; aucune si le fichier est absent. */
+async function redirectionsVercel(): Promise<{ motif: RegExp; status: number; location: string }[]> {
+  try {
+    const config = JSON.parse(await readFile(resolve('.vercel/output/config.json'), 'utf8')) as { routes?: RouteVercel[] };
+    return (config.routes ?? []).flatMap((r) =>
+      r.src && r.status && r.status >= 300 && r.status < 400 && r.headers?.Location
+        ? [{ motif: new RegExp(r.src), status: r.status, location: r.headers.Location }]
+        : [],
+    );
+  } catch {
+    return [];
+  }
+}
+
+const redirections = await redirectionsVercel();
 
 const TYPES: Record<string, string> = {
   '.html': 'text/html; charset=utf-8',
@@ -49,6 +76,13 @@ async function trouver(url: string): Promise<string | null> {
 }
 
 createServer(async (req, res) => {
+  const adresse = (req.url ?? '/').split('?')[0];
+  const redirection = redirections.find((r) => r.motif.test(adresse));
+  if (redirection) {
+    res.writeHead(redirection.status, { location: redirection.location });
+    res.end();
+    return;
+  }
   const trouve = await trouver(req.url ?? '/');
   const chemin = trouve ?? join(racine, '404.html');
   try {

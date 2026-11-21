@@ -1,0 +1,18 @@
+---
+/**
+ * Page « Actualité terminée » : l'adresse d'une Actualité Archivée y redirige
+ * (302, voir src/lib/plan-du-site.ts). Elle ne nomme jamais l'Actualité.
+ */
+import BandeauTitre from '../../components/BandeauTitre.astro';
+import BoutonsRetour from '../../components/BoutonsRetour.astro';
+import MiseEnPage from '../../layouts/MiseEnPage.astro';
+---
+
+<MiseEnPage titre="Actualité terminée" description="Cette actualité n’est plus affichée sur le site de la paroisse.">
+  <meta slot="head" name="robots" content="noindex" />
+  <BandeauTitre titre="Actualité terminée" />
+  <div class="conteneur flex flex-col items-center gap-8 py-12 text-center lg:py-16">
+    <p class="max-w-[40ch] text-2xl">Cette actualité n’est plus affichée sur le site.</p>
+    <BoutonsRetour />
+  </div>
+</MiseEnPage>
