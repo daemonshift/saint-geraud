@@ -1,0 +1,37 @@
+---
+/**
+ * Encart « Recevoir la Lettre d'information » de l'Accueil (ADR 0003) :
+ * aucune Inscription sur le site. Le visiteur écrit à la paroisse ou remet
+ * le formulaire papier, dont le poids réel est lu au build.
+ */
+import { lienEmail } from '../lib/contact';
+import { FORMULAIRE_LETTRE_D_INFORMATION, LETTRE_D_INFORMATION } from '../lib/navigation';
+import { poidsFichierPublic } from '../lib/poids-fichier';
+
+interface Props {
+  /** Adresse e-mail de la paroisse, affichée en clair. */
+  email: string;
+}
+
+const { email } = Astro.props;
+const ancre = LETTRE_D_INFORMATION.href.split('#')[1];
+const sujet = encodeURIComponent('Inscription à la Lettre d’information');
+const poids = poidsFichierPublic(FORMULAIRE_LETTRE_D_INFORMATION);
+---
+
+<section id={ancre} aria-labelledby="titre-lettre-d-information" class="scroll-mt-6 bg-vert-sauge py-12 lg:py-14">
+  <div class="conteneur">
+    <div class="flex flex-col gap-4 rounded-xl bg-ivoire p-6 lg:max-w-3xl lg:p-8">
+      <h2 id="titre-lettre-d-information" class="text-3xl font-bold lg:text-4xl">Recevoir la Lettre d’information</h2>
+      <p>Le secrétariat envoie les annonces de la paroisse par e-mail. Pour vous inscrire :</p>
+      <ul class="flex list-disc flex-col gap-1 pl-6">
+        <li>écrivez à la paroisse, à <strong class="break-all">{email}</strong>, en indiquant votre nom et votre adresse e-mail ;</li>
+        <li>ou remplissez le formulaire papier et remettez-le au presbytère.</li>
+      </ul>
+      <div class="mt-2 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+        <a class="bouton-principal" href={`${lienEmail(email)}?subject=${sujet}`}>Écrire à la paroisse</a>
+        <a class="bouton-secondaire" href={FORMULAIRE_LETTRE_D_INFORMATION}>Télécharger le formulaire papier (PDF, {poids})</a>
+      </div>
+    </div>
+  </div>
+</section>
