@@ -16,6 +16,11 @@
     text-size-adjust: 100%;
   }
 
+  /* Bouton « Aa » : texte à 22 px, titres en proportion (toute l'échelle est en rem). */
+  html[data-taille='grand'] {
+    font-size: 137.5%;
+  }
+
   body {
     @apply bg-ivoire font-texte text-base text-encre;
   }
