@@ -1,0 +1,33 @@
+---
+/** Liste de toutes les Actualités En ligne, dans l'ordre du module « contenu du site ». */
+import CarteActualite from '../../components/CarteActualite.astro';
+import MiseEnPage from '../../layouts/MiseEnPage.astro';
+import { contenuDuSite } from '../../lib/contenu/site';
+
+const { actualites } = await contenuDuSite();
+---
+
+<MiseEnPage titre="Actualités" description="Les actualités de la paroisse Saint-Géraud des Vallées en Fumélois : annonces, événements, sacrements et vie paroissiale.">
+  <section class="bg-vert-profond text-ivoire">
+    <div class="conteneur flex flex-col gap-2 py-10 lg:py-14">
+      <p class="font-bold tracking-[0.12em] text-or-pale uppercase">La vie de la paroisse</p>
+      <h1 class="text-4xl text-ivoire uppercase lg:text-5xl">Actualités</h1>
+    </div>
+  </section>
+
+  <div class="conteneur py-10 lg:py-14">
+    {
+      actualites.length === 0 ? (
+        <p class="max-w-[68ch] text-lg">Aucune actualité pour le moment. Revenez bientôt.</p>
+      ) : (
+        <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {actualites.map((actualite) => (
+            <li>
+              <CarteActualite actualite={actualite} niveauTitre="h2" />
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</MiseEnPage>

@@ -60,4 +60,22 @@
   .bouton-secondaire {
     @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border-2 border-vert-profond bg-blanc px-5 font-bold text-vert-profond no-underline hover:bg-vert-pale;
   }
+
+  /* Texte Markdown d'une Actualité (venu d'Airtable) : listes et liens visibles. */
+  .texte-actualite ul {
+    @apply list-disc pl-6;
+  }
+
+  .texte-actualite ol {
+    @apply list-decimal pl-6;
+  }
+
+  .texte-actualite a {
+    @apply text-vert-profond underline;
+  }
+
+  .texte-actualite h2,
+  .texte-actualite h3 {
+    @apply text-3xl;
+  }
 }

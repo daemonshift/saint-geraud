@@ -1,0 +1,73 @@
+---
+/**
+ * Détail d'une Actualité En ligne : une page par Actualité, à l'adresse
+ * `/actualites/{identifiant Airtable}`. Le bloc « En pratique » arrive avec le
+ * ticket #9, l'image avec le #5.
+ */
+import type { GetStaticPaths } from 'astro';
+import MiseEnPage from '../../layouts/MiseEnPage.astro';
+import type { Actualite } from '../../lib/contenu';
+import { contenuDuSite } from '../../lib/contenu/site';
+import { markdownEnHtml } from '../../lib/markdown';
+
+export const getStaticPaths = (async () => {
+  const { actualites } = await contenuDuSite();
+  return actualites.map((actualite) => ({ params: { id: actualite.id }, props: { actualite } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  actualite: Actualite;
+}
+
+const { actualite } = Astro.props;
+const lienFil = 'inline-flex min-h-12 items-center text-vert-profond underline';
+---
+
+<MiseEnPage titre={actualite.titre} description={actualite.resume || undefined}>
+  <div class="conteneur pt-6 pb-16 lg:pt-10">
+    <nav aria-label="Fil d’Ariane" class="text-gris-vert">
+      <ol class="flex flex-wrap items-center gap-x-2">
+        <li><a class={lienFil} href="/">Accueil</a></li>
+        <li aria-hidden="true">›</li>
+        <li><a class={lienFil} href="/actualites">Actualités</a></li>
+        <li aria-hidden="true">›</li>
+        <li aria-current="page" class="text-encre">{actualite.titre}</li>
+      </ol>
+    </nav>
+
+    <article class="mt-6 flex max-w-[68ch] flex-col gap-5">
+      {
+        actualite.categorie && (
+          <p class="self-start rounded-full bg-vert-profond px-3 py-0.5 font-bold tracking-[0.06em] text-ivoire uppercase">
+            {actualite.categorie}
+          </p>
+        )
+      }
+      <h1 class="text-4xl lg:text-5xl">{actualite.titre}</h1>
+      <p class="text-gris-vert">Publiée le {actualite.datePublicationEnLettres}</p>
+      {
+        (actualite.evenement || actualite.lieu) && (
+          <dl class="flex flex-col gap-1">
+            {actualite.evenement && (
+              <div>
+                <dt class="inline font-bold">Date : </dt>
+                <dd class="inline">{actualite.evenement.enLettres}</dd>
+              </div>
+            )}
+            {actualite.lieu && (
+              <div>
+                <dt class="inline font-bold">Lieu : </dt>
+                <dd class="inline">{actualite.lieu}</dd>
+              </div>
+            )}
+          </dl>
+        )
+      }
+      {actualite.resume && <p class="text-xl">{actualite.resume}</p>}
+      <div class="texte-actualite flex flex-col gap-4" set:html={markdownEnHtml(actualite.texte)} />
+      <p class="mt-4">
+        <a class="inline-flex min-h-12 items-center font-bold text-vert-profond underline" href="/actualites">← Toutes les actualités</a>
+      </p>
+    </article>
+  </div>
+</MiseEnPage>
