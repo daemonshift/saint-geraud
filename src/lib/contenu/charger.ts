@@ -3,7 +3,7 @@ import { ACTUALITES, EGLISES, TABLES } from '../airtable/schema';
 import { controlerSchema } from './controle-schema';
 import { jourAParis } from './dates';
 import type { ContenuDuSite } from './modele';
-import { imageDe } from './images';
+import { imageRetenue } from './images';
 import { estEnLigne, trierActualites, versActualite, versEgliseLiee } from './actualites';
 
 /** Rend l'instant présent (fixé dans les tests). */
@@ -33,7 +33,11 @@ export async function chargerContenuDuSite({ client, horloge, images }: Dependan
         actualites
           .filter((e) => estEnLigne(e, aujourdhui))
           .map(async (e) =>
-            versActualite(e, eglisesParId, await imageDe(e, ACTUALITES.champs.image, ACTUALITES.champs.texteAlternatifImage, images)),
+            versActualite(
+              e,
+              eglisesParId,
+              await imageRetenue(e, { image: ACTUALITES.champs.image, texteAlternatif: ACTUALITES.champs.texteAlternatifImage }, images),
+            ),
           ),
       ),
     ),

@@ -12,11 +12,11 @@ export interface EgliseLiee {
   commune: string;
 }
 
-/** Image téléchargée au build et servie par le site ; toujours accompagnée de son texte alternatif. */
+/** Image retenue (première pièce jointe, avec texte alternatif), téléchargée au build. */
 export interface ImageDuSite {
-  /** Chemin public de l'image (jamais une URL Airtable). */
-  src: string;
-  alt: string;
+  /** Chemin public de l'image servie par le site (jamais une URL Airtable). */
+  chemin: string;
+  texteAlternatif: string;
 }
 
 export interface Actualite {

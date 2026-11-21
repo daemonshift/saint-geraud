@@ -1,7 +1,7 @@
 /**
  * Images issues d'Airtable (Actualités ; puis Églises #8, Curé #11, Groupes #12).
  *
- *   const image = await imageDe(enregistrement, TABLE.champs.image, TABLE.champs.texteAlternatif, images);
+ *   const image = await imageRetenue(enregistrement, { image: TABLE.champs.image, texteAlternatif: TABLE.champs.texteAlternatif }, images);
  *
  * Règles communes : seule la première pièce jointe compte ; une pièce jointe
  * qui n'est pas une image, ou une image sans texte alternatif, est ignorée
@@ -45,15 +45,15 @@ function nomDeFichier(p: PieceJointe): string {
   return extension ? `${p.id}.${extension}` : p.id;
 }
 
-export async function imageDe(
+/** Image retenue d'un enregistrement, téléchargée ; null si absente, sans texte alternatif ou si ce n'est pas une image. */
+export async function imageRetenue(
   e: EnregistrementAirtable,
-  champImage: ChampAirtable,
-  champTexteAlternatif: ChampAirtable,
+  champs: { image: ChampAirtable; texteAlternatif: ChampAirtable },
   stockage: StockageImages,
 ): Promise<ImageDuSite | null> {
-  const piece = premierePieceJointe(e, champImage);
-  const alt = texte(e, champTexteAlternatif);
-  if (!piece || alt === '') return null;
+  const piece = premierePieceJointe(e, champs.image);
+  const texteAlternatif = texte(e, champs.texteAlternatif);
+  if (!piece || texteAlternatif === '') return null;
   if (piece.type !== undefined && !piece.type.startsWith('image/')) return null;
-  return { src: await stockage.enregistrer({ url: piece.url, nom: nomDeFichier(piece) }), alt };
+  return { chemin: await stockage.enregistrer({ url: piece.url, nom: nomDeFichier(piece) }), texteAlternatif };
 }

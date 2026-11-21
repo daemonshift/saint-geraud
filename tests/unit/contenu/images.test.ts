@@ -50,7 +50,7 @@ describe('Image d’une Actualité', () => {
       ],
     });
     expect(images.enregistrees).toEqual(['https://v5.airtableusercontent.com/premiere']);
-    expect(contenu.actualites[0]!.image).toEqual({ src: '/images/attPremiere.jpg', alt: 'Vitrail de l’église Saint-Antoine' });
+    expect(contenu.actualites[0]!.image).toEqual({ chemin: '/images/attPremiere.jpg', texteAlternatif: 'Vitrail de l’église Saint-Antoine' });
   });
 
   it('première pièce jointe qui n’est pas une image (PDF) : ignorée', async () => {

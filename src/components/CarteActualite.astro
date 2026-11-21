@@ -26,8 +26,8 @@ const date = actualite.evenement?.enLettres ?? `Publiée le ${actualite.datePubl
       <div class="relative">
         <img
           class="aspect-4/3 w-full bg-vert-sauge object-cover"
-          src={actualite.image.src}
-          alt={actualite.image.alt}
+          src={actualite.image.chemin}
+          alt={actualite.image.texteAlternatif}
           loading="lazy"
           decoding="async"
         />

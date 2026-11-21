@@ -38,7 +38,7 @@ export function versEgliseLiee(e: EnregistrementAirtable): EgliseLiee {
   return { id: e.id, nom: texte(e, EGLISES.champs.nom), commune: texte(e, EGLISES.champs.commune) };
 }
 
-/** `image` : déjà retenue et téléchargée par `imageDe` (images.ts). */
+/** `image` : déjà retenue et téléchargée par `imageRetenue` (images.ts). */
 export function versActualite(
   e: EnregistrementAirtable,
   eglisesParId: Map<string, EgliseLiee>,
