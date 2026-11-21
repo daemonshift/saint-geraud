@@ -1,0 +1,184 @@
+---
+/**
+ * Carte des Églises (îlot JS) : Leaflet auto-hébergé, tuiles OpenStreetMap
+ * (seul domaine tiers contacté), un marqueur vert profond par Église ; sa
+ * fenêtre donne le nom, la commune et le lien vers les horaires sur messes.info.
+ *
+ * - Sur écran tactile, la carte se déplace à deux doigts : un doigt fait
+ *   défiler la page. La molette ne zoome pas non plus (défilement préservé).
+ * - Toujours accompagnée de la liste texte des Églises : la page qui
+ *   l'accueille la place à côté. Sans JavaScript, seule la liste reste.
+ *
+ * Usage : <CarteEglises eglises={eglises} class="h-72 lg:h-[420px]" />
+ */
+import type { Eglise } from '../lib/contenu';
+
+interface Props {
+  eglises: Eglise[];
+  /** Hauteur de la carte (classes Tailwind). */
+  class?: string;
+}
+
+const { eglises, class: classe = 'h-72 lg:h-[420px]' } = Astro.props;
+/** Ce que le script lit : le strict nécessaire aux marqueurs et aux fenêtres. */
+const marqueurs = eglises.map(({ nom, commune, latitude, longitude, lienMessesInfo }) => ({
+  nom,
+  commune,
+  latitude,
+  longitude,
+  lienMessesInfo,
+}));
+---
+
+<figure class="flex flex-col gap-2">
+  <div
+    data-carte-eglises={JSON.stringify(marqueurs)}
+    role="region"
+    aria-label="Carte des églises"
+    class:list={['carte-eglises z-0 overflow-hidden rounded-xl border border-beige-filet bg-vert-sauge', classe]}
+  >
+  </div>
+  <figcaption>
+    <p class="text-gris-vert">
+      <span class="lg:hidden">Déplacez la carte avec deux doigts. </span>Fond de carte © <a
+        class="text-encre"
+        href="https://www.openstreetmap.org/copyright">les contributeurs d’OpenStreetMap (site OpenStreetMap)</a
+      >.
+    </p>
+  </figcaption>
+</figure>
+
+<script>
+  import L from 'leaflet';
+  import 'leaflet/dist/leaflet.css';
+
+  interface Marqueur {
+    nom: string;
+    commune: string;
+    latitude: number;
+    longitude: number;
+    lienMessesInfo: string | null;
+  }
+
+  // Pictogramme de lieu ; la couleur vient des tokens (classe CSS), jamais d'une valeur en dur.
+  const PICTOGRAMME =
+    '<svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true" focusable="false">' +
+    '<path class="marqueur-eglise-forme" d="M12 22s-7.5-6.6-7.5-12a7.5 7.5 0 0 1 15 0c0 5.4-7.5 12-7.5 12z"/>' +
+    '<circle class="marqueur-eglise-centre" cx="12" cy="10" r="2.8"/></svg>';
+
+  function fenetre({ nom, commune, lienMessesInfo }: Marqueur): HTMLElement {
+    const contenu = document.createElement('div');
+    contenu.className = 'fenetre-eglise';
+    const titre = document.createElement('strong');
+    titre.textContent = nom;
+    const lieu = document.createElement('span');
+    lieu.textContent = commune;
+    contenu.append(titre, lieu);
+    if (lienMessesInfo) {
+      const lien = document.createElement('a');
+      lien.href = lienMessesInfo;
+      lien.textContent = 'Horaires des messes (site messes.info)';
+      contenu.append(lien);
+    }
+    return contenu;
+  }
+
+  function icone(nom: string): L.DivIcon {
+    const nomMasque = document.createElement('span');
+    nomMasque.className = 'sr-only';
+    nomMasque.textContent = nom;
+    return L.divIcon({
+      className: 'marqueur-eglise',
+      html: PICTOGRAMME + nomMasque.outerHTML,
+      iconSize: [48, 48],
+      iconAnchor: [24, 46],
+      popupAnchor: [0, -40],
+    });
+  }
+
+  const tactile = window.matchMedia('(pointer: coarse)').matches;
+
+  for (const element of document.querySelectorAll<HTMLElement>('[data-carte-eglises]')) {
+    const marqueurs: Marqueur[] = JSON.parse(element.dataset.carteEglises ?? '[]');
+    const carte = L.map(element, {
+      // Deux doigts sur écran tactile : la carte suit le pincement, un doigt fait défiler la page.
+      dragging: !tactile,
+      touchZoom: true,
+      scrollWheelZoom: false,
+      // Attribution affichée sous la carte, en texte de taille normale.
+      attributionControl: false,
+    });
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(carte);
+    const positions = marqueurs.map((m) => L.latLng(m.latitude, m.longitude));
+    for (const [i, m] of marqueurs.entries()) {
+      L.marker(positions[i]!, { icon: icone(m.nom), title: m.nom }).bindPopup(fenetre(m)).addTo(carte);
+    }
+    if (positions.length) carte.fitBounds(L.latLngBounds(positions), { padding: [48, 48], maxZoom: 14 });
+    else carte.setView([44.5, 0.96], 11);
+  }
+</script>
+
+<style is:global>
+  /* Leaflet fixe 12 px et des cibles de 30 px : la charte impose 18 px et 48 px. */
+  .carte-eglises.leaflet-container {
+    font: inherit;
+    font-size: 1rem;
+  }
+
+  .marqueur-eglise {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .marqueur-eglise-forme {
+    fill: var(--color-vert-profond);
+    stroke: var(--color-ivoire);
+    stroke-width: 1.5;
+  }
+
+  .marqueur-eglise-centre {
+    fill: var(--color-ivoire);
+  }
+
+  .carte-eglises .leaflet-bar a {
+    width: 48px;
+    height: 48px;
+    line-height: 48px;
+    font-size: 1.5rem;
+    color: var(--color-encre);
+  }
+
+  .carte-eglises .leaflet-popup-content {
+    margin: 16px 48px 16px 16px;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .carte-eglises .leaflet-container a.leaflet-popup-close-button,
+  .carte-eglises a.leaflet-popup-close-button {
+    width: 48px;
+    height: 48px;
+    font-size: 1.75rem;
+    line-height: 48px;
+    color: var(--color-encre);
+  }
+
+  .fenetre-eglise {
+    display: flex;
+    flex-direction: column;
+    color: var(--color-encre);
+  }
+
+  .fenetre-eglise strong {
+    color: var(--color-vert-profond);
+  }
+
+  .carte-eglises .fenetre-eglise a {
+    display: inline-flex;
+    min-height: 48px;
+    align-items: center;
+    color: var(--color-vert-profond);
+    font-weight: 700;
+  }
+</style>

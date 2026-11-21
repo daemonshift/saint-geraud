@@ -10,6 +10,7 @@ export const PAGES: { nom: string; chemin: string }[] = [
   { nom: 'Détail d’une Actualité', chemin: '/actualites/recExempleMesseDeNoel' },
   { nom: 'Actualité terminée', chemin: '/actualites/terminee' },
   { nom: 'Page 404', chemin: '/actualites/recInconnu' },
+  { nom: 'Nos églises', chemin: '/nos-eglises' },
   { nom: 'Mentions légales', chemin: '/mentions-legales' },
   { nom: 'Confidentialité', chemin: '/confidentialite' },
   { nom: 'Accessibilité', chemin: '/accessibilite' },

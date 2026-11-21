@@ -1,0 +1,55 @@
+---
+/**
+ * Section « Nos églises » de l'Accueil (maquettes 1440 et 390) : carte, aperçu
+ * des premières Églises (6 en ordinateur, 4 en mobile) et lien vers la page
+ * Nos églises, qui annonce le nombre total d'Églises.
+ */
+import CarteEglises from './CarteEglises.astro';
+import type { Eglise } from '../lib/contenu';
+import { NOS_EGLISES } from '../lib/navigation';
+
+interface Props {
+  eglises: Eglise[];
+}
+
+const { eglises } = Astro.props;
+const APERCU_ORDINATEUR = 6;
+const APERCU_MOBILE = 4;
+const voirTout = eglises.length === 1 ? 'Voir l’église' : `Voir les ${eglises.length} églises`;
+---
+
+{
+  eglises.length > 0 && (
+    <section id="eglises" aria-labelledby="titre-nos-eglises" class="conteneur flex flex-col gap-6 py-10 lg:gap-8 lg:py-18">
+      <h2 id="titre-nos-eglises" class="text-3xl tracking-wide uppercase lg:text-center lg:text-4xl">
+        Nos églises
+      </h2>
+      <div class="grid gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-8">
+        <CarteEglises eglises={eglises} class="h-64 lg:h-[420px]" />
+        <div class="flex flex-col gap-3">
+          <ul aria-label="Aperçu des églises" class="flex flex-col gap-3">
+            {eglises.slice(0, APERCU_ORDINATEUR).map((eglise, i) => (
+              <li
+                class:list={[
+                  'flex-wrap items-center justify-between gap-x-3 gap-y-1 rounded-lg border border-beige-filet bg-blanc px-4 py-3',
+                  i < APERCU_MOBILE ? 'flex' : 'hidden lg:flex',
+                ]}
+              >
+                <p class="flex flex-col leading-snug">
+                  <strong class="text-vert-profond">{eglise.nom}</strong>
+                  <span class="text-gris-vert">{eglise.commune}</span>
+                </p>
+                {eglise.accesPmr && (
+                  <p class="rounded-full bg-vert-pale px-3 py-0.5 font-bold whitespace-nowrap text-encre">Accès PMR</p>
+                )}
+              </li>
+            ))}
+          </ul>
+          <a class="bouton-secondaire" href={NOS_EGLISES.href}>
+            {voirTout}
+          </a>
+        </div>
+      </div>
+    </section>
+  )
+}
