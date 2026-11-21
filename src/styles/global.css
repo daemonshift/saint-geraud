@@ -1,0 +1,63 @@
+@import 'tailwindcss';
+@import './tokens.css';
+
+/* Polices auto-hébergées (Fontsource) : aucune requête vers Google. Sous-ensemble latin seul (français). */
+@import '@fontsource/cormorant-garamond/latin-600.css';
+@import '@fontsource/cormorant-garamond/latin-700.css';
+@import '@fontsource/source-sans-3/latin-400.css';
+@import '@fontsource/source-sans-3/latin-600.css';
+@import '@fontsource/source-sans-3/latin-700.css';
+
+@layer base {
+  html {
+    /* 18 px si le navigateur est réglé sur 16 px ; respecte un réglage plus grand. */
+    font-size: 112.5%;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-ivoire font-texte text-base text-encre;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-titre font-semibold text-vert-profond;
+  }
+
+  a {
+    @apply underline-offset-4;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-or-fonce);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Conteneur de page : 16 px de marge en mobile, 1280 px au plus. */
+  .conteneur {
+    @apply mx-auto w-full max-w-[1280px] px-4 md:px-8;
+  }
+
+  /* Boutons de la charte : cible d'au moins 48 px. */
+  .bouton-principal {
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-vert-profond px-5 font-bold text-ivoire no-underline hover:bg-vert-survol;
+  }
+
+  .bouton-secondaire {
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border-2 border-vert-profond bg-blanc px-5 font-bold text-vert-profond no-underline hover:bg-vert-pale;
+  }
+}

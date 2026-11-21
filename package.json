@@ -3,17 +3,18 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=22.12.0"
+    "node": ">=22.18.0"
   },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview",
+    "preview": "node tests/e2e/serveur-statique.ts dist 4321",
     "check": "astro check && npm run check:couleurs",
     "check:couleurs": "node scripts/controles/couleurs.ts",
     "check:domaines": "node scripts/controles/domaines.ts",
     "test": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "prepare": "git config core.hooksPath .githooks 2>/dev/null || true"
   },
   "dependencies": {
     "@astrojs/vercel": "^10.0.8",
@@ -27,7 +28,11 @@
     "@astrojs/check": "^0.9.12",
     "@axe-core/playwright": "^4.14.0",
     "@playwright/test": "^1.65.1",
+    "@types/node": "^22.20.5",
     "typescript": "^5.9.3",
     "vitest": "^4.1.12"
+  },
+  "overrides": {
+    "vite": "^7.3.8"
   }
 }
