@@ -1,6 +1,8 @@
 import type { ClientAirtable, EnregistrementAirtable } from '../airtable/client';
 import { ACTUALITES } from '../airtable/schema';
-import type { Actualite, ContenuDuSite } from './modele';
+import { jourAParis } from './dates';
+import type { ContenuDuSite } from './modele';
+import { estEnLigne, trierActualites, versActualite } from './actualites';
 
 /** Rend l'instant présent (fixé dans les tests). */
 export type Horloge = () => Date;
@@ -16,12 +18,16 @@ export interface DependancesContenu {
   images: StockageImages;
 }
 
-export async function chargerContenuDuSite({ client }: DependancesContenu): Promise<ContenuDuSite> {
-  const page = await client.lirePage(ACTUALITES.id);
-  return { actualites: page.records.map(versActualite) };
+export async function chargerContenuDuSite({ client, horloge }: DependancesContenu): Promise<ContenuDuSite> {
+  const aujourdhui = jourAParis(horloge());
+  const actualites = await lireTable(client, ACTUALITES.id);
+
+  return {
+    actualites: trierActualites(actualites.filter((e) => estEnLigne(e, aujourdhui)).map(versActualite)),
+  };
 }
 
-function versActualite(e: EnregistrementAirtable): Actualite {
-  const c = ACTUALITES.champs;
-  return { id: e.id, titre: String(e.fields[c.titre.id]) } as Actualite;
+async function lireTable(client: ClientAirtable, tableId: string): Promise<EnregistrementAirtable[]> {
+  const page = await client.lirePage(tableId);
+  return page.records;
 }
