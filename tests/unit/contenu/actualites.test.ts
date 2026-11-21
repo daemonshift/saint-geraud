@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { creerClientEnMemoire, type DonneesAirtable } from '../../../src/lib/airtable/client-en-memoire';
 import { chargerContenuDuSite } from '../../../src/lib/contenu';
-import { actualite } from '../../../src/lib/contenu/donnees-exemple';
+import { actualite, eglise } from '../../../src/lib/contenu/donnees-exemple';
 import { fauxStockageImages } from './outils';
 
 /** Charge le contenu à l'instant donné (UTC), avec le faux client. */
@@ -72,6 +72,45 @@ describe('« Aujourd’hui » est calculé en heure de Paris, pas en UTC', () =>
     expect(await titres('2026-10-25T22:15:00Z', duJour('2026-10-25'))).toEqual(['Du jour']);
     // 25 octobre 23 h 15 UTC = 26 octobre 0 h 15.
     expect(await titres('2026-10-25T23:15:00Z', duJour('2026-10-26'))).toEqual(['Du jour']);
+  });
+});
+
+describe('Dates et lieu affichés', () => {
+  it('Date de publication en toutes lettres', async () => {
+    const [a] = (await chargerA('2026-12-30T10:00:00Z', { actualites: [actualite('rec1', { datePublication: '2026-12-25' })] })).actualites;
+    expect(a!.datePublicationEnLettres).toBe('vendredi 25 décembre 2026');
+  });
+
+  it('Date de l’événement convertie de l’UTC vers l’heure de Paris, en hiver et en été', async () => {
+    const contenu = await chargerA('2026-06-15T10:00:00Z', {
+      actualites: [
+        actualite('hiver', { miseEnAvant: true, dateEvenement: '2026-12-24T22:30:00.000Z' }),
+        actualite('ete', { dateEvenement: '2026-07-05T08:30:00.000Z' }),
+        actualite('sans', { datePublication: '2025-01-01' }),
+      ],
+    });
+    expect(contenu.actualites.map((a) => a.evenement?.enLettres ?? null)).toEqual([
+      'jeudi 24 décembre 2026, 23 h 30',
+      'dimanche 5 juillet 2026, 10 h 30',
+      null,
+    ]);
+  });
+
+  it('lieu tiré des Églises liées ; aucun lieu sans Église liée', async () => {
+    const contenu = await chargerA('2026-06-15T10:00:00Z', {
+      eglises: [
+        eglise('recA', { nom: 'Église Saint-Antoine', commune: 'Fumel' }),
+        eglise('recB', { nom: 'Église Saint-Géraud', commune: 'Monsempron-Libos' }),
+      ],
+      actualites: [
+        actualite('deux', { miseEnAvant: true, eglises: ['recA', 'recB'] }),
+        actualite('aucune', {}),
+      ],
+    });
+    expect(contenu.actualites.map((a) => a.lieu)).toEqual([
+      'Église Saint-Antoine, Fumel · Église Saint-Géraud, Monsempron-Libos',
+      null,
+    ]);
   });
 });
 

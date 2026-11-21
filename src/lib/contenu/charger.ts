@@ -1,8 +1,8 @@
 import type { ClientAirtable, EnregistrementAirtable } from '../airtable/client';
-import { ACTUALITES } from '../airtable/schema';
+import { ACTUALITES, EGLISES } from '../airtable/schema';
 import { jourAParis } from './dates';
 import type { ContenuDuSite } from './modele';
-import { estEnLigne, trierActualites, versActualite } from './actualites';
+import { estEnLigne, trierActualites, versActualite, versEgliseLiee } from './actualites';
 
 /** Rend l'instant présent (fixé dans les tests). */
 export type Horloge = () => Date;
@@ -20,10 +20,13 @@ export interface DependancesContenu {
 
 export async function chargerContenuDuSite({ client, horloge }: DependancesContenu): Promise<ContenuDuSite> {
   const aujourdhui = jourAParis(horloge());
-  const actualites = await lireTable(client, ACTUALITES.id);
+  const [actualites, eglises] = await Promise.all([lireTable(client, ACTUALITES.id), lireTable(client, EGLISES.id)]);
+  const eglisesParId = new Map(eglises.map((e) => [e.id, versEgliseLiee(e)]));
 
   return {
-    actualites: trierActualites(actualites.filter((e) => estEnLigne(e, aujourdhui)).map(versActualite)),
+    actualites: trierActualites(
+      actualites.filter((e) => estEnLigne(e, aujourdhui)).map((e) => versActualite(e, eglisesParId)),
+    ),
   };
 }
 

@@ -3,10 +3,10 @@
  * au modèle du site. `aujourdhui` est le jour calendaire à Paris (`AAAA-MM-JJ`).
  */
 import type { EnregistrementAirtable } from '../airtable/client';
-import { ACTUALITES } from '../airtable/schema';
+import { ACTUALITES, EGLISES } from '../airtable/schema';
 import { dateEnLettres, dateHeureEnLettres } from './dates';
-import type { Actualite, Categorie } from './modele';
-import { booleen, texte } from './valeurs';
+import type { Actualite, Categorie, EgliseLiee } from './modele';
+import { booleen, liens, texte } from './valeurs';
 
 const c = ACTUALITES.champs;
 
@@ -33,11 +33,17 @@ export function trierActualites(actualites: Actualite[]): Actualite[] {
   );
 }
 
-export function versActualite(e: EnregistrementAirtable): Actualite {
+/** Église telle qu'une Actualité la cite (lieu), qu'elle soit ou non affichée sur Nos églises. */
+export function versEgliseLiee(e: EnregistrementAirtable): EgliseLiee {
+  return { id: e.id, nom: texte(e, EGLISES.champs.nom), commune: texte(e, EGLISES.champs.commune) };
+}
+
+export function versActualite(e: EnregistrementAirtable, eglisesParId: Map<string, EgliseLiee>): Actualite {
   const datePublication = texte(e, c.datePublication);
   const dateEvenement = texte(e, c.dateEvenement);
   const modifieLe = texte(e, c.modifieLe);
   const debut = dateEvenement ? new Date(dateEvenement) : null;
+  const eglises = liens(e, c.eglises).flatMap((id) => eglisesParId.get(id) ?? []);
   return {
     id: e.id,
     titre: texte(e, c.titre),
@@ -50,7 +56,7 @@ export function versActualite(e: EnregistrementAirtable): Actualite {
     miseEnAvant: booleen(e, c.miseEnAvant),
     evenement: debut ? { debut, enLettres: dateHeureEnLettres(debut) } : null,
     modifieLe: modifieLe ? new Date(modifieLe) : null,
-    eglises: [],
-    lieu: null,
+    eglises,
+    lieu: eglises.length ? eglises.map((g) => [g.nom, g.commune].filter(Boolean).join(', ')).join(' · ') : null,
   };
 }
