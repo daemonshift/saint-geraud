@@ -1,7 +1,7 @@
 # Schéma Airtable — Site Paroisse Saint-Géraud des Vallées en Fumélois
 
 Base : `Paroisse Saint-Géraud` — `appFZ9EorUC2DY3yh` (espace de travail dédié `wspG3x87J8N0H9vj7`)
-**Schéma validé le 19/11/2026.** Le code référence les champs par **ID** (`returnFieldsByFieldId`), mapping centralisé dans `src/lib/airtable/schema.ts`.
+**Schéma validé le 19/11/2026, complété le 21/11/2026 (`Infos_Pratiques`, `Groupes`).** Le code référence les champs par **ID** (`returnFieldsByFieldId`), mapping centralisé dans `src/lib/airtable/schema.ts`.
 
 ## Table `Actualités` — `tblEN5ytvb1DdYDYD`
 
@@ -40,6 +40,31 @@ Base : `Paroisse Saint-Géraud` — `appFZ9EorUC2DY3yh` (espace de travail dédi
 | Active | fldmmMoiTcSHCdsij | checkbox | Masquer sans supprimer |
 | Actualités | fldnPOPW7W4rXngnl | multipleRecordLinks (inverse) | Non exposé sur le site |
 
+## Table `Infos_Pratiques` — `tbld8JSkv2UAndbqH` (créée le 21/11/2026)
+
+| Champ | ID | Type | Rôle |
+|---|---|---|---|
+| Libellé | fldCJ5Q20STin8jKp | singleLineText (primaire) | Intitulé affiché (« Curé », « Téléphone »…) |
+| Valeur | fldo52Uk8agy6YztC | singleLineText | Valeur affichée (nom, numéro, horaire) |
+| Rubrique | fldja7cGKtIAnFSPZ | singleSelect | Curé (`selNAwocKnjTYwVv1`) · Presbytère (`selJt1lHdHIQIuUfc`) · Contacts (`selZ0lNLaFsL1hhW5`) |
+| Description | fld4DdvFBwiMZN0Jd | multilineText | Facultatif ; fonctions du curé, une par ligne |
+| Image | fld8v6Wg1j8jJaZMd | multipleAttachments | Retenue au build **uniquement** si Rubrique = Curé et Texte_Alternatif rempli |
+| Texte_Alternatif | fldOnx28homFLY2FA | singleLineText | Obligatoire si Image |
+| Ordre | flduYWouPgXtsNdTl | number (entier) | Ordre dans la rubrique |
+| Active | fldKwxQN6RyJ4E1Qc | checkbox | Masquer sans supprimer |
+
+## Table `Groupes` — `tbltTtMAX4ME7fcQ9` (créée le 21/11/2026)
+
+| Champ | ID | Type | Rôle |
+|---|---|---|---|
+| Nom | fldjHG1O5MSOuHanj | singleLineText (primaire) | Nom du groupe |
+| Type | fld7OYZwcDmH9ZgRh | singleSelect | Association (`selAIQxnU9dF04Gt5`) · Mouvement (`selrmPjnXxwKyGd5p`) · Équipe paroissiale (`selGmJ3oSyT3pfNe5`) |
+| Description | fldgB5Rmic3ph8Dic | multilineText | 2 ou 3 lignes |
+| Contact | fldUFwRd5ffHOLVwG | singleLineText | E-mail ou site du groupe, sinon le presbytère ; jamais un contact personnel |
+| Site_Web | fldjBvI6jxQTMguWm | url | Facultatif |
+| Ordre | flddC8HbMuZHGZWoC | number (entier) | Ordre d'affichage |
+| Active | fldVfx3rILg4wd7Fl | checkbox | Masquer sans supprimer |
+
 ## Règles de publication (appliquées au build, fuseau Europe/Paris)
 
 - Actualité publiée si : `Valide` = vrai ET `Date_Publication` ≤ aujourd'hui ET (`Fin_Affichage` vide OU `Fin_Affichage` ≥ aujourd'hui).
@@ -50,10 +75,12 @@ Base : `Paroisse Saint-Géraud` — `appFZ9EorUC2DY3yh` (espace de travail dédi
 
 | Page | ID | Type | Contenu |
 |---|---|---|---|
-| Actualités | pag8HmzKcW1Av4P91 | grille | Onglets Brouillons / Programmées / En ligne / Archivées (filtre sur `Statut`) |
+| Actualités | pag8HmzKcW1Av4P91 | grille | Onglets Brouillons / Programmées / En ligne / Archivées / **À supprimer** (Archivé et Fin_Affichage il y a plus de 365 jours) ; lien « ➕ Nouvelle actualité » dans la description |
 | Calendrier des publications | pagCHmVfMhqZP6Otz | calendrier | `Date_Publication` → `Fin_Affichage`, couleur par `Categorie`, vue mois |
 | Actualité Détail | pagbAVE98ZyETg4VA | fiche (plein écran, éditable) | Groupes Publication / Contenu / Image / Événement |
-| Nouvelle actualité | pagcvmsCapnZAIBYn | formulaire autonome | Titre, Catégorie, Résumé requis ; Date de publication requise ; à publier manuellement |
+| Infos pratiques | pagPC3LOQ3IXO8Rml | grille groupée par Rubrique | Fiche `Info pratique Détail` (`paghz3Ea0dSfddPco`) |
+| Groupes | pagEfFJEHn2bqFI2O | grille groupée par Type | Fiche `Groupe Détail` (`pagoDhyER0y97QV39`) |
+| Nouvelle actualité | pagcvmsCapnZAIBYn | formulaire autonome **publié** | https://airtable.com/appFZ9EorUC2DY3yh/pagcvmsCapnZAIBYn/form — Titre, Catégorie, Résumé, Date de publication requis |
 
 ## Décisions
 
