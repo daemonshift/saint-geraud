@@ -1,0 +1,57 @@
+---
+/**
+ * Pages légales : Mentions légales, Confidentialité, Accessibilité.
+ * Textes en Markdown dans src/content/pages-legales/ (un fichier par adresse).
+ */
+import { getCollection, render } from 'astro:content';
+import MiseEnPage from '../layouts/MiseEnPage.astro';
+import BandeauTitre from '../components/BandeauTitre.astro';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pagesLegales');
+  return pages.map((page) => ({ params: { pageLegale: page.id }, props: { page } }));
+}
+
+const { page } = Astro.props;
+const { Content } = await render(page);
+const miseAJour = new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long', timeZone: 'Europe/Paris' }).format(page.data.miseAJour);
+---
+
+<MiseEnPage titre={page.data.titre} description={page.data.description}>
+  <BandeauTitre titre={page.data.titre} />
+  <article class="texte-legal conteneur max-w-3xl py-12">
+    <Content />
+    <p class="mt-10 border-t border-beige-filet pt-4 text-gris-vert">Dernière mise à jour : {miseAJour}.</p>
+  </article>
+</MiseEnPage>
+
+<style>
+  /* Texte courant issu du Markdown. Les liens restent dans des phrases (<p>) :
+     ils relèvent alors de l'exception WCAG 2.5.8 sur la taille des cibles. */
+  .texte-legal :global(h2) {
+    margin-top: 2.5rem;
+    font-size: var(--text-3xl);
+    line-height: var(--text-3xl--line-height);
+  }
+  .texte-legal :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .texte-legal :global(p),
+  .texte-legal :global(ul) {
+    margin-top: 1rem;
+  }
+  .texte-legal :global(ul) {
+    padding-left: 1.5rem;
+    list-style: disc;
+  }
+  .texte-legal :global(li + li) {
+    margin-top: 0.5rem;
+  }
+  .texte-legal :global(a) {
+    color: var(--color-vert-profond);
+    text-decoration: underline;
+  }
+  .texte-legal :global(strong) {
+    font-weight: 700;
+  }
+</style>

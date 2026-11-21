@@ -1,0 +1,19 @@
+---
+/**
+ * Bandeau titre des sous-pages (charte v2, modèle « Prier et célébrer ») :
+ * fond vert profond, titre H1 centré en capitales, filet doré.
+ */
+interface Props {
+  titre: string;
+}
+
+const { titre } = Astro.props;
+---
+
+<section class="bg-vert-profond text-ivoire">
+  <div class="conteneur flex flex-col items-center gap-3 py-12 text-center lg:py-16">
+    <!-- Césure : un mot long en capitales (« CONFIDENTIALITÉ ») déborderait à 360 px. -->
+    <h1 class="max-w-full text-4xl tracking-wide break-words hyphens-auto text-ivoire uppercase lg:text-5xl">{titre}</h1>
+    <div class="h-0.5 w-16 bg-or-doux" aria-hidden="true"></div>
+  </div>
+</section>
