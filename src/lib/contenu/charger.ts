@@ -3,7 +3,7 @@ import { ACTUALITES, EGLISES, TABLES } from '../airtable/schema';
 import { controlerSchema } from './controle-schema';
 import { jourAParis } from './dates';
 import type { ContenuDuSite } from './modele';
-import { estEnLigne, trierActualites, versActualite, versEgliseLiee } from './actualites';
+import { estArchivee, estEnLigne, trierActualites, versActualite, versEgliseLiee } from './actualites';
 
 /** Rend l'instant présent (fixé dans les tests). */
 export type Horloge = () => Date;
@@ -29,6 +29,7 @@ export async function chargerContenuDuSite({ client, horloge }: DependancesConte
     actualites: trierActualites(
       actualites.filter((e) => estEnLigne(e, aujourdhui)).map((e) => versActualite(e, eglisesParId)),
     ),
+    actualitesArchivees: actualites.filter((e) => estArchivee(e, aujourdhui)).map((e) => ({ id: e.id })),
   };
 }
 
