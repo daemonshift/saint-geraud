@@ -1,5 +1,5 @@
 /**
- * Petit serveur statique pour les tests Playwright : sert `dist/` comme Vercel
+ * Petit serveur statique pour les tests Playwright : sert `dist/client/` comme Vercel
  * sert les pages pré-rendues (`/page` → `page/index.html` ou `page.html`,
  * page inconnue → `404.html` avec le statut 404).
  *
@@ -9,7 +9,7 @@ import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { extname, join, normalize, resolve } from 'node:path';
 
-const racine = resolve(process.argv[2] ?? 'dist');
+const racine = resolve(process.argv[2] ?? 'dist/client');
 const port = Number(process.argv[3] ?? 4321);
 
 const TYPES: Record<string, string> = {
