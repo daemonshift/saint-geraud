@@ -45,13 +45,18 @@ Base : `Paroisse Saint-Géraud` — `appFZ9EorUC2DY3yh` (espace de travail dédi
 | Champ | ID | Type | Rôle |
 |---|---|---|---|
 | Libellé | fldCJ5Q20STin8jKp | singleLineText (primaire) | Intitulé affiché (« Curé », « Téléphone »…) |
-| Valeur | fldo52Uk8agy6YztC | singleLineText | Valeur affichée (nom, numéro, horaire) |
+| Valeur | fldo52Uk8agy6YztC | singleLineText | Valeur affichée (nom, numéro, horaire) ; pour la rubrique Contacts : l'e-mail (lien `mailto:`) |
+| Téléphone | fldbNWc6Y988uZlW7 | phoneNumber | Rubrique Contacts : numéro affiché à côté de l'e-mail (lien `tel:`) ; par défaut le presbytère |
 | Rubrique | fldja7cGKtIAnFSPZ | singleSelect | Curé (`selNAwocKnjTYwVv1`) · Presbytère (`selJt1lHdHIQIuUfc`) · Contacts (`selZ0lNLaFsL1hhW5`) |
 | Description | fld4DdvFBwiMZN0Jd | multilineText | Facultatif ; fonctions du curé, une par ligne |
 | Image | fld8v6Wg1j8jJaZMd | multipleAttachments | Retenue au build **uniquement** si Rubrique = Curé et Texte_Alternatif rempli |
 | Texte_Alternatif | fldOnx28homFLY2FA | singleLineText | Obligatoire si Image |
 | Ordre | flduYWouPgXtsNdTl | number (entier) | Ordre dans la rubrique |
 | Active | fldKwxQN6RyJ4E1Qc | checkbox | Masquer sans supprimer |
+
+Conventions de contenu :
+- Rubrique Presbytère : Adresse, Téléphone, E-mail, puis une ligne par jour de permanence (Libellé = jour, Valeur = horaires, Description = « Permanence d'accueil »).
+- Rubrique Contacts : une ligne par sacrement ou démarche ; chacune porte les deux moyens de contact (Valeur = e-mail, Téléphone = numéro). Le site affiche les deux.
 
 ## Table `Groupes` — `tbltTtMAX4ME7fcQ9` (créée le 21/11/2026)
 
