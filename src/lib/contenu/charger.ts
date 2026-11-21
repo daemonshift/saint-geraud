@@ -3,6 +3,7 @@ import { ACTUALITES, EGLISES, TABLES } from '../airtable/schema';
 import { controlerSchema } from './controle-schema';
 import { jourAParis } from './dates';
 import type { ContenuDuSite } from './modele';
+import { imageDe } from './images';
 import { estEnLigne, trierActualites, versActualite, versEgliseLiee } from './actualites';
 
 /** Rend l'instant présent (fixé dans les tests). */
@@ -19,15 +20,22 @@ export interface DependancesContenu {
   images: StockageImages;
 }
 
-export async function chargerContenuDuSite({ client, horloge }: DependancesContenu): Promise<ContenuDuSite> {
+export async function chargerContenuDuSite({ client, horloge, images }: DependancesContenu): Promise<ContenuDuSite> {
   const aujourdhui = jourAParis(horloge());
   controlerSchema(await client.lireSchema(), TABLES);
   const [actualites, eglises] = await Promise.all([lireTable(client, ACTUALITES.id), lireTable(client, EGLISES.id)]);
   const eglisesParId = new Map(eglises.map((e) => [e.id, versEgliseLiee(e)]));
 
   return {
+    // Seules les Actualités En ligne voient leur image téléchargée.
     actualites: trierActualites(
-      actualites.filter((e) => estEnLigne(e, aujourdhui)).map((e) => versActualite(e, eglisesParId)),
+      await Promise.all(
+        actualites
+          .filter((e) => estEnLigne(e, aujourdhui))
+          .map(async (e) =>
+            versActualite(e, eglisesParId, await imageDe(e, ACTUALITES.champs.image, ACTUALITES.champs.texteAlternatifImage, images)),
+          ),
+      ),
     ),
   };
 }

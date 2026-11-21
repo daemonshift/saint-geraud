@@ -12,6 +12,13 @@ export interface EgliseLiee {
   commune: string;
 }
 
+/** Image téléchargée au build et servie par le site ; toujours accompagnée de son texte alternatif. */
+export interface ImageDuSite {
+  /** Chemin public de l'image (jamais une URL Airtable). */
+  src: string;
+  alt: string;
+}
+
 export interface Actualite {
   /** Identifiant de l'enregistrement Airtable : fonde l'URL `/actualites/{id}`. */
   id: string;
@@ -34,6 +41,8 @@ export interface Actualite {
   eglises: EgliseLiee[];
   /** Lieu affiché : « Église Saint-Antoine, Fumel » (plusieurs Églises séparées par « · »), ou null. */
   lieu: string | null;
+  /** Première image, si elle a un texte alternatif ; sinon null. */
+  image: ImageDuSite | null;
 }
 
 export interface ContenuDuSite {

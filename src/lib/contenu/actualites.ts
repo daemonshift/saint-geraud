@@ -5,7 +5,7 @@
 import type { EnregistrementAirtable } from '../airtable/client';
 import { ACTUALITES, EGLISES } from '../airtable/schema';
 import { dateEnLettres, dateHeureEnLettres } from './dates';
-import type { Actualite, Categorie, EgliseLiee } from './modele';
+import type { Actualite, Categorie, EgliseLiee, ImageDuSite } from './modele';
 import { booleen, liens, texte } from './valeurs';
 
 const c = ACTUALITES.champs;
@@ -38,7 +38,12 @@ export function versEgliseLiee(e: EnregistrementAirtable): EgliseLiee {
   return { id: e.id, nom: texte(e, EGLISES.champs.nom), commune: texte(e, EGLISES.champs.commune) };
 }
 
-export function versActualite(e: EnregistrementAirtable, eglisesParId: Map<string, EgliseLiee>): Actualite {
+/** `image` : déjà retenue et téléchargée par `imageDe` (images.ts). */
+export function versActualite(
+  e: EnregistrementAirtable,
+  eglisesParId: Map<string, EgliseLiee>,
+  image: ImageDuSite | null = null,
+): Actualite {
   const datePublication = texte(e, c.datePublication);
   const dateEvenement = texte(e, c.dateEvenement);
   const modifieLe = texte(e, c.modifieLe);
@@ -58,5 +63,6 @@ export function versActualite(e: EnregistrementAirtable, eglisesParId: Map<strin
     modifieLe: modifieLe ? new Date(modifieLe) : null,
     eglises,
     lieu: eglises.length ? eglises.map((g) => [g.nom, g.commune].filter(Boolean).join(', ')).join(' · ') : null,
+    image,
   };
 }

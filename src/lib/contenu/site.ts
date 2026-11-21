@@ -7,7 +7,7 @@
  */
 import { creerClientAirtable, type ClientAirtable } from '../airtable/client';
 import { creerClientEnMemoire } from '../airtable/client-en-memoire';
-import { chargerContenuDuSite, type StockageImages } from './charger';
+import { chargerContenuDuSite } from './charger';
 import { DONNEES_EXEMPLE } from './donnees-exemple';
 import type { ContenuDuSite } from './modele';
 
@@ -31,20 +31,17 @@ export function clientSelonEnvironnement(env: Environnement, fetch: typeof globa
   return creerClientEnMemoire(DONNEES_EXEMPLE);
 }
 
-/** Les images arrivent avec le ticket #5 : en attendant, tout enregistrement est une erreur. */
-const imagesNonBranchees: StockageImages = {
-  async enregistrer() {
-    throw new Error('Stockage des images pas encore branché (ticket #5).');
-  },
-};
-
 let chargement: Promise<ContenuDuSite> | undefined;
 
 export function contenuDuSite(): Promise<ContenuDuSite> {
-  chargement ??= chargerContenuDuSite({
-    client: clientSelonEnvironnement(process.env),
-    horloge: () => new Date(),
-    images: imagesNonBranchees,
-  });
+  chargement ??= (async () => {
+    // Import dynamique : `astro:assets` n'existe que dans Astro (pas dans Vitest).
+    const { stockageImagesAstro } = await import('./stockage-images-astro');
+    return chargerContenuDuSite({
+      client: clientSelonEnvironnement(process.env),
+      horloge: () => new Date(),
+      images: stockageImagesAstro,
+    });
+  })();
   return chargement;
 }

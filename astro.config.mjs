@@ -13,6 +13,11 @@ export default defineConfig({
     webAnalytics: { enabled: true },
   }),
   trailingSlash: 'ignore',
+  // Images Airtable téléchargées et optimisées au build (leurs URL expirent) ;
+  // voir src/lib/contenu/stockage-images.ts.
+  image: {
+    remotePatterns: [{ protocol: 'https', hostname: '**.airtableusercontent.com' }],
+  },
   vite: {
     plugins: [tailwindcss()],
   },
