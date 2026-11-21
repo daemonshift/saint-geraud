@@ -7,12 +7,14 @@
  *   <MiseEnPage titre="Nos églises" description="…">…contenu…</MiseEnPage>
  *
  * Emplacements :
- * - `head`   : balises supplémentaires dans <head> (script du bouton « Aa », #14) ;
- * - `outils` : boutons de l'en-tête avant le bouton Menu (bouton « Aa », #14).
+ * - `head`   : balises supplémentaires dans <head> ;
+ * - `outils` : boutons de l'en-tête avant le bouton Menu, après le bouton « Aa ».
  */
 import '../styles/global.css';
 import EnTete from '../components/EnTete.astro';
 import PiedDePage from '../components/PiedDePage.astro';
+import BoutonTailleTexte from '../components/BoutonTailleTexte.astro';
+import { CLE_TAILLE_DU_TEXTE, TAILLE_GRANDE } from '../lib/taille-du-texte';
 import { LIENS_EXTERNES, PRESBYTERE_PROVISOIRE } from '../lib/contenu-provisoire';
 
 interface Props {
@@ -33,6 +35,12 @@ const titreComplet = titre === 'Accueil' ? NOM_DU_SITE : `${titre} — ${NOM_DU_
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{titreComplet}</title>
     <meta name="description" content={description} />
+    <!-- Taille du texte choisie avec le bouton « Aa », appliquée avant l'affichage. -->
+    <script is:inline define:vars={{ cle: CLE_TAILLE_DU_TEXTE, grand: TAILLE_GRANDE }}>
+      try {
+        if (localStorage.getItem(cle) === grand) document.documentElement.dataset.taille = grand;
+      } catch (e) {}
+    </script>
     <slot name="head" />
   </head>
   <body class="flex min-h-screen flex-col">
@@ -42,7 +50,10 @@ const titreComplet = titre === 'Accueil' ? NOM_DU_SITE : `${titre} — ${NOM_DU_
     >
       Aller au contenu
     </a>
-    <EnTete><slot name="outils" slot="outils" /></EnTete>
+    <EnTete>
+      <BoutonTailleTexte slot="outils" />
+      <slot name="outils" slot="outils" />
+    </EnTete>
     <main id="contenu" tabindex="-1" class="flex-1 focus:outline-none">
       <slot />
     </main>
