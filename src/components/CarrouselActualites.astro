@@ -1,0 +1,140 @@
+---
+/**
+ * Carrousel des dernières Actualités de l'Accueil (ordre du module « contenu
+ * du site » : Mises en avant d'abord). Une carte visible en mobile, trois en
+ * ordinateur. Jamais de défilement automatique : le visiteur avance avec les
+ * flèches (clavier compris) ou au doigt (défilement natif aimanté).
+ * L'îlot JS ne fait qu'afficher les flèches, annoncer la position
+ * (`aria-live`) et faire défiler d'une carte ; sans JS, la piste défile seule.
+ * « Réduire les animations » : le défilement doux est coupé par global.css.
+ *
+ * Usage : <CarrouselActualites actualites={actualites} />
+ */
+import type { Actualite } from '../lib/contenu';
+import { ACTUALITES_DANS_LE_CARROUSEL } from '../lib/carrousel';
+import { RUBRIQUES } from '../lib/navigation';
+import CarteActualite from './CarteActualite.astro';
+
+interface Props {
+  actualites: Actualite[];
+}
+
+const actualites = Astro.props.actualites.slice(0, ACTUALITES_DANS_LE_CARROUSEL);
+const listeDesActualites = RUBRIQUES.find((r) => r.libelle === 'Actualités')!.href;
+---
+
+<section
+  aria-labelledby="titre-carrousel-actualites"
+  aria-roledescription="carrousel"
+  class="conteneur py-12 lg:py-18"
+  data-carrousel
+>
+  <div class="grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-8">
+    <div class="flex flex-wrap items-end justify-between gap-x-4 gap-y-2">
+      <div>
+        <p class="font-bold tracking-[0.12em] text-or-fonce uppercase">La vie de la paroisse</p>
+        <h2 id="titre-carrousel-actualites" class="text-4xl uppercase lg:text-5xl">Actualités</h2>
+      </div>
+      {actualites.length > 0 && <p aria-live="polite" class="font-bold text-vert-profond lg:hidden" data-position hidden />}
+    </div>
+
+    {
+      actualites.length === 0 ? (
+        <p class="text-lg lg:col-span-2">Aucune actualité pour le moment. Revenez bientôt.</p>
+      ) : (
+        <>
+          <div
+            class="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2 md:gap-6 lg:col-span-2"
+            data-piste
+          >
+            {actualites.map((actualite, index) => (
+              <div
+                role="group"
+                aria-roledescription="diapositive"
+                aria-label={`${index + 1} sur ${actualites.length}`}
+                class="shrink-0 basis-[85%] snap-start md:basis-[calc((100%-1.5rem)/2)] lg:basis-[calc((100%-3rem)/3)]"
+              >
+                <CarteActualite actualite={actualite} niveauTitre="h3" />
+              </div>
+            ))}
+          </div>
+
+          <div class="flex items-center justify-center gap-4 lg:col-start-2 lg:row-start-1 lg:self-end" data-fleches hidden>
+            <p aria-live="polite" class="hidden font-bold text-vert-profond lg:block" data-position />
+            <button type="button" class="flex size-12 cursor-pointer items-center justify-center rounded-full border-2 border-vert-profond bg-blanc text-vert-profond hover:enabled:bg-vert-profond hover:enabled:text-ivoire disabled:cursor-default disabled:opacity-35" aria-label="Actualité précédente" data-precedente>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                <path d="m15 18-6-6 6-6" />
+              </svg>
+            </button>
+            <button type="button" class="flex size-12 cursor-pointer items-center justify-center rounded-full border-2 border-vert-profond bg-blanc text-vert-profond hover:enabled:bg-vert-profond hover:enabled:text-ivoire disabled:cursor-default disabled:opacity-35" aria-label="Actualité suivante" data-suivante>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                <path d="m9 18 6-6-6-6" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="flex justify-center lg:col-span-2">
+            <a class="bouton-secondaire w-full uppercase tracking-wide sm:w-auto" href={listeDesActualites}>
+              Voir toutes les actualités
+            </a>
+          </div>
+        </>
+      )
+    }
+  </div>
+</section>
+
+
+<script>
+  import { positionDuCarrousel } from '../lib/carrousel';
+
+  for (const carrousel of document.querySelectorAll<HTMLElement>('[data-carrousel]')) {
+    const piste = carrousel.querySelector<HTMLElement>('[data-piste]');
+    const fleches = carrousel.querySelector<HTMLElement>('[data-fleches]');
+    const precedente = carrousel.querySelector<HTMLButtonElement>('[data-precedente]');
+    const suivante = carrousel.querySelector<HTMLButtonElement>('[data-suivante]');
+    const positions = carrousel.querySelectorAll<HTMLElement>('[data-position]');
+    if (!piste || !fleches || !precedente || !suivante) continue;
+
+    const total = piste.children.length;
+
+    /** Largeur d'un pas (une carte et l'espace qui la suit), en px. */
+    const pas = () => {
+      const carte = piste.firstElementChild as HTMLElement;
+      return carte.offsetWidth + parseFloat(getComputedStyle(piste).columnGap || '0');
+    };
+
+    const mettreAJour = () => {
+      const largeurPas = pas();
+      const espace = largeurPas - (piste.firstElementChild as HTMLElement).offsetWidth;
+      const visibles = Math.floor((piste.clientWidth + espace + 1) / largeurPas);
+      const aLaFin = piste.scrollLeft + piste.clientWidth >= piste.scrollWidth - 2;
+      const premiere = aLaFin ? total - visibles : Math.round(piste.scrollLeft / largeurPas);
+      const position = positionDuCarrousel({ premiere, visibles, total });
+
+      for (const p of positions) if (p.textContent !== position.texte) p.textContent = position.texte;
+      // Une flèche désactivée ne garde pas le focus : il passe à l'autre flèche.
+      const focusPerdu = (position.auDebut && document.activeElement === precedente) || (position.aLaFin && document.activeElement === suivante);
+      precedente.disabled = position.auDebut;
+      suivante.disabled = position.aLaFin;
+      if (focusPerdu) (position.auDebut ? suivante : precedente).focus();
+    };
+
+    let attente = 0;
+    const planifier = () => {
+      cancelAnimationFrame(attente);
+      attente = requestAnimationFrame(mettreAJour);
+    };
+
+    // Défilement d'une carte ; la douceur dépend du CSS (coupée si « réduire les animations »).
+    precedente.addEventListener('click', () => piste.scrollBy({ left: -pas() }));
+    suivante.addEventListener('click', () => piste.scrollBy({ left: pas() }));
+    piste.addEventListener('scroll', planifier, { passive: true });
+    new ResizeObserver(planifier).observe(piste);
+
+    // Texte posé avant l'affichage : la position n'est pas lue au chargement.
+    mettreAJour();
+    fleches.hidden = false;
+    for (const p of positions) p.hidden = false;
+  }
+</script>
