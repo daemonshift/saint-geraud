@@ -3,6 +3,8 @@
  * En-tête du site : logotype, navigation principale, menu mobile.
  *
  * - Ordinateur (≥ lg) : barre utilitaire + entrées du menu en ligne, bouton « Horaires des messes ».
+ *   Logotype, menu et bouton « Aa » restent sur une seule ligne : faute de place
+ *   (écran étroit, texte agrandi), ce sont les entrées du menu qui passent à la ligne.
  * - Mobile : logotype, bouton Menu (✕ quand il est ouvert) et, sous la barre,
  *   « Horaires des messes » toujours visible sans ouvrir le menu.
  * Le menu se ferme par ✕, Échap (focus rendu au bouton Menu) ou au choix d'un lien.
@@ -24,11 +26,11 @@ const courant = (href: string) => (estPageCourante(href, chemin) ? 'page' : unde
     </div>
   </div>
 
-  <div class="conteneur relative flex flex-wrap items-center gap-x-6 gap-y-2 py-2">
+  <div class="conteneur relative flex flex-wrap items-center gap-x-3 gap-y-2 py-2 lg:flex-nowrap lg:gap-x-4">
     <a href="/" class="flex min-h-12 min-w-0 flex-1 items-center gap-3 text-encre no-underline lg:flex-none">
       <Image src={logo} alt="" width={96} height={72} class="h-12 w-auto shrink-0 lg:h-[72px]" loading="eager" />
       <span class="flex min-w-0 flex-col leading-tight">
-        <span class="font-titre text-xl font-bold text-vert-profond lg:text-2xl">Paroisse Saint&#8209;Géraud</span>
+        <span class="font-titre text-xl font-bold text-vert-profond lg:text-2xl">Paroisse <br class="lg:hidden" />Saint-Géraud</span>
         <span data-logotype class="text-logotype tracking-wide text-gris-vert uppercase">des Vallées en Fumélois</span>
       </span>
     </a>
@@ -55,9 +57,9 @@ const courant = (href: string) => (estPageCourante(href, chemin) ? 'page' : unde
     <nav
       id="menu-principal"
       aria-label="Menu principal"
-      class="absolute inset-x-0 top-full hidden border-b-4 border-or-doux bg-blanc px-4 pb-5 shadow-lg data-ouvert:block lg:static lg:ml-auto lg:flex lg:border-0 lg:p-0 lg:shadow-none"
+      class="absolute inset-x-0 top-full hidden border-b-4 border-or-doux bg-blanc px-4 pb-5 shadow-lg data-ouvert:block lg:static lg:ml-auto lg:flex lg:min-w-0 lg:flex-1 lg:justify-end lg:border-0 lg:p-0 lg:shadow-none"
     >
-      <ul class="flex flex-col lg:flex-row lg:flex-wrap lg:items-center lg:gap-x-2">
+      <ul class="flex flex-col lg:flex-row lg:flex-wrap lg:items-center lg:justify-end lg:gap-x-1">
         {
           ENTREES_DU_MENU.map(({ libelle, href }) => (
             <li>
@@ -76,7 +78,7 @@ const courant = (href: string) => (estPageCourante(href, chemin) ? 'page' : unde
             {NOUS_CONTACTER.libelle}
           </a>
         </li>
-        <li class="mt-4 lg:mt-0 lg:ml-2">
+        <li class="mt-4 lg:mt-0 lg:ml-1">
           <a href={HORAIRES_DES_MESSES.href} aria-current={courant(HORAIRES_DES_MESSES.href)} class="bouton-principal w-full lg:w-auto">
             {HORAIRES_DES_MESSES.libelle}
           </a>

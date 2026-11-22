@@ -35,6 +35,18 @@ test.describe('Navigation sur ordinateur', () => {
     }
     await expect(page.getByRole('button', { name: 'Menu' })).toBeHidden();
   });
+
+  test('le bouton « Aa » reste sur la ligne du logotype', async ({ page }) => {
+    await page.goto('/');
+    const banniere = page.getByRole('banner');
+    const logotype = await banniere.getByRole('link', { name: /Paroisse Saint.Géraud/ }).boundingBox();
+    const aa = await banniere.getByRole('button', { name: 'Agrandir le texte' }).boundingBox();
+    expect(logotype && aa).toBeTruthy();
+    // Même ligne : le centre vertical du bouton tombe dans la hauteur du logotype.
+    const centreAa = aa!.y + aa!.height / 2;
+    expect(centreAa).toBeGreaterThan(logotype!.y);
+    expect(centreAa).toBeLessThan(logotype!.y + logotype!.height);
+  });
 });
 
 test.describe('Menu mobile', () => {
