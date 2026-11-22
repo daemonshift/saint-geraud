@@ -228,6 +228,21 @@ export const DONNEES_EXEMPLE: DonneesAirtable = {
       image: [pieceJointe('attExempleFanions', { url: imageExemple('fanions-de-kermesse.jpg'), filename: 'fanions-de-kermesse.jpg' })],
       texteAlternatifImage: 'Guirlande de fanions au-dessus des stands de la kermesse',
     }),
+    // Deux Actualités sans image ni Église : assez d'Actualités pour que les
+    // flèches du carrousel servent aussi en ordinateur (trois cartes visibles).
+    actualite('recExempleConcert', {
+      titre: 'Concert de la chorale',
+      resume: 'La chorale paroissiale donne son concert de printemps.',
+      texte: 'Entrée libre, participation aux frais au profit de la chorale.',
+      categorie: 'Vie paroissiale',
+      datePublication: '2026-01-02',
+    }),
+    actualite('recExemplePelerinage', {
+      titre: 'Pèlerinage diocésain à Lourdes',
+      resume: 'Les inscriptions au pèlerinage diocésain sont ouvertes au presbytère.',
+      texte: 'Le programme et le bulletin d’inscription sont disponibles aux heures de permanence.',
+      datePublication: '2026-01-01',
+    }),
     // Ces trois Actualités ne doivent jamais apparaître sur le site d'exemple.
     actualite('recExempleBrouillon', { titre: 'Brouillon jamais affiché', valide: false }),
     actualite('recExempleProgrammee', { titre: 'Actualité programmée', datePublication: '2099-01-01' }),

@@ -74,8 +74,10 @@ test('plan du site : les seules Actualités En ligne avec leur lastmod, ni redir
   const adresses = [...xml.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => new URL(m[1]).pathname);
   expect(adresses.filter((a) => a.startsWith('/actualites/')).sort()).toEqual([
     '/actualites/recExempleCatechisme',
+    '/actualites/recExempleConcert',
     '/actualites/recExempleKermesse',
     '/actualites/recExempleMesseDeNoel',
+    '/actualites/recExemplePelerinage',
   ]);
   expect(adresses).toEqual(expect.arrayContaining(['/', '/actualites']));
   expect(xml).toMatch(/\/actualites\/recExempleKermesse<\/loc><lastmod>2026-01-01T08:00:00\.000Z<\/lastmod>/);

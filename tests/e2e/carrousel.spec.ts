@@ -2,7 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 
 /**
  * Carrousel des Actualités de l'Accueil, avec les données d'exemple
- * (src/lib/contenu/donnees-exemple.ts) : trois Actualités En ligne, la Mise en
+ * (src/lib/contenu/donnees-exemple.ts) : cinq Actualités En ligne, la Mise en
  * avant d'abord. Une carte visible en mobile, trois en ordinateur.
  */
 const carrousel = (page: Page) => page.getByRole('region', { name: 'Actualités' });
@@ -19,6 +19,8 @@ test('présente les dernières Actualités, Mises en avant en premier', async ({
     'Messe de la nuit de Noël',
     'Inscriptions au catéchisme',
     'Kermesse paroissiale',
+    'Concert de la chorale',
+    'Pèlerinage diocésain à Lourdes',
   ]);
 });
 
@@ -56,29 +58,31 @@ test.describe('mobile : une carte à la fois', () => {
   test.skip(({ viewport }) => (viewport?.width ?? 0) >= 1024, 'mobile uniquement');
 
   test('se pilote au clavier et annonce la position', async ({ page }) => {
-    await expect(position(page)).toHaveText('1 sur 3');
+    await expect(position(page)).toHaveText('1 sur 5');
     await expect(precedente(page)).toBeDisabled();
 
     await suivante(page).focus();
     await page.keyboard.press('Enter');
-    await expect(position(page)).toHaveText('2 sur 3');
+    await expect(position(page)).toHaveText('2 sur 5');
     await expect(precedente(page)).toBeEnabled();
 
-    await page.keyboard.press('Enter');
-    await expect(position(page)).toHaveText('3 sur 3');
+    for (const attendue of ['3 sur 5', '4 sur 5', '5 sur 5']) {
+      await page.keyboard.press('Enter');
+      await expect(position(page)).toHaveText(attendue);
+    }
     await expect(suivante(page)).toBeDisabled();
     // La flèche désactivée ne garde pas le focus : il passe à l'autre flèche.
     await expect(precedente(page)).toBeFocused();
-    await expect(carrousel(page).getByRole('link', { name: 'Kermesse paroissiale' })).toBeInViewport({ ratio: 1 });
+    await expect(carrousel(page).getByRole('link', { name: 'Pèlerinage diocésain à Lourdes' })).toBeInViewport({ ratio: 1 });
 
     await page.keyboard.press('Enter');
-    await expect(position(page)).toHaveText('2 sur 3');
+    await expect(position(page)).toHaveText('4 sur 5');
   });
 
   test('suit le défilement au doigt', async ({ page }) => {
     const piste = carrousel(page).locator('[data-piste]');
     await piste.evaluate((el) => el.scrollTo({ left: el.scrollWidth, behavior: 'instant' }));
-    await expect(position(page)).toHaveText('3 sur 3');
+    await expect(position(page)).toHaveText('5 sur 5');
     await expect(suivante(page)).toBeDisabled();
   });
 });
@@ -86,13 +90,38 @@ test.describe('mobile : une carte à la fois', () => {
 test.describe('ordinateur : trois cartes', () => {
   test.skip(({ viewport }) => (viewport?.width ?? 0) < 1024, 'ordinateur uniquement');
 
-  test('montre les trois cartes et désactive les deux flèches', async ({ page }) => {
+  test('montre les trois premières cartes, la flèche précédente désactivée', async ({ page }) => {
     await carrousel(page).locator('[data-piste]').scrollIntoViewIfNeeded();
     for (const titre of ['Messe de la nuit de Noël', 'Inscriptions au catéchisme', 'Kermesse paroissiale']) {
       await expect(carrousel(page).getByRole('link', { name: titre })).toBeInViewport({ ratio: 1 });
     }
-    await expect(position(page)).toHaveText('1 à 3 sur 3');
+    await expect(carrousel(page).getByRole('link', { name: 'Concert de la chorale' })).not.toBeInViewport({ ratio: 1 });
+    await expect(position(page)).toHaveText('1 à 3 sur 5');
     await expect(precedente(page)).toBeDisabled();
+    await expect(suivante(page)).toBeEnabled();
+  });
+
+  test('se pilote au clavier, une carte à la fois, et annonce la position', async ({ page }) => {
+    await carrousel(page).locator('[data-piste]').scrollIntoViewIfNeeded();
+    await suivante(page).focus();
+    await page.keyboard.press('Enter');
+    await expect(position(page)).toHaveText('2 à 4 sur 5');
+    await expect(precedente(page)).toBeEnabled();
+
+    await page.keyboard.press('Enter');
+    await expect(position(page)).toHaveText('3 à 5 sur 5');
     await expect(suivante(page)).toBeDisabled();
+    // La flèche désactivée ne garde pas le focus : il passe à l'autre flèche.
+    await expect(precedente(page)).toBeFocused();
+    for (const titre of ['Kermesse paroissiale', 'Concert de la chorale', 'Pèlerinage diocésain à Lourdes']) {
+      await expect(carrousel(page).getByRole('link', { name: titre })).toBeInViewport({ ratio: 1 });
+    }
+
+    await page.keyboard.press('Enter');
+    await expect(position(page)).toHaveText('2 à 4 sur 5');
+    await page.keyboard.press('Enter');
+    await expect(position(page)).toHaveText('1 à 3 sur 5');
+    await expect(precedente(page)).toBeDisabled();
+    await expect(suivante(page)).toBeFocused();
   });
 });
