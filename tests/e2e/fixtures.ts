@@ -12,6 +12,7 @@
  * tile.openstreetmap.org.
  */
 import { test as base } from '@playwright/test';
+import { CLE_CONSENTEMENT, enregistrementDuChoix } from '../../src/lib/consentement';
 
 export * from '@playwright/test';
 
@@ -24,11 +25,31 @@ const TUILE_TRANSPARENTE = Buffer.from(
   'base64',
 );
 
-export const test = base.extend({
-  context: async ({ context }, use) => {
+/**
+ * Choix déjà fait dans la bannière cookies au début du test (ADR 0004).
+ * Par défaut « refuse » : la bannière ne recouvre pas le bas des pages et rien
+ * ne part vers messes.info. `null` : première visite, la bannière s'affiche.
+ * Le choix n'est posé que si le stockage n'en contient pas, pour qu'un choix
+ * fait pendant le test survive au rechargement.
+ */
+export type ChoixCookies = 'accepte' | 'refuse' | null;
+
+export const test = base.extend<{ choixCookies: ChoixCookies }>({
+  choixCookies: ['refuse', { option: true }],
+  context: async ({ context, choixCookies }, use) => {
     await context.route(TUILES_OPENSTREETMAP, (route) =>
       route.fulfill({ status: 200, contentType: 'image/png', body: TUILE_TRANSPARENTE }),
     );
+    if (choixCookies) {
+      await context.addInitScript(
+        ({ cle, valeur }) => {
+          try {
+            if (localStorage.getItem(cle) === null) localStorage.setItem(cle, valeur);
+          } catch {}
+        },
+        { cle: CLE_CONSENTEMENT, valeur: enregistrementDuChoix(choixCookies, new Date()) },
+      );
+    }
     await use(context);
   },
 });

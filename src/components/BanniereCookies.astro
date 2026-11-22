@@ -1,0 +1,92 @@
+---
+/**
+ * Bannière cookies (ADR 0004) : seul le widget messes.info dépose des cookies
+ * (mesure d'audience Google Analytics, consentement Didomi). Le visiteur
+ * répond une fois ; son choix, gardé six mois dans le stockage local
+ * (`src/lib/consentement.ts`), vaut pour tout le site. « Accepter » et
+ * « Refuser » ont le même poids (CNIL).
+ *
+ * Le bouton « Gérer les cookies » du pied de page (`[data-gerer-cookies]`)
+ * rouvre la bannière. Sans JavaScript, ni bannière ni bouton : rien ne peut se
+ * charger. Le widget écoute l'événement `EVENEMENT_CHOIX`.
+ */
+import { PAGES_LEGALES } from '../lib/navigation';
+
+const confidentialite = PAGES_LEGALES.find(({ href }) => href === '/confidentialite')!;
+---
+
+<section
+  aria-label="Cookies de messes.info"
+  class="fixed inset-x-0 bottom-0 z-40 max-h-[80vh] overflow-y-auto border-t-4 border-or-doux bg-ivoire shadow-[0_-4px_16px_rgb(0_0_0/0.15)] focus:outline-none"
+  tabindex="-1"
+  data-banniere-cookies
+  hidden
+>
+  <div class="conteneur flex flex-col gap-4 py-5 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
+    <p class="max-w-[68ch] text-encre">
+      Les horaires des messes sont affichés par messes.info, qui dépose des cookies de mesure d’audience (Google
+      Analytics). Les acceptez-vous ? Votre choix vaut pour tout le site, pendant six mois.
+      <a class="text-vert-profond underline" href={confidentialite.href}>En savoir plus ({confidentialite.libelle})</a>
+    </p>
+    <div class="flex shrink-0 flex-wrap gap-3">
+      <button type="button" class="bouton-principal min-w-36" data-choix="accepte">Accepter</button>
+      <button type="button" class="bouton-principal min-w-36" data-choix="refuse">Refuser</button>
+    </div>
+  </div>
+</section>
+
+<script>
+  import {
+    CLE_CONSENTEMENT,
+    COOKIES_DE_MESSES_INFO,
+    EVENEMENT_CHOIX,
+    choixEnregistre,
+    enregistrementDuChoix,
+    type Choix,
+  } from '../lib/consentement';
+
+  const banniere = document.querySelector<HTMLElement>('[data-banniere-cookies]')!;
+
+  function lire(): string | null {
+    try {
+      return localStorage.getItem(CLE_CONSENTEMENT);
+    } catch {
+      return null;
+    }
+  }
+
+  /** Efface les cookies de messes.info posés sur ce domaine (et ses parents, où Google Analytics les range). */
+  function effacerCookies() {
+    const parties = location.hostname.split('.');
+    const domaines = [''];
+    for (let i = 0; i < parties.length - 1; i++) domaines.push(`; domain=.${parties.slice(i).join('.')}`);
+    for (const nom of COOKIES_DE_MESSES_INFO) {
+      for (const domaine of domaines) {
+        document.cookie = `${nom}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/${domaine}`;
+      }
+    }
+  }
+
+  function choisir(choix: Choix) {
+    try {
+      localStorage.setItem(CLE_CONSENTEMENT, enregistrementDuChoix(choix, new Date()));
+    } catch {}
+    if (choix === 'refuse') effacerCookies();
+    banniere.hidden = true;
+    document.dispatchEvent(new CustomEvent(EVENEMENT_CHOIX, { detail: choix }));
+  }
+
+  for (const bouton of banniere.querySelectorAll<HTMLButtonElement>('[data-choix]')) {
+    bouton.addEventListener('click', () => choisir(bouton.dataset.choix as Choix));
+  }
+
+  for (const gerer of document.querySelectorAll<HTMLButtonElement>('[data-gerer-cookies]')) {
+    gerer.hidden = false;
+    gerer.addEventListener('click', () => {
+      banniere.hidden = false;
+      banniere.focus();
+    });
+  }
+
+  if (choixEnregistre(lire(), new Date()) === null) banniere.hidden = false;
+</script>

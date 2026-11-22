@@ -37,7 +37,7 @@ export const FORMULAIRE_LETTRE_D_INFORMATION = '/formulaire-lettre-d-information
 
 /** Liens externes (en-tête, pied de page, La paroisse). URL du diocèse à confirmer (en attente diocèse). */
 export const LIENS_EXTERNES = {
-  diocese: 'https://agen.catholique.fr/',
+  diocese: 'https://diocese47.fr',
   /** Page de la paroisse sur messes.info (identifiant relevé à l'essai du widget, #10). */
   messesInfo: PAROISSE_SUR_MESSES_INFO,
 };

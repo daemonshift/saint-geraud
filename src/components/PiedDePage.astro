@@ -71,6 +71,8 @@ const lien = 'flex min-h-12 items-center text-ivoire underline hover:text-or-pal
       <h2 id="titre-informations" class="font-texte text-base font-bold tracking-wider text-or-pale uppercase">Informations</h2>
       <ul class="mt-3 flex flex-col gap-1">
         {PAGES_LEGALES.map(({ libelle, href }) => <li><a class={lien} href={href}>{libelle}</a></li>)}
+        <!-- Rouvre la bannière cookies (BanniereCookies.astro) ; caché sans JavaScript. -->
+        <li><button type="button" class={`${lien} cursor-pointer`} data-gerer-cookies hidden>Gérer les cookies</button></li>
       </ul>
     </section>
   </div>

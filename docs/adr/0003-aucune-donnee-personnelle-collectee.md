@@ -11,8 +11,8 @@ Le site n'a ni formulaire de contact, ni Inscription en ligne à la Lettre d'inf
 
 - Aucun endpoint de formulaire : la seule fonction serveur est la route du Vercel Cron qui déclenche le rebuild (ADR 0002). Le seul secret lu par le site est le token Airtable, au build.
 - La politique de confidentialité se limite au fait que le site ne collecte rien, et aux éventuels traceurs tiers (widget messes.info, tuiles de carte).
-- **Jamais de bannière cookies.** Aucun traceur tiers n'est chargé sans action explicite du visiteur.
+- **Bannière cookies** : remplacé par l'ADR 0004. Aucun traceur tiers n'est chargé sans action explicite du visiteur ; une bannière le demande pour le seul widget messes.info.
 - **Mesure d'audience** : Vercel Web Analytics uniquement (sans cookie, empreinte réinitialisée chaque jour), sans Speed Insights ni événements personnalisés. Elle est déclarée dans la page de confidentialité, avec le transfert vers Vercel Inc. (États-Unis, Data Privacy Framework).
-- **Widget messes.info** : il est indispensable et il est conservé. S'il ne dépose aucun cookie de suivi, il est intégré directement. S'il en dépose, il est chargé au clic sur un bouton « Afficher les horaires », qui vaut consentement pour ce seul contenu. Le lien texte vers messes.info est toujours affiché. Son comportement réel est à vérifier à l'implémentation : sa documentation n'a pas pu être lue (404).
+- **Widget messes.info** (chargement : voir l'ADR 0004) : il est indispensable et il est conservé. S'il ne dépose aucun cookie de suivi, il est intégré directement. S'il en dépose, il est chargé au clic sur un bouton « Afficher les horaires », qui vaut consentement pour ce seul contenu. Le lien texte vers messes.info est toujours affiché. Son comportement réel est à vérifier à l'implémentation : sa documentation n'a pas pu être lue (404).
 - **Tuiles OpenStreetMap** : afficher la carte transmet l'adresse IP du visiteur aux serveurs d'OpenStreetMap, sans cookie. C'est déclaré dans la page de confidentialité.
 - Si la paroisse veut un jour une Inscription en ligne, c'est un nouveau projet, et cet ADR doit être revu.
