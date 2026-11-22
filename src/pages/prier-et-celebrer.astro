@@ -1,0 +1,60 @@
+---
+/**
+ * Prier et célébrer (Page fixe) : la prière, puis les sacrements, une carte
+ * par fichier Markdown de src/content/prier-et-celebrer/. Le sommaire
+ * d'ancres renvoie à chaque carte (`#bapteme`, `#confession`…). Les contacts
+ * des sacrements viennent des Infos pratiques, comme sur La paroisse.
+ */
+import { getCollection } from 'astro:content';
+import BandeauTitre from '../components/BandeauTitre.astro';
+import CartePrierEtCelebrer from '../components/CartePrierEtCelebrer.astro';
+import SectionSousPage from '../components/SectionSousPage.astro';
+import SommaireAncres from '../components/SommaireAncres.astro';
+import MiseEnPage from '../layouts/MiseEnPage.astro';
+import { contenuDuSite } from '../lib/contenu/site';
+
+const { infosPratiques } = await contenuDuSite();
+const cartes = (await getCollection('prierEtCelebrer')).sort((a, b) => a.data.ordre - b.data.ordre);
+
+const SECTIONS = [
+  { id: 'priere', titre: 'La prière' },
+  { id: 'sacrements', titre: 'Les sacrements' },
+] as const;
+const cartesDe = (section: string) => cartes.filter((carte) => carte.data.section === section);
+const sommaire = SECTIONS.flatMap(({ id }) => cartesDe(id)).map((carte) => ({ id: carte.id, titre: carte.data.titre }));
+
+/** Verset proposé (#13), à faire valider ou remplacer par la paroisse. */
+const VERSET = {
+  texte: '« Venez à moi, vous tous qui peinez sous le poids du fardeau, et moi, je vous procurerai le repos. »',
+  reference: 'Matthieu 11, 28',
+};
+---
+
+<MiseEnPage
+  titre="Prier et célébrer"
+  description="Messes, confession, adoration, baptême, mariage et obsèques dans la paroisse Saint-Géraud des Vallées en Fumélois : comment faire et qui contacter."
+>
+  <BandeauTitre titre="Prier et célébrer" />
+  <SommaireAncres entrees={sommaire} />
+
+  {
+    SECTIONS.map(({ id, titre }) => (
+      <SectionSousPage id={id} titre={titre}>
+        <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {cartesDe(id).map((carte) => (
+            <li>
+              <CartePrierEtCelebrer carte={carte} infosPratiques={infosPratiques} />
+            </li>
+          ))}
+        </ul>
+      </SectionSousPage>
+    ))
+  }
+
+  <figure class="conteneur flex max-w-3xl flex-col gap-2 pt-10 pb-16 text-center lg:pt-14">
+    <blockquote class="font-titre text-2xl leading-snug text-vert-profond italic lg:text-3xl">
+      <p>{VERSET.texte}</p>
+    </blockquote>
+    <figcaption class="tracking-wider text-or-fonce uppercase">{VERSET.reference}</figcaption>
+  </figure>
+</MiseEnPage>
