@@ -1,0 +1,112 @@
+---
+/**
+ * Widget messes.info chargé au clic (ADR 0003, ticket #10).
+ *
+ * Le script du widget dépose des cookies de mesure d'audience (essai réel
+ * consigné dans l'issue #10) : rien n'est demandé à messes.info avant le clic
+ * sur « Afficher les horaires », qui vaut consentement pour ce seul contenu.
+ * Sans JavaScript, le bouton reste caché ; le lien « Voir plus de messes sur
+ * messes.info » est le chemin garanti, toujours affiché.
+ *
+ * Un seul widget par page : le script officiel lit tous les conteneurs
+ * `[data-egliseinfo]` de la page à son chargement.
+ */
+import {
+  PAROISSE_SUR_MESSES_INFO,
+  RECHERCHE_WIDGET_MESSES_INFO,
+  SCRIPT_WIDGET_MESSES_INFO,
+} from '../lib/messes-info';
+---
+
+<div class="flex min-w-0 flex-col gap-4" data-widget-messes-info>
+  <div
+    class="flex flex-col items-start gap-4 rounded-xl border-2 border-dashed border-vert-sauge bg-ivoire p-5"
+    data-consentement
+    hidden
+  >
+    <p class="max-w-[68ch]">
+      Les horaires sont fournis par messes.info. En les affichant, vous chargez ce service, qui dépose des cookies de
+      mesure d’audience (Google Analytics).
+    </p>
+    <button
+      type="button"
+      class="bouton-principal"
+      data-afficher
+      data-script={SCRIPT_WIDGET_MESSES_INFO}
+      data-recherche={RECHERCHE_WIDGET_MESSES_INFO}
+    >
+      Afficher les horaires
+    </button>
+  </div>
+  <p role="status" class="empty:hidden" data-etat></p>
+  <div class="widget-messes-info" tabindex="-1" data-conteneur hidden></div>
+  <a class="bouton-secondaire self-stretch text-center sm:self-start" href={PAROISSE_SUR_MESSES_INFO}>
+    Voir plus de messes sur messes.info (site messes.info)
+  </a>
+</div>
+
+<style is:global>
+  /*
+   * Habillage du widget (HTML généré par messes.info, classes GWT) : texte à
+   * 18 px minimum et polices du site ; les onglets passent à la ligne au lieu
+   * de déborder à 360 px (essai réel : 435 px de large sans ces règles).
+   */
+  .widget-messes-info {
+    max-width: 100%;
+    overflow-x: auto;
+    font-family: var(--font-texte);
+  }
+
+  .widget-messes-info * {
+    max-width: 100%;
+    font-family: inherit !important;
+    font-size: 1rem !important;
+    line-height: 1.4;
+  }
+
+  .widget-messes-info table {
+    width: 100%;
+  }
+
+  .widget-messes-info .gwt-Label {
+    white-space: normal !important;
+  }
+
+  .widget-messes-info .gwt-TabBarItem {
+    padding: 0.25rem 0.5rem;
+  }
+
+  .widget-messes-info a {
+    color: var(--color-vert-profond);
+    text-decoration: underline;
+  }
+</style>
+
+<script>
+  for (const bloc of document.querySelectorAll<HTMLElement>('[data-widget-messes-info]')) {
+    const consentement = bloc.querySelector<HTMLElement>('[data-consentement]')!;
+    const bouton = bloc.querySelector<HTMLButtonElement>('[data-afficher]')!;
+    const etat = bloc.querySelector<HTMLElement>('[data-etat]')!;
+    const conteneur = bloc.querySelector<HTMLElement>('[data-conteneur]')!;
+    consentement.hidden = false;
+
+    bouton.addEventListener('click', () => {
+      conteneur.dataset.egliseinfo = 'horaires';
+      conteneur.dataset.search = bouton.dataset.recherche!;
+      conteneur.hidden = false;
+      etat.textContent = 'Chargement des horaires…';
+      new MutationObserver((_, observateur) => {
+        etat.textContent = '';
+        observateur.disconnect();
+      }).observe(conteneur, { childList: true, subtree: true });
+      const script = document.createElement('script');
+      script.src = bouton.dataset.script!;
+      script.addEventListener('error', () => {
+        etat.textContent = 'Les horaires n’ont pas pu être chargés. Utilisez le lien vers messes.info ci-dessous.';
+      });
+      document.body.append(script);
+      consentement.remove();
+      conteneur.focus();
+    });
+  }
+</script>

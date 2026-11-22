@@ -31,7 +31,7 @@ Vercel Inc. est une société établie aux États-Unis. Les données de la mesur
 Certaines pages affichent des contenus venant d’autres sites. Votre navigateur les demande directement à ces sites, qui reçoivent alors votre adresse IP :
 
 - **la carte des églises** : son fond de carte vient des serveurs d’OpenStreetMap, sans cookie ;
-- **les horaires des messes** : ils sont affichés par le widget de messes.info, le site des horaires de messe de l’Église catholique en France. Si ce widget dépose des cookies de suivi, il ne se charge que lorsque vous cliquez sur « Afficher les horaires ».
+- **les horaires des messes** : ils sont affichés par le widget de messes.info, le site des horaires de messe de l’Église catholique en France. Ce widget dépose des cookies de mesure d’audience (Google Analytics) et contacte les serveurs de Google : il ne se charge donc que lorsque vous cliquez sur « Afficher les horaires ». Sans ce clic, aucune requête ne part vers messes.info.
 
 Les liens vers d’autres sites (diocèse, messes.info, itinéraires) l’annoncent dans leur texte. Une fois sur ces sites, ce sont leurs propres règles de confidentialité qui s’appliquent.
 
