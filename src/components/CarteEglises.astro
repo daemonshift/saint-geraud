@@ -51,6 +51,7 @@ const marqueurs = eglises.map(({ nom, commune, latitude, longitude, lienMessesIn
 <script>
   import L from 'leaflet';
   import 'leaflet/dist/leaflet.css';
+  import { LIBELLE_HORAIRES_MESSES_INFO } from '../lib/messes-info';
 
   interface Marqueur {
     nom: string;
@@ -66,7 +67,7 @@ const marqueurs = eglises.map(({ nom, commune, latitude, longitude, lienMessesIn
     '<path class="marqueur-eglise-forme" d="M12 22s-7.5-6.6-7.5-12a7.5 7.5 0 0 1 15 0c0 5.4-7.5 12-7.5 12z"/>' +
     '<circle class="marqueur-eglise-centre" cx="12" cy="10" r="2.8"/></svg>';
 
-  function fenetre({ nom, commune, lienMessesInfo }: Marqueur): HTMLElement {
+  function contenuBulleEglise({ nom, commune, lienMessesInfo }: Marqueur): HTMLElement {
     const contenu = document.createElement('div');
     contenu.className = 'fenetre-eglise';
     const titre = document.createElement('strong');
@@ -77,7 +78,7 @@ const marqueurs = eglises.map(({ nom, commune, latitude, longitude, lienMessesIn
     if (lienMessesInfo) {
       const lien = document.createElement('a');
       lien.href = lienMessesInfo;
-      lien.textContent = 'Horaires des messes (site messes.info)';
+      lien.textContent = LIBELLE_HORAIRES_MESSES_INFO;
       contenu.append(lien);
     }
     return contenu;
@@ -111,7 +112,7 @@ const marqueurs = eglises.map(({ nom, commune, latitude, longitude, lienMessesIn
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(carte);
     const positions = marqueurs.map((m) => L.latLng(m.latitude, m.longitude));
     for (const [i, m] of marqueurs.entries()) {
-      L.marker(positions[i]!, { icon: icone(m.nom), title: m.nom }).bindPopup(fenetre(m)).addTo(carte);
+      L.marker(positions[i]!, { icon: icone(m.nom), title: m.nom }).bindPopup(contenuBulleEglise(m)).addTo(carte);
     }
     if (positions.length) carte.fitBounds(L.latLngBounds(positions), { padding: [48, 48], maxZoom: 14 });
     else carte.setView([44.5, 0.96], 11);
