@@ -4,6 +4,15 @@ import vercel from '@astrojs/vercel';
 import tailwindcss from '@tailwindcss/vite';
 import contenuDuSiteAuBuild from './src/integrations/contenu-du-site';
 
+// En local, `.env` (jamais commité) fournit AIRTABLE_TOKEN au module « contenu
+// du site », qui lit `process.env`. Sur Vercel, il n'y a pas de `.env` : les
+// variables viennent du projet.
+try {
+  process.loadEnvFile();
+} catch {
+  // Pas de `.env` : données d'exemple.
+}
+
 // Adresse publique (plan du site) : celle de production sur Vercel. Le
 // sous-domaine du diocèse est en attente ; ailleurs, la preview locale.
 const site = process.env.VERCEL_PROJECT_PRODUCTION_URL
