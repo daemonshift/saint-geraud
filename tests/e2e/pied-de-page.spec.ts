@@ -24,9 +24,9 @@ test.describe('Pied de page « Nous contacter »', () => {
     await expect(mail).toContainText(adresse);
   });
 
-  test('renvoie vers le Diocèse d’Agen et messes.info, en le disant', async ({ page }) => {
+  test('renvoie vers le Diocèse d’Agen et messes.info', async ({ page }) => {
     const pied = page.getByRole('contentinfo');
-    await expect(pied.getByRole('link', { name: /Diocèse d’Agen \(site du diocèse\)/ })).toHaveAttribute('href', /^https:\/\//);
-    await expect(pied.getByRole('link', { name: /\(site messes\.info\)/ })).toHaveAttribute('href', /^https:\/\/(www\.)?messes\.info/);
+    await expect(pied.getByRole('link', { name: 'Diocèse d’Agen' })).toHaveAttribute('href', /^https:\/\//);
+    await expect(pied.getByRole('link', { name: 'Horaires sur messes.info' })).toHaveAttribute('href', /^https:\/\/(www\.)?messes\.info/);
   });
 });
