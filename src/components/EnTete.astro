@@ -2,14 +2,14 @@
 /**
  * En-tête du site : logotype, navigation principale, menu mobile.
  *
- * - Ordinateur (≥ lg) : barre utilitaire + rubriques en ligne, bouton « Horaires des messes ».
+ * - Ordinateur (≥ lg) : barre utilitaire + entrées du menu en ligne, bouton « Horaires des messes ».
  * - Mobile : logotype, bouton Menu (✕ quand il est ouvert) et, sous la barre,
  *   « Horaires des messes » toujours visible sans ouvrir le menu.
  * Le menu se ferme par ✕, Échap (focus rendu au bouton Menu) ou au choix d'un lien.
  */
 import { Image } from 'astro:assets';
 import logo from '../assets/logo-saint-geraud.jpg';
-import { HORAIRES_DES_MESSES, LETTRE_D_INFORMATION, LIENS_EXTERNES, NOUS_CONTACTER, RUBRIQUES, estPageCourante } from '../lib/navigation';
+import { HORAIRES_DES_MESSES, LETTRE_D_INFORMATION, LIENS_EXTERNES, NOUS_CONTACTER, ENTREES_DU_MENU, estPageCourante } from '../lib/navigation';
 
 const chemin = Astro.url.pathname;
 const courant = (href: string) => (estPageCourante(href, chemin) ? 'page' : undefined);
@@ -59,7 +59,7 @@ const courant = (href: string) => (estPageCourante(href, chemin) ? 'page' : unde
     >
       <ul class="flex flex-col lg:flex-row lg:flex-wrap lg:items-center lg:gap-x-2">
         {
-          RUBRIQUES.map(({ libelle, href }) => (
+          ENTREES_DU_MENU.map(({ libelle, href }) => (
             <li>
               <a
                 href={href}

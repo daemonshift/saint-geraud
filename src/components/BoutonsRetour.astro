@@ -1,11 +1,9 @@
 ---
 /** Deux grands boutons pour retrouver son chemin (Actualité terminée, 404). */
-import { RUBRIQUES } from '../lib/navigation';
-
-const actualites = RUBRIQUES.find((r) => r.libelle === 'Actualités')!.href;
+import { ACTUALITES } from '../lib/navigation';
 ---
 
 <div class="flex w-full flex-col items-stretch gap-4 sm:w-auto sm:flex-row sm:items-center">
-  <a class="bouton-principal" href={actualites}>Voir les actualités en cours</a>
+  <a class="bouton-principal" href={ACTUALITES.href}>Voir les actualités en cours</a>
   <a class="bouton-secondaire" href="/">Retour à l’accueil</a>
 </div>

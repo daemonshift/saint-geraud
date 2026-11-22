@@ -12,7 +12,7 @@
  */
 import type { Actualite } from '../lib/contenu';
 import { ACTUALITES_DANS_LE_CARROUSEL } from '../lib/carrousel';
-import { RUBRIQUES } from '../lib/navigation';
+import { ACTUALITES } from '../lib/navigation';
 import CarteActualite from './CarteActualite.astro';
 
 interface Props {
@@ -20,7 +20,6 @@ interface Props {
 }
 
 const actualites = Astro.props.actualites.slice(0, ACTUALITES_DANS_LE_CARROUSEL);
-const listeDesActualites = RUBRIQUES.find((r) => r.libelle === 'Actualités')!.href;
 ---
 
 <section
@@ -74,7 +73,7 @@ const listeDesActualites = RUBRIQUES.find((r) => r.libelle === 'Actualités')!.h
           </div>
 
           <div class="flex justify-center lg:col-span-2">
-            <a class="bouton-secondaire w-full uppercase tracking-wide sm:w-auto" href={listeDesActualites}>
+            <a class="bouton-secondaire w-full uppercase tracking-wide sm:w-auto" href={ACTUALITES.href}>
               Voir toutes les actualités
             </a>
           </div>
