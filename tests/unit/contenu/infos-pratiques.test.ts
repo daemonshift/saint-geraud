@@ -3,7 +3,7 @@ import { creerClientEnMemoire } from '../../../src/lib/airtable/client-en-memoir
 import type { EnregistrementAirtable } from '../../../src/lib/airtable/client';
 import { chargerContenuDuSite } from '../../../src/lib/contenu';
 import { infoPratique } from '../../../src/lib/contenu/donnees-exemple';
-import { contactPour } from '../../../src/lib/contenu/infos-pratiques';
+import { contactOuPresbytere, contactPour } from '../../../src/lib/contenu/infos-pratiques';
 import { fauxStockageImages } from './outils';
 
 function charger(infosPratiques: EnregistrementAirtable[], images = fauxStockageImages()) {
@@ -142,5 +142,22 @@ describe('Infos pratiques', () => {
       { id: 'recObseques', role: 'Obsèques', cle: 'obseques', email: 'obseques@example.org', telephone: '05 53 00 00 01', precision: '' },
     ]);
     expect(contactPour(infosPratiques.contacts, 'obsèques')?.id).toBe('recObseques');
+  });
+
+  it('Contact d’une démarche sans contact propre : le presbytère, avec ses deux moyens', async () => {
+    const { infosPratiques } = await charger([
+      infoPratique('recTel', { rubrique: 'Presbytère', libelle: 'Téléphone', telephone: '05 53 00 00 00' }),
+      infoPratique('recEmail', { rubrique: 'Presbytère', libelle: 'E-mail', valeur: 'paroisse@example.org' }),
+      infoPratique('recBapteme', { rubrique: 'Contacts', libelle: 'Baptême', valeur: 'bapteme@example.org' }),
+    ]);
+    expect(contactOuPresbytere(infosPratiques, 'Baptême').email).toBe('bapteme@example.org');
+    expect(contactOuPresbytere(infosPratiques, 'Confession')).toEqual({
+      id: 'presbytere',
+      role: 'Presbytère',
+      cle: 'presbytere',
+      email: 'paroisse@example.org',
+      telephone: '05 53 00 00 00',
+      precision: '',
+    });
   });
 });
