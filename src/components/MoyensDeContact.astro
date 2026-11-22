@@ -1,0 +1,36 @@
+---
+/**
+ * Les deux moyens de contact d'une démarche, en boutons : e-mail en clair
+ * (`mailto:`) puis téléphone (`tel:`). Partagé par CarteContact (La paroisse)
+ * et CartePrierEtCelebrer, pour un affichage identique.
+ */
+import { lienEmail, lienTelephone } from '../lib/contact';
+import type { ContactDemarche } from '../lib/contenu';
+
+interface Props {
+  contact: Pick<ContactDemarche, 'email' | 'telephone'>;
+}
+
+const { contact } = Astro.props;
+---
+
+<ul class="mt-auto flex w-full flex-col gap-2 pt-2">
+  {
+    contact.email && (
+      <li>
+        <a class="bouton-principal w-full break-all" href={lienEmail(contact.email)}>
+          Écrire à {contact.email}
+        </a>
+      </li>
+    )
+  }
+  {
+    contact.telephone && (
+      <li>
+        <a class="bouton-secondaire w-full" href={lienTelephone(contact.telephone)}>
+          Appeler le {contact.telephone}
+        </a>
+      </li>
+    )
+  }
+</ul>
