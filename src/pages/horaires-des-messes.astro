@@ -1,0 +1,58 @@
+---
+/**
+ * Horaires des messes : widget messes.info de la paroisse (chargé au clic,
+ * ADR 0003), puis les Églises avec leur lien messes.info. Une Église sans lien
+ * messes.info renvoie à sa fiche sur Nos églises.
+ */
+import BandeauTitre from '../components/BandeauTitre.astro';
+import WidgetMessesInfo from '../components/WidgetMessesInfo.astro';
+import MiseEnPage from '../layouts/MiseEnPage.astro';
+import { contenuDuSite } from '../lib/contenu/site';
+import { HORAIRES_DES_MESSES, lienEglise } from '../lib/navigation';
+
+const { eglises } = await contenuDuSite();
+---
+
+<MiseEnPage
+  titre={HORAIRES_DES_MESSES.libelle}
+  description="Horaires des messes de la paroisse Saint-Géraud des Vallées en Fumélois, publiés par le diocèse d’Agen sur messes.info, église par église."
+>
+  <BandeauTitre titre={HORAIRES_DES_MESSES.libelle} />
+
+  <div class="conteneur flex flex-col gap-12 py-10 lg:py-14">
+    <section aria-labelledby="titre-horaires-paroisse" class="flex flex-col gap-4">
+      <h2 id="titre-horaires-paroisse" class="text-3xl tracking-wide uppercase">Horaires de la paroisse</h2>
+      <p class="max-w-[68ch]">
+        Les horaires sont publiés par le diocèse d’Agen sur messes.info et se mettent à jour automatiquement.
+      </p>
+      <WidgetMessesInfo />
+    </section>
+
+    {
+      eglises.length > 0 && (
+        <section aria-labelledby="titre-horaires-eglises" class="flex flex-col gap-4">
+          <h2 id="titre-horaires-eglises" class="text-3xl tracking-wide uppercase">
+            Horaires par église
+          </h2>
+          <ul aria-labelledby="titre-horaires-eglises" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {eglises.map((eglise) => (
+              <li class="flex flex-col gap-3 rounded-xl border border-beige-filet bg-blanc p-5">
+                <h3 class="text-2xl leading-tight">{eglise.nom}</h3>
+                <p class="font-semibold text-gris-vert">{eglise.commune}</p>
+                {eglise.lienMessesInfo ? (
+                  <a class="bouton-principal mt-auto" href={eglise.lienMessesInfo}>
+                    Horaires des messes (site messes.info)<span class="sr-only">, {eglise.nom}</span>
+                  </a>
+                ) : (
+                  <a class="bouton-secondaire mt-auto" href={lienEglise(eglise.id)}>
+                    Voir l’église<span class="sr-only">, {eglise.nom}</span>
+                  </a>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+  </div>
+</MiseEnPage>
