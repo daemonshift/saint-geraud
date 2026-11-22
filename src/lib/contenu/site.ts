@@ -34,13 +34,21 @@ export function clientSelonEnvironnement(env: Environnement, fetch: typeof globa
 }
 
 /**
- * Images : écrites dans `public/images-du-site/`, servies à `/images-du-site/…`.
- * Le stockage n'est créé qu'au premier chargement (il vide ce dossier).
+ * Images du contenu : écrites au chargement dans ce dossier de travail (hors
+ * de `public/`, dont toute écriture relance le serveur de développement),
+ * puis servies à `/images-du-site/…` par l'intégration
+ * src/integrations/contenu-du-site.ts (copiées dans le site produit au
+ * build, servies par un middleware en développement).
  */
+export const IMAGES_DU_SITE = {
+  dossier: join(process.cwd(), 'node_modules', '.cache', 'saint-geraud', 'images-du-site'),
+  prefixePublic: '/images-du-site',
+} as const;
+
+/** Le stockage n'est créé qu'au premier chargement (il vide le dossier). */
 function stockageImagesDuSite(): StockageImages {
   return creerStockageImagesSurDisque({
-    dossier: join(process.cwd(), 'public', 'images-du-site'),
-    prefixePublic: '/images-du-site',
+    ...IMAGES_DU_SITE,
     dossierExemples: join(process.cwd(), 'src', 'assets', 'exemple'),
   });
 }
@@ -52,8 +60,8 @@ function stockageImagesDuSite(): StockageImages {
  * Airtable n'est lu qu'une fois.
  *
  * Le premier chargement a lieu dans `astro:config:setup`
- * (src/integrations/contenu-du-site.ts) : les images sont alors écrites dans
- * `public/` avant qu'Astro ne le copie dans le site produit.
+ * (src/integrations/contenu-du-site.ts) : toutes les images sont écrites
+ * avant le rendu des pages.
  */
 const CLE = Symbol.for('saint-geraud.contenuDuSite');
 const memoire = globalThis as { [CLE]?: Promise<ContenuDuSite> };

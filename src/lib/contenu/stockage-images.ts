@@ -3,10 +3,9 @@
  *
  * Chaque image retenue est lue (téléchargée depuis Airtable, ou image
  * d'exemple locale), convertie en WebP de 1 200 px de large au plus, puis
- * écrite dans `public/images-du-site/` (ignoré par git). Le contenu du site
- * est chargé dès `astro:config:setup` (src/integrations/contenu-du-site.ts),
- * avant qu'Astro ne copie `public/` : les images sont donc servies par le site
- * en développement comme au build, et les pages ne contiennent jamais d'URL
+ * écrite dans un dossier de travail que l'intégration
+ * src/integrations/contenu-du-site.ts sert à `/images-du-site/` (copie au
+ * build, middleware en développement) : les pages ne contiennent jamais d'URL
  * Airtable (elles expirent au bout de quelques heures).
  *
  * Deux sources :
