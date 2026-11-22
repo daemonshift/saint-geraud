@@ -7,7 +7,7 @@ import { EGLISES } from '../airtable/schema';
 import type { StockageImages } from './charger';
 import { imageRetenue } from './images';
 import type { Eglise } from './modele';
-import { booleen, nombre, texte } from './valeurs';
+import { booleen, lignesAdresse, nombre, texte } from './valeurs';
 
 const c = EGLISES.champs;
 
@@ -28,10 +28,7 @@ async function versEglise(e: EnregistrementAirtable, images: StockageImages): Pr
     id: e.id,
     nom: texte(e, c.nom),
     commune: texte(e, c.commune),
-    adresse: texte(e, c.adresse)
-      .split('\n')
-      .map((ligne) => ligne.trim())
-      .filter(Boolean),
+    adresse: lignesAdresse(texte(e, c.adresse)),
     latitude: nombre(e, c.latitude)!,
     longitude: nombre(e, c.longitude)!,
     accesPmr: booleen(e, c.accesPmr),

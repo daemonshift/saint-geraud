@@ -1,0 +1,98 @@
+---
+/**
+ * Bloc « En pratique » du détail d'une Actualité : date et heure de
+ * l'événement (heure de Paris), Église(s) liée(s) avec adresse, Accès PMR,
+ * lien vers son ancre sur Nos églises et itinéraire, bouton « Ajouter à mon
+ * agenda » (fichier `.ics` généré au build). Pas de mini-carte (spec #1).
+ *
+ * Réduit à ce qui est renseigné ; absent si l'Actualité n'a ni date
+ * d'événement ni Église liée.
+ */
+import type { Actualite } from '../lib/contenu';
+import { lienEglise, lienItineraire } from '../lib/navigation';
+
+interface Props {
+  actualite: Actualite;
+  class?: string;
+}
+
+const { actualite, class: classe } = Astro.props;
+const { evenement, eglises, agenda } = actualite;
+const lien = 'inline-flex min-h-12 items-center font-bold text-vert-profond underline';
+---
+
+{
+  (evenement || eglises.length > 0) && (
+    <aside
+      aria-labelledby="en-pratique"
+      class:list={['flex flex-col gap-5 rounded-xl border border-t-4 border-beige-filet border-t-or-doux bg-blanc p-5 lg:p-7', classe]}
+    >
+      <h2 id="en-pratique" class="text-3xl">En pratique</h2>
+      {evenement && (
+        <div class="flex items-start gap-3">
+          <svg class="mt-1 size-6 shrink-0 text-vert-profond" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="16" rx="2" />
+            <path d="M3 10h18M8 3v4M16 3v4" />
+          </svg>
+          <div class="flex flex-col gap-3">
+            <p>
+              <strong>Date</strong>
+              <br />
+              <span class="first-letter:uppercase inline-block">{evenement.enLettres}</span>
+            </p>
+            {agenda && (
+              <a class="bouton-principal self-start" href={agenda.fichier} download>
+                Ajouter à mon agenda (fichier .ics)
+              </a>
+            )}
+          </div>
+        </div>
+      )}
+      {eglises.map((eglise) => (
+        <div class="flex items-start gap-3">
+          <svg class="mt-1 size-6 shrink-0 text-vert-profond" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z" />
+            <circle cx="12" cy="10" r="2.5" />
+          </svg>
+          <div class="flex min-w-0 flex-col gap-1">
+            <p>
+              <strong>Lieu</strong>
+              <br />
+              {eglise.nom}
+              {eglise.adresse.length > 0
+                ? eglise.adresse.map((ligne) => (
+                    <>
+                      <br />
+                      {ligne}
+                    </>
+                  ))
+                : eglise.commune && (
+                    <>
+                      <br />
+                      {eglise.commune}
+                    </>
+                  )}
+            </p>
+            {eglise.accesPmr && <p class="self-start rounded-full bg-vert-pale px-3 py-0.5 font-bold text-encre">Accès PMR</p>}
+            <ul class="flex flex-col">
+              {eglise.surNosEglises && (
+                <li>
+                  <a class={lien} href={lienEglise(eglise.id)}>
+                    Voir sur la carte de nos églises<span class="sr-only"> : {eglise.nom}</span>
+                  </a>
+                </li>
+              )}
+              {eglise.position && (
+                <li>
+                  <a class={lien} href={lienItineraire(eglise.position)}>
+                    Itinéraire (Google Maps)<span class="sr-only">, {eglise.nom}</span>
+                  </a>
+                </li>
+              )}
+            </ul>
+          </div>
+        </div>
+      ))}
+    </aside>
+  )
+}

@@ -23,7 +23,8 @@ export interface DependancesContenu {
 }
 
 export async function chargerContenuDuSite({ client, horloge, images }: DependancesContenu): Promise<ContenuDuSite> {
-  const aujourdhui = jourAParis(horloge());
+  const maintenant = horloge();
+  const aujourdhui = jourAParis(maintenant);
   controlerSchema(await client.lireSchema(), TABLES);
   const [actualites, eglises, infosPratiques] = await Promise.all([
     lireTable(client, ACTUALITES.id),
@@ -39,11 +40,10 @@ export async function chargerContenuDuSite({ client, horloge, images }: Dependan
         actualites
           .filter((e) => estEnLigne(e, aujourdhui))
           .map(async (e) =>
-            versActualite(
-              e,
-              eglisesParId,
-              await imageRetenue(e, { image: ACTUALITES.champs.image, texteAlternatif: ACTUALITES.champs.texteAlternatifImage }, images),
-            ),
+            versActualite(e, eglisesParId, {
+              image: await imageRetenue(e, { image: ACTUALITES.champs.image, texteAlternatif: ACTUALITES.champs.texteAlternatifImage }, images),
+              maintenant,
+            }),
           ),
       ),
     ),
