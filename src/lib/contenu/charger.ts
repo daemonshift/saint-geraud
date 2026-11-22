@@ -3,6 +3,7 @@ import { ACTUALITES, EGLISES, INFOS_PRATIQUES, TABLES } from '../airtable/schema
 import { controlerSchema } from './controle-schema';
 import { jourAParis } from './dates';
 import type { ContenuDuSite } from './modele';
+import { imageRetenue } from './images';
 import { estArchivee, estEnLigne, trierActualites, versActualite, versEgliseLiee } from './actualites';
 import { eglisesAffichees } from './eglises';
 import { versInfosPratiques } from './infos-pratiques';
@@ -32,8 +33,19 @@ export async function chargerContenuDuSite({ client, horloge, images }: Dependan
   const eglisesParId = new Map(eglises.map((e) => [e.id, versEgliseLiee(e)]));
 
   return {
+    // Seules les Actualités En ligne voient leur image téléchargée.
     actualites: trierActualites(
-      actualites.filter((e) => estEnLigne(e, aujourdhui)).map((e) => versActualite(e, eglisesParId)),
+      await Promise.all(
+        actualites
+          .filter((e) => estEnLigne(e, aujourdhui))
+          .map(async (e) =>
+            versActualite(
+              e,
+              eglisesParId,
+              await imageRetenue(e, { image: ACTUALITES.champs.image, texteAlternatif: ACTUALITES.champs.texteAlternatifImage }, images),
+            ),
+          ),
+      ),
     ),
     actualitesArchivees: actualites.filter((e) => estArchivee(e, aujourdhui)).map((e) => ({ id: e.id })),
     eglises: await eglisesAffichees(eglises, images),

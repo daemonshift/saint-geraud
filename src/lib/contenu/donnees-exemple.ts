@@ -14,6 +14,7 @@
 import type { EnregistrementAirtable } from '../airtable/client';
 import type { DonneesAirtable } from '../airtable/client-en-memoire';
 import { ACTUALITES, EGLISES, INFOS_PRATIQUES, type TableAirtable } from '../airtable/schema';
+import { PREFIXE_IMAGE_EXEMPLE } from './images';
 
 type Valeurs<T extends TableAirtable> = { [K in keyof T['champs']]?: unknown };
 
@@ -46,6 +47,21 @@ export function actualite(id: string, valeurs: Valeurs<typeof ACTUALITES> = {}):
   });
 }
 
+/**
+ * Pièce jointe au format de l'API (champ `multipleAttachments`). Pour les
+ * données d'exemple, l'URL désigne une image locale : `exemple:<fichier>`
+ * (fichier de `src/assets/exemple/`), voir `creerStockageImagesSurDisque` (stockage-images.ts).
+ */
+export function pieceJointe(
+  id: string,
+  { url = `https://v5.airtableusercontent.com/v3/u/0/0/${id}`, filename = `${id}.jpg`, type = 'image/jpeg' } = {},
+) {
+  return { id, url, filename, type, size: 1000 };
+}
+
+/** URL d'une image d'exemple locale (`src/assets/exemple/<fichier>`). */
+export const imageExemple = (fichier: string) => `${PREFIXE_IMAGE_EXEMPLE}${fichier}`;
+
 export function eglise(id: string, valeurs: Valeurs<typeof EGLISES> = {}): EnregistrementAirtable {
   return enregistrement(EGLISES, id, {
     nom: `Église ${id}`,
@@ -66,8 +82,9 @@ export function infoPratique(id: string, valeurs: Valeurs<typeof INFOS_PRATIQUES
 }
 
 export const DONNEES_EXEMPLE: DonneesAirtable = {
-  // Valeurs d'exemple, pas les vraies coordonnées. Pas de photo du Curé : le
-  // stockage des images n'est pas branché sur les builds d'exemple.
+  // Valeurs d'exemple, pas les vraies coordonnées. Pas de photo du Curé : on
+  // n'invente pas le portrait d'une personne (la photo d'Église couvre le
+  // chemin des images).
   infosPratiques: [
     infoPratique('recExempleCure', {
       rubrique: 'Curé',
@@ -106,6 +123,8 @@ export const DONNEES_EXEMPLE: DonneesAirtable = {
       accesPmr: true,
       lienMessesInfo: 'https://messes.info/lieu/47/fumel/eglise-saint-antoine',
       ordre: 1,
+      photo: [pieceJointe('attExempleEglise', { url: imageExemple('eglise-saint-antoine.jpg'), filename: 'eglise-saint-antoine.jpg' })],
+      texteAlternatif: 'Façade de l’église Saint-Antoine et son clocher',
     }),
     eglise('recEgliseSaintGeraud', {
       nom: 'Église Saint-Géraud',
@@ -143,6 +162,8 @@ export const DONNEES_EXEMPLE: DonneesAirtable = {
       dateEvenement: '2099-12-24T22:30:00.000Z',
       miseEnAvant: true,
       eglises: ['recEgliseSaintAntoine'],
+      image: [pieceJointe('attExempleBougies', { url: imageExemple('bougies-de-noel.jpg'), filename: 'bougies-de-noel.jpg' })],
+      texteAlternatifImage: 'Trois cierges allumés dans la pénombre',
     }),
     actualite('recExempleCatechisme', {
       titre: 'Inscriptions au catéchisme',
@@ -150,6 +171,8 @@ export const DONNEES_EXEMPLE: DonneesAirtable = {
       texte: 'Les familles peuvent inscrire leurs enfants au presbytère, aux heures de permanence.',
       categorie: 'Sacrements',
       datePublication: '2026-01-04',
+      // Image sans texte alternatif : ignorée, l'Actualité s'affiche sans image.
+      image: [pieceJointe('attExempleSansAlt', { url: imageExemple('fanions-de-kermesse.jpg'), filename: 'fanions.jpg' })],
     }),
     actualite('recExempleKermesse', {
       titre: 'Kermesse paroissiale',
@@ -158,6 +181,8 @@ export const DONNEES_EXEMPLE: DonneesAirtable = {
       categorie: 'Vie paroissiale',
       datePublication: '2026-01-03',
       eglises: ['recEgliseSaintGeraud'],
+      image: [pieceJointe('attExempleFanions', { url: imageExemple('fanions-de-kermesse.jpg'), filename: 'fanions-de-kermesse.jpg' })],
+      texteAlternatifImage: 'Guirlande de fanions au-dessus des stands de la kermesse',
     }),
     // Ces trois Actualités ne doivent jamais apparaître sur le site d'exemple.
     actualite('recExempleBrouillon', { titre: 'Brouillon jamais affiché', valide: false }),

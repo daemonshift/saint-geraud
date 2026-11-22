@@ -38,6 +38,15 @@ test.describe('Nos églises', () => {
     await expect(saintGeraud.getByRole('link', { name: /messes\.info/ })).toHaveCount(0);
   });
 
+  test('photo de l’Église servie par le site, avec son texte alternatif ; sans photo, pas d’image', async ({ page }) => {
+    await page.goto('/nos-eglises');
+    const photo = page.locator('#eglise-recEgliseSaintAntoine').getByRole('img', { name: 'Façade de l’église Saint-Antoine et son clocher' });
+    await photo.scrollIntoViewIfNeeded();
+    await expect(photo).toHaveAttribute('src', /^\/images-du-site\/[\w-]+\.webp$/);
+    await expect.poll(() => photo.evaluate((img: HTMLImageElement) => (img.complete ? img.naturalWidth : 0))).toBeGreaterThan(0);
+    await expect(page.locator('#eglise-recEgliseSaintGeraud img')).toHaveCount(0);
+  });
+
   test('l’ancre d’une Église mène à elle', async ({ page }) => {
     await page.goto('/nos-eglises#eglise-recEgliseSaintMartin');
     await expect(page.locator('#eglise-recEgliseSaintMartin')).toBeInViewport();

@@ -5,11 +5,13 @@
  *
  * Le chargement n'a lieu qu'une fois par build, quel que soit le nombre de pages.
  */
+import { join } from 'node:path';
 import { creerClientAirtable, type ClientAirtable } from '../airtable/client';
 import { creerClientEnMemoire } from '../airtable/client-en-memoire';
 import { chargerContenuDuSite, type StockageImages } from './charger';
 import { DONNEES_EXEMPLE } from './donnees-exemple';
 import type { ContenuDuSite } from './modele';
+import { creerStockageImagesSurDisque } from './stockage-images';
 
 interface Environnement {
   /** Token Airtable en lecture seule ; secret, présent uniquement dans Vercel. */
@@ -31,18 +33,35 @@ export function clientSelonEnvironnement(env: Environnement, fetch: typeof globa
   return creerClientEnMemoire(DONNEES_EXEMPLE);
 }
 
-/** Les images arrivent avec le ticket #5 : en attendant, tout enregistrement est une erreur. */
-const imagesNonBranchees: StockageImages = {
-  async enregistrer() {
-    throw new Error('Stockage des images pas encore branché (ticket #5).');
-  },
-};
+/**
+ * Images du contenu : écrites au chargement dans ce dossier de travail (hors
+ * de `public/`, dont toute écriture relance le serveur de développement),
+ * puis servies à `/images-du-site/…` par l'intégration
+ * src/integrations/contenu-du-site.ts (copiées dans le site produit au
+ * build, servies par un middleware en développement).
+ */
+export const IMAGES_DU_SITE = {
+  dossier: join(process.cwd(), 'node_modules', '.cache', 'saint-geraud', 'images-du-site'),
+  prefixePublic: '/images-du-site',
+} as const;
+
+/** Le stockage n'est créé qu'au premier chargement (il vide le dossier). */
+function stockageImagesDuSite(): StockageImages {
+  return creerStockageImagesSurDisque({
+    ...IMAGES_DU_SITE,
+    dossierExemples: join(process.cwd(), 'src', 'assets', 'exemple'),
+  });
+}
 
 /**
  * Chargement partagé par tout le processus de build : la configuration
  * d'Astro (redirections, plan du site) et le rendu des pages chargent ce
  * module dans deux graphes de modules distincts. Mémoïsé sur `globalThis`,
  * Airtable n'est lu qu'une fois.
+ *
+ * Le premier chargement a lieu dans `astro:config:setup`
+ * (src/integrations/contenu-du-site.ts) : toutes les images sont écrites
+ * avant le rendu des pages.
  */
 const CLE = Symbol.for('saint-geraud.contenuDuSite');
 const memoire = globalThis as { [CLE]?: Promise<ContenuDuSite> };
@@ -51,7 +70,7 @@ export function contenuDuSite(): Promise<ContenuDuSite> {
   memoire[CLE] ??= chargerContenuDuSite({
     client: clientSelonEnvironnement(process.env),
     horloge: () => new Date(),
-    images: imagesNonBranchees,
+    images: stockageImagesDuSite(),
   });
   return memoire[CLE];
 }

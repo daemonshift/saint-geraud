@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Locator } from '@playwright/test';
 
 /**
  * Actualités du site construit avec les données d'exemple
@@ -72,4 +72,43 @@ test('aucune page pour une Actualité non En ligne', async ({ request }) => {
     expect((await request.get(`/actualites/${id}`)).status()).toBe(404);
   }
   expect((await request.get('/actualites/recExempleArchivee', { maxRedirects: 0 })).status()).toBe(302);
+});
+
+test.describe('Images des Actualités', () => {
+  /** L'image est servie par le site (jamais par Airtable) et réellement chargée. */
+  async function attendreImageServieParLeSite(image: Locator) {
+    await image.scrollIntoViewIfNeeded();
+    await expect(image).toHaveAttribute('src', /^\/images-du-site\/[\w-]+\.webp$/);
+    await expect.poll(() => image.evaluate((img: HTMLImageElement) => (img.complete ? img.naturalWidth : 0))).toBeGreaterThan(0);
+  }
+
+  test('carte : image avec son texte alternatif ; sans texte alternatif, carte sans image', async ({ page }) => {
+    await page.goto('/actualites');
+    const cartes = page.locator('#contenu article');
+    await attendreImageServieParLeSite(cartes.nth(0).getByRole('img', { name: 'Trois cierges allumés dans la pénombre' }));
+    await expect(cartes.nth(1)).toContainText('Inscriptions au catéchisme');
+    await expect(cartes.nth(1).locator('img')).toHaveCount(0);
+    await attendreImageServieParLeSite(
+      cartes.nth(2).getByRole('img', { name: 'Guirlande de fanions au-dessus des stands de la kermesse' }),
+    );
+  });
+
+  test('détail : image avec son texte alternatif', async ({ page }) => {
+    await page.goto('/actualites/recExempleMesseDeNoel');
+    await attendreImageServieParLeSite(
+      page.locator('#contenu article').getByRole('img', { name: 'Trois cierges allumés dans la pénombre' }),
+    );
+  });
+
+  test('détail d’une Actualité dont l’image n’a pas de texte alternatif : aucune image', async ({ page }) => {
+    await page.goto('/actualites/recExempleCatechisme');
+    await expect(page.getByRole('heading', { level: 1, name: 'Inscriptions au catéchisme' })).toBeVisible();
+    await expect(page.locator('#contenu article img')).toHaveCount(0);
+  });
+
+  test('aucune URL Airtable dans les pages', async ({ request }) => {
+    for (const adresse of ['/actualites', '/actualites/recExempleMesseDeNoel', '/actualites/recExempleKermesse']) {
+      expect(await (await request.get(adresse)).text()).not.toMatch(/airtable/i);
+    }
+  });
 });

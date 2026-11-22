@@ -2,7 +2,7 @@
 /**
  * Détail d'une Actualité En ligne : une page par Actualité, à l'adresse
  * `/actualites/{identifiant Airtable}`. Le bloc « En pratique » arrive avec le
- * ticket #9, l'image avec le #5.
+ * ticket #9.
  */
 import type { GetStaticPaths } from 'astro';
 import MiseEnPage from '../../layouts/MiseEnPage.astro';
@@ -64,6 +64,16 @@ const lienFil = 'inline-flex min-h-12 items-center text-vert-profond underline';
         )
       }
       {actualite.resume && <p class="text-xl">{actualite.resume}</p>}
+      {
+        actualite.image && (
+          <img
+            class="aspect-video w-full rounded-xl bg-vert-sauge object-cover"
+            src={actualite.image.chemin}
+            alt={actualite.image.texteAlternatif}
+            decoding="async"
+          />
+        )
+      }
       <div class="texte-actualite flex flex-col gap-4" set:html={markdownEnHtml(actualite.texte)} />
       <p class="mt-4">
         <a class="inline-flex min-h-12 items-center font-bold text-vert-profond underline" href="/actualites">← Toutes les actualités</a>

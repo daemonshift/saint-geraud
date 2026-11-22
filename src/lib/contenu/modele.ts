@@ -12,6 +12,13 @@ export interface EgliseLiee {
   commune: string;
 }
 
+/** Image retenue (première pièce jointe, avec texte alternatif), téléchargée au build. */
+export interface ImageDuSite {
+  /** Chemin public de l'image servie par le site (jamais une URL Airtable). */
+  chemin: string;
+  texteAlternatif: string;
+}
+
 export interface Actualite {
   /** Identifiant de l'enregistrement Airtable : fonde l'URL `/actualites/{id}`. */
   id: string;
@@ -34,6 +41,8 @@ export interface Actualite {
   eglises: EgliseLiee[];
   /** Lieu affiché : « Église Saint-Antoine, Fumel » (plusieurs Églises séparées par « · »), ou null. */
   lieu: string | null;
+  /** Première image, si elle a un texte alternatif ; sinon null. */
+  image: ImageDuSite | null;
 }
 
 /** Actualité Archivée : seul son identifiant sert, pour rediriger son ancienne adresse ; son titre n'est jamais repris. */
@@ -61,7 +70,7 @@ export interface Eglise {
   accesPmr: boolean;
   /** Horaires de l'Église sur messes.info, ou null. */
   lienMessesInfo: string | null;
-  /** Photo de l'Église, ou null. Pas encore affichée : le ticket #5 branche le stockage des images. */
+  /** Photo de l'Église (affichée sur Nos églises), ou null. */
   photo: ImageDuSite | null;
 }
 
