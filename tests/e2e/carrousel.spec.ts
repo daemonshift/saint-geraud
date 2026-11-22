@@ -10,6 +10,24 @@ const precedente = (page: Page) => carrousel(page).getByRole('button', { name: '
 const suivante = (page: Page) => carrousel(page).getByRole('button', { name: 'Actualité suivante' });
 const position = (page: Page) => carrousel(page).locator('[aria-live="polite"]:visible');
 
+/**
+ * Vrai si la carte de l'Actualité tient entièrement dans la largeur visible
+ * de la piste. Mesure horizontale seulement : la hauteur visible dépend du
+ * défilement vertical de la page (focus d'une flèche), qui varie avec le
+ * rendu des polices d'un système à l'autre et n'est pas l'affaire du carrousel.
+ */
+const carteEntierementVisible = (page: Page, titre: string) =>
+  expect.poll(() =>
+    carrousel(page)
+      .locator('[data-piste] > *')
+      .filter({ has: page.getByRole('link', { name: titre }) })
+      .evaluate((carte) => {
+        const piste = carte.parentElement!.getBoundingClientRect();
+        const boite = carte.getBoundingClientRect();
+        return boite.left >= piste.left - 1 && boite.right <= piste.right + 1;
+      }),
+  );
+
 test.beforeEach(async ({ page }) => {
   await page.goto('/');
 });
@@ -73,7 +91,7 @@ test.describe('mobile : une carte à la fois', () => {
     await expect(suivante(page)).toBeDisabled();
     // La flèche désactivée ne garde pas le focus : il passe à l'autre flèche.
     await expect(precedente(page)).toBeFocused();
-    await expect(carrousel(page).getByRole('link', { name: 'Pèlerinage diocésain à Lourdes' })).toBeInViewport({ ratio: 1 });
+    await carteEntierementVisible(page, 'Pèlerinage diocésain à Lourdes').toBe(true);
 
     await page.keyboard.press('Enter');
     await expect(position(page)).toHaveText('4 sur 5');
@@ -93,9 +111,9 @@ test.describe('ordinateur : trois cartes', () => {
   test('montre les trois premières cartes, la flèche précédente désactivée', async ({ page }) => {
     await carrousel(page).locator('[data-piste]').scrollIntoViewIfNeeded();
     for (const titre of ['Messe de la nuit de Noël', 'Inscriptions au catéchisme', 'Kermesse paroissiale']) {
-      await expect(carrousel(page).getByRole('link', { name: titre })).toBeInViewport({ ratio: 1 });
+      await carteEntierementVisible(page, titre).toBe(true);
     }
-    await expect(carrousel(page).getByRole('link', { name: 'Concert de la chorale' })).not.toBeInViewport({ ratio: 1 });
+    await carteEntierementVisible(page, 'Concert de la chorale').toBe(false);
     await expect(position(page)).toHaveText('1 à 3 sur 5');
     await expect(precedente(page)).toBeDisabled();
     await expect(suivante(page)).toBeEnabled();
@@ -114,7 +132,7 @@ test.describe('ordinateur : trois cartes', () => {
     // La flèche désactivée ne garde pas le focus : il passe à l'autre flèche.
     await expect(precedente(page)).toBeFocused();
     for (const titre of ['Kermesse paroissiale', 'Concert de la chorale', 'Pèlerinage diocésain à Lourdes']) {
-      await expect(carrousel(page).getByRole('link', { name: titre })).toBeInViewport({ ratio: 1 });
+      await carteEntierementVisible(page, titre).toBe(true);
     }
 
     await page.keyboard.press('Enter');
