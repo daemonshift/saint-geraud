@@ -7,9 +7,9 @@
  *   const contact = contactPour(infosPratiques.contacts, 'Baptême');
  *   {contact && <CarteContact contact={contact} />}
  */
-import { lienEmail, lienTelephone } from '../lib/contact';
 import type { ContactDemarche } from '../lib/contenu';
 import { pictogrammeDeDemarche } from '../lib/pictogrammes';
+import MoyensDeContact from './MoyensDeContact.astro';
 import Pictogramme from './Pictogramme.astro';
 
 interface Props {
@@ -24,24 +24,5 @@ const { contact, niveauTitre: Titre = 'h3' } = Astro.props;
   <Pictogramme nom={pictogrammeDeDemarche(contact.role)} />
   <Titre class="mt-1 font-texte text-lg font-bold tracking-wider break-words text-or-fonce uppercase">{contact.role}</Titre>
   {contact.precision && <p class="text-gris-vert">{contact.precision}</p>}
-  <ul class="mt-auto flex w-full flex-col gap-2 pt-2">
-    {
-      contact.email && (
-        <li>
-          <a class="bouton-principal w-full break-all" href={lienEmail(contact.email)}>
-            Écrire à {contact.email}
-          </a>
-        </li>
-      )
-    }
-    {
-      contact.telephone && (
-        <li>
-          <a class="bouton-secondaire w-full" href={lienTelephone(contact.telephone)}>
-            Appeler le {contact.telephone}
-          </a>
-        </li>
-      )
-    }
-  </ul>
+  <MoyensDeContact contact={contact} />
 </article>

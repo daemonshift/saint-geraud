@@ -128,3 +128,21 @@ export function contactPour(contacts: ContactDemarche[], role: string): ContactD
   const cle = cleDe(role);
   return contacts.find((contact) => contact.cle === cle);
 }
+
+/**
+ * Contact d'une démarche (« Confession ») ; à défaut d'Info pratique propre,
+ * le presbytère, pour qu'une carte propose toujours e-mail et téléphone.
+ */
+export function contactOuPresbytere(infosPratiques: InfosPratiques, role: string): ContactDemarche {
+  const { contacts, presbytere } = infosPratiques;
+  return (
+    contactPour(contacts, role) ?? {
+      id: 'presbytere',
+      role: 'Presbytère',
+      cle: 'presbytere',
+      email: presbytere.email,
+      telephone: presbytere.telephone,
+      precision: '',
+    }
+  );
+}

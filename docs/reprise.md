@@ -211,5 +211,6 @@ La Secrétaire envoie la Lettre d'information depuis l'outil d'envoi de la paroi
 
 ## Points en attente
 
+- Textes de Prier et célébrer (`src/content/prier-et-celebrer/*.md`, une carte par fichier) et verset de la page (`src/pages/prier-et-celebrer.astro`) : rédigés pour le lancement, à faire valider par la paroisse (délais, modalités de la confession). S'il n'y a pas de temps d'adoration, supprimer `adoration.md`. Pour donner un contact propre à la confession ou à l'adoration, créer l'Info pratique (Rubrique Contacts, Libellé « Confession » ou « Adoration ») ; sinon la carte renvoie au presbytère.
 - Éditeur, directeur de publication et responsable de traitement : à reporter dans `src/content/pages-legales/mentions-legales.md` et `confidentialite.md` dès la réponse du diocèse.
 - Sous-domaine du diocèse : l'ajouter dans Vercel → Project Settings → Domains, faire créer l'enregistrement DNS indiqué par Vercel, puis mettre à jour la formule du champ Bouton.
