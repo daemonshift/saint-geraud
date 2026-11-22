@@ -9,8 +9,7 @@
  */
 import { Image } from 'astro:assets';
 import logo from '../assets/logo-saint-geraud.jpg';
-import { HORAIRES_DES_MESSES, LETTRE_D_INFORMATION, NOUS_CONTACTER, RUBRIQUES, estPageCourante } from '../lib/navigation';
-import { LIENS_EXTERNES } from '../lib/contenu-provisoire';
+import { HORAIRES_DES_MESSES, LETTRE_D_INFORMATION, LIENS_EXTERNES, NOUS_CONTACTER, RUBRIQUES, estPageCourante } from '../lib/navigation';
 
 const chemin = Astro.url.pathname;
 const courant = (href: string) => (estPageCourante(href, chemin) ? 'page' : undefined);

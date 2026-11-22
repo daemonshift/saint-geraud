@@ -1,0 +1,19 @@
+---
+/**
+ * Médaillon rond à pictogramme des cartes de sous-page (décoratif, masqué
+ * aux lecteurs d'écran).
+ */
+import { PICTOGRAMMES, type NomPictogramme } from '../lib/pictogrammes';
+
+interface Props {
+  nom: NomPictogramme;
+}
+
+const { nom } = Astro.props;
+---
+
+<div class="flex size-22 shrink-0 items-center justify-center rounded-full border-2 border-vert-sauge bg-vert-pale lg:size-30" aria-hidden="true">
+  <svg class="size-10 text-vert-profond lg:size-13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d={PICTOGRAMMES[nom]}></path>
+  </svg>
+</div>

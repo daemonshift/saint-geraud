@@ -1,0 +1,171 @@
+---
+/**
+ * La paroisse (Page fixe, modèle de sous-page de Prier et célébrer) :
+ * présentation, Curé, presbytère, contacts des démarches, diocèse.
+ * Curé, presbytère et contacts viennent des Infos pratiques.
+ *
+ * Ajouter une section : une entrée dans SECTIONS (sommaire, dans l'ordre de
+ * la page) et un <SectionSousPage id="…"> au même rang. Les Groupes (#12)
+ * prennent l'ancre `#associations`, entre `#contacts` et `#diocese`.
+ */
+import BandeauTitre from '../components/BandeauTitre.astro';
+import CarteContact from '../components/CarteContact.astro';
+import Pictogramme from '../components/Pictogramme.astro';
+import SectionSousPage from '../components/SectionSousPage.astro';
+import SommaireAncres, { type EntreeSommaire } from '../components/SommaireAncres.astro';
+import MiseEnPage from '../layouts/MiseEnPage.astro';
+import { lienEmail, lienTelephone } from '../lib/contact';
+import { contenuDuSite } from '../lib/contenu/site';
+import { LIENS_EXTERNES, NOUS_CONTACTER } from '../lib/navigation';
+
+const { infosPratiques } = await contenuDuSite();
+const { cure, presbytere, contacts } = infosPratiques;
+
+const SECTIONS: EntreeSommaire[] = [
+  { id: 'presentation', titre: 'Présentation' },
+  { id: 'cure', titre: 'Le Curé' },
+  { id: 'presbytere', titre: 'Le presbytère' },
+  { id: 'contacts', titre: 'Contacts' },
+  { id: 'diocese', titre: 'Le diocèse' },
+];
+const titre = (id: string) => SECTIONS.find((s) => s.id === id)!.titre;
+---
+
+<MiseEnPage
+  titre="La paroisse"
+  description="La paroisse Saint-Géraud des Vallées en Fumélois : son Curé, le presbytère et ses permanences d’accueil, à qui s’adresser pour chaque démarche, le diocèse d’Agen."
+>
+  <BandeauTitre titre="La paroisse" />
+  <SommaireAncres entrees={SECTIONS} />
+
+  <SectionSousPage id="presentation" titre={titre('presentation')}>
+    <div class="mx-auto flex max-w-[68ch] flex-col gap-4 text-lg">
+      <p>
+        La paroisse Saint-Géraud des Vallées en Fumélois rassemble les catholiques du Fumélois, autour de Fumel, dans le
+        diocèse d’Agen.
+      </p>
+      <p>
+        Ses Églises accueillent les messes du dimanche et de la semaine, les baptêmes, les mariages et les obsèques. Le
+        presbytère vous reçoit aux heures de permanence pour toute démarche.
+      </p>
+    </div>
+  </SectionSousPage>
+
+  <SectionSousPage id="cure" titre={titre('cure')}>
+    {
+      cure ? (
+        <article class="mx-auto flex w-full max-w-xl flex-col items-center gap-3 rounded-xl border border-or-doux bg-blanc px-5 py-8 text-center lg:px-8">
+          {cure.photo ? (
+            <img
+              src={cure.photo.chemin}
+              alt={cure.photo.texteAlternatif}
+              width="160"
+              height="160"
+              loading="lazy"
+              class="size-36 rounded-full border-2 border-vert-sauge object-cover lg:size-40"
+            />
+          ) : (
+            <Pictogramme nom="personne" />
+          )}
+          <h3 class="mt-1 text-3xl text-vert-profond">{cure.nom}</h3>
+          <p class="font-bold tracking-wider text-or-fonce uppercase">{cure.titre}</p>
+          {cure.fonctions.length > 0 && (
+            <ul class="flex flex-col gap-1 text-gris-vert">
+              {cure.fonctions.map((fonction) => (
+                <li>{fonction}</li>
+              ))}
+            </ul>
+          )}
+        </article>
+      ) : (
+        <p class="mx-auto max-w-[68ch] text-center text-lg">Pour joindre le Curé, adressez-vous au presbytère.</p>
+      )
+    }
+  </SectionSousPage>
+
+  <SectionSousPage id="presbytere" titre={titre('presbytere')}>
+    <div class="grid gap-6 md:grid-cols-2">
+      <div class="flex flex-col gap-3 rounded-xl border border-or-doux bg-blanc p-6 lg:p-8">
+        <h3 class="text-2xl text-vert-profond">Adresse et contact</h3>
+        <address class="not-italic">
+          <strong>Presbytère</strong>
+          {presbytere.adresse && <><br />{presbytere.adresse}</>}
+        </address>
+        <ul class="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+          {
+            presbytere.telephone && (
+              <li>
+                <a class="bouton-principal" href={lienTelephone(presbytere.telephone)}>Appeler le {presbytere.telephone}</a>
+              </li>
+            )
+          }
+          {
+            presbytere.email && (
+              <li>
+                <a class="bouton-secondaire break-all" href={lienEmail(presbytere.email)}>Écrire à {presbytere.email}</a>
+              </li>
+            )
+          }
+        </ul>
+        {
+          presbytere.autres.length > 0 && (
+            <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
+              {presbytere.autres.map(({ libelle, valeur }) => (
+                <>
+                  <dt class="font-bold">{libelle}</dt>
+                  <dd>{valeur}</dd>
+                </>
+              ))}
+            </dl>
+          )
+        }
+      </div>
+      <div class="flex flex-col gap-3 rounded-xl border border-or-doux bg-blanc p-6 lg:p-8">
+        <h3 class="text-2xl text-vert-profond">Accueil</h3>
+        {
+          presbytere.accueil.length > 0 ? (
+            <>
+              <p>Le presbytère vous accueille aux heures de permanence :</p>
+              <dl class="grid grid-cols-[auto_1fr] gap-x-6 gap-y-1">
+                {presbytere.accueil.map(({ jour, horaires }) => (
+                  <>
+                    <dt class="font-bold">{jour}</dt>
+                    <dd>{horaires}</dd>
+                  </>
+                ))}
+              </dl>
+            </>
+          ) : (
+            <p>Les heures de permanence sont communiquées par téléphone.</p>
+          )
+        }
+      </div>
+    </div>
+  </SectionSousPage>
+
+  <SectionSousPage id="contacts" titre={titre('contacts')}>
+    <p class="mx-auto max-w-[68ch] text-center text-lg">À qui s’adresser pour chaque démarche :</p>
+    {
+      contacts.length > 0 ? (
+        <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {contacts.map((contact) => (
+            <li>
+              <CarteContact contact={contact} />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="text-center">
+          Pour toute démarche, <a class="text-vert-profond underline" href={NOUS_CONTACTER.href}>contactez le presbytère</a>.
+        </p>
+      )
+    }
+  </SectionSousPage>
+
+  <SectionSousPage id="diocese" titre={titre('diocese')}>
+    <div class="mx-auto flex max-w-[68ch] flex-col items-center gap-4 pb-10 text-center text-lg">
+      <p>La paroisse fait partie du diocèse d’Agen, qui rassemble les paroisses catholiques du Lot-et-Garonne.</p>
+      <a class="bouton-principal" href={LIENS_EXTERNES.diocese}>Diocèse d’Agen (site du diocèse)</a>
+    </div>
+  </SectionSousPage>
+</MiseEnPage>
