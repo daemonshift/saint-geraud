@@ -1,10 +1,11 @@
 import type { ClientAirtable, EnregistrementAirtable } from '../airtable/client';
-import { ACTUALITES, EGLISES, INFOS_PRATIQUES, TABLES } from '../airtable/schema';
+import { ACTUALITES, EGLISES, GROUPES, INFOS_PRATIQUES, TABLES } from '../airtable/schema';
 import { controlerSchema } from './controle-schema';
 import { jourAParis } from './dates';
 import type { ContenuDuSite } from './modele';
 import { estArchivee, estEnLigne, trierActualites, versActualite, versEgliseLiee } from './actualites';
 import { eglisesAffichees } from './eglises';
+import { versGroupes } from './groupes';
 import { versInfosPratiques } from './infos-pratiques';
 
 /** Rend l'instant présent (fixé dans les tests). */
@@ -24,12 +25,14 @@ export interface DependancesContenu {
 export async function chargerContenuDuSite({ client, horloge, images }: DependancesContenu): Promise<ContenuDuSite> {
   const aujourdhui = jourAParis(horloge());
   controlerSchema(await client.lireSchema(), TABLES);
-  const [actualites, eglises, infosPratiques] = await Promise.all([
+  const [actualites, eglises, infosPratiques, groupes] = await Promise.all([
     lireTable(client, ACTUALITES.id),
     lireTable(client, EGLISES.id),
     lireTable(client, INFOS_PRATIQUES.id),
+    lireTable(client, GROUPES.id),
   ]);
   const eglisesParId = new Map(eglises.map((e) => [e.id, versEgliseLiee(e)]));
+  const infos = await versInfosPratiques(infosPratiques, images);
 
   return {
     actualites: trierActualites(
@@ -37,7 +40,8 @@ export async function chargerContenuDuSite({ client, horloge, images }: Dependan
     ),
     actualitesArchivees: actualites.filter((e) => estArchivee(e, aujourdhui)).map((e) => ({ id: e.id })),
     eglises: await eglisesAffichees(eglises, images),
-    infosPratiques: await versInfosPratiques(infosPratiques, images),
+    infosPratiques: infos,
+    groupes: await versGroupes(groupes, infos.presbytere, images),
   };
 }
 

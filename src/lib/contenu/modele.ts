@@ -136,6 +136,52 @@ export interface InfosPratiques {
   contacts: ContactDemarche[];
 }
 
+/**
+ * Contact d'un Groupe : son e-mail ou son site (champ Contact) ; à défaut
+ * (vide ou illisible), l'e-mail et le téléphone du presbytère. Jamais un
+ * contact personnel.
+ */
+export interface ContactGroupe {
+  email: string | null;
+  site: string | null;
+  telephone: string | null;
+  /** Vrai quand le contact est celui du presbytère. */
+  duPresbytere: boolean;
+}
+
+/** Un Groupe actif : association, mouvement ou équipe paroissiale. */
+export interface Groupe {
+  id: string;
+  nom: string;
+  /** Type saisi (« Association », « Mouvement », « Équipe paroissiale »), ou null. */
+  type: string | null;
+  /** 2 ou 3 lignes ; vide si absente. */
+  description: string;
+  contact: ContactGroupe;
+  /** Site du groupe (lien de la carte), ou null. */
+  siteWeb: string | null;
+  /** Logo ou lieu (jamais une personne reconnaissable), avec texte alternatif ; sinon null (pictogramme selon le Type). */
+  image: ImageDuSite | null;
+}
+
+/** Types de Groupe (choix du champ `Type`, dans leur ordre). */
+export type TypeGroupe = 'Association' | 'Mouvement' | 'Équipe paroissiale';
+
+/** Groupes d'un même Type ; `type` null : Groupes sans Type (« Autres groupes »). */
+export interface GroupesDUnType {
+  type: TypeGroupe | null;
+  /** « Associations », « Mouvements », « Équipes paroissiales », « Autres groupes ». */
+  titre: string;
+  groupes: Groupe[];
+}
+
+/** Groupes actifs, triés par Ordre. */
+export interface Groupes {
+  liste: Groupe[];
+  /** Regroupés par Type, dans l'ordre des choix ; aucun regroupement vide. */
+  parType: GroupesDUnType[];
+}
+
 export interface ContenuDuSite {
   /** Actualités En ligne : Mises en avant d'abord, puis Date de publication décroissante. */
   actualites: Actualite[];
@@ -145,4 +191,6 @@ export interface ContenuDuSite {
   eglises: Eglise[];
   /** Infos pratiques actives (Curé, Presbytère, Contacts). */
   infosPratiques: InfosPratiques;
+  /** Groupes actifs (associations, mouvements, équipes), triés et regroupés par Type. */
+  groupes: Groupes;
 }
