@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 
 /**
  * Bloc « En pratique » du détail d'une Actualité, avec les données d'exemple :
@@ -6,7 +6,7 @@ import { expect, test } from '@playwright/test';
  * - Kermesse paroissiale : Église Saint-Géraud, sans date d'événement ;
  * - Inscriptions au catéchisme : ni date d'événement ni Église.
  */
-const enPratique = (page: import('@playwright/test').Page) => page.getByRole('complementary', { name: 'En pratique' });
+const enPratique = (page: import('./fixtures').Page) => page.getByRole('complementary', { name: 'En pratique' });
 
 test.describe('Actualité qui annonce un événement', () => {
   test.beforeEach(async ({ page }) => {

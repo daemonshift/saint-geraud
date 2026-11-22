@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 
 const ENTREES_DU_MENU = ['Accueil', 'La paroisse', 'Prier et célébrer', 'Actualités', 'Nos églises', 'Horaires des messes'];
 

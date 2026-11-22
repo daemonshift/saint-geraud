@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 
 /**
  * Prier et célébrer, construite avec les textes de src/content/prier-et-celebrer/

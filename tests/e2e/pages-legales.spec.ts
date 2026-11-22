@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 import { PAGES_LEGALES } from '../../src/lib/navigation';
 
 // Pages légales (spec #1, ADR 0003). Les tests transverses (axe, 18 px, 48 px,

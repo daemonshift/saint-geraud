@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page } from './fixtures';
 
 // Encart « Recevoir la Lettre d'information » (ADR 0003 : aucune Inscription
 // sur le site, on écrit à la paroisse ou on remet le formulaire papier).

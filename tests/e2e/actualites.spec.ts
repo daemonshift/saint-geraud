@@ -1,4 +1,4 @@
-import { expect, test, type Locator } from '@playwright/test';
+import { expect, test, type Locator } from './fixtures';
 
 /**
  * Actualités du site construit avec les données d'exemple
