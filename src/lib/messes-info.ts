@@ -4,7 +4,7 @@
  * `Widget.nocache.js` (pas d'iframe). Essai réel (novembre 2026, consigné dans
  * l'issue #10) : le script charge Google Tag Manager, Google Analytics et
  * Didomi, qui déposent des cookies (`_ga`, `_gid`, `didomi_token`) sur le
- * domaine du site. D'où le chargement au clic seulement (ADR 0003).
+ * domaine du site. D'où la bannière cookies (ADR 0004).
  */
 
 /** Identifiant messes.info de la communauté (la paroisse). */

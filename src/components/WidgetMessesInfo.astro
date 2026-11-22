@@ -1,10 +1,12 @@
 ---
 /**
- * Widget messes.info chargé au clic (ADR 0003, ticket #10).
+ * Widget messes.info (ADR 0004, ticket #10).
  *
  * Le script du widget dépose des cookies de mesure d'audience (essai réel
- * consigné dans l'issue #10) : rien n'est demandé à messes.info avant le clic
- * sur « Afficher les horaires », qui vaut consentement pour ce seul contenu.
+ * consigné dans l'issue #10) : rien n'est demandé à messes.info sans accord.
+ * Accord donné dans la bannière cookies (`BanniereCookies.astro`) : chargement
+ * sans clic. Sinon, le clic sur « Afficher les horaires » vaut consentement
+ * pour ce seul affichage.
  * Sans JavaScript, le bouton reste caché ; le lien « Voir plus de messes sur
  * messes.info » est le chemin garanti, toujours affiché.
  *
@@ -83,14 +85,27 @@ import {
 </style>
 
 <script>
+  import { CLE_CONSENTEMENT, EVENEMENT_CHOIX, choixEnregistre } from '../lib/consentement';
+
+  function choixDuVisiteur() {
+    try {
+      return choixEnregistre(localStorage.getItem(CLE_CONSENTEMENT), new Date());
+    } catch {
+      return null;
+    }
+  }
+
   for (const bloc of document.querySelectorAll<HTMLElement>('[data-widget-messes-info]')) {
     const consentement = bloc.querySelector<HTMLElement>('[data-consentement]')!;
     const bouton = bloc.querySelector<HTMLButtonElement>('[data-afficher]')!;
     const etat = bloc.querySelector<HTMLElement>('[data-etat]')!;
     const conteneur = bloc.querySelector<HTMLElement>('[data-conteneur]')!;
-    consentement.hidden = false;
+    let charge = false;
 
-    bouton.addEventListener('click', () => {
+    /** Charge le widget ; `focus` après un clic sur « Afficher les horaires » seulement. */
+    function charger({ focus }: { focus: boolean }) {
+      if (charge) return;
+      charge = true;
       conteneur.dataset.egliseinfo = 'horaires';
       conteneur.dataset.search = bouton.dataset.recherche!;
       conteneur.hidden = false;
@@ -106,7 +121,15 @@ import {
       });
       document.body.append(script);
       consentement.remove();
-      conteneur.focus();
+      if (focus) conteneur.focus();
+    }
+
+    // Accord donné dans la bannière (ADR 0004) : chargement sans clic.
+    if (choixDuVisiteur() === 'accepte') charger({ focus: false });
+    else consentement.hidden = false;
+    document.addEventListener(EVENEMENT_CHOIX, (evenement) => {
+      if ((evenement as CustomEvent).detail === 'accepte') charger({ focus: false });
     });
+    bouton.addEventListener('click', () => charger({ focus: true }));
   }
 </script>

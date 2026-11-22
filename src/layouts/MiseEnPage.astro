@@ -14,6 +14,7 @@ import '../styles/global.css';
 import EnTete from '../components/EnTete.astro';
 import PiedDePage from '../components/PiedDePage.astro';
 import BoutonTailleTexte from '../components/BoutonTailleTexte.astro';
+import BanniereCookies from '../components/BanniereCookies.astro';
 import { CLE_TAILLE_DU_TEXTE, TAILLE_GRANDE } from '../lib/taille-du-texte';
 import { contenuDuSite } from '../lib/contenu/site';
 
@@ -59,5 +60,6 @@ const titreComplet = titre === 'Accueil' ? NOM_DU_SITE : `${titre} — ${NOM_DU_
       <slot />
     </main>
     <PiedDePage presbytere={infosPratiques.presbytere} />
+    <BanniereCookies />
   </body>
 </html>

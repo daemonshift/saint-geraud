@@ -11,6 +11,9 @@ import { PAGES } from './pages';
  * - un lien placé dans une phrase (`<p>` qui contient d'autres mots) échappe
  *   à la règle des 48 px, comme le prévoit le critère WCAG 2.5.8.
  */
+// Première visite : la bannière cookies (ADR 0004) est affichée et contrôlée avec chaque page.
+test.use({ choixCookies: null });
+
 for (const { nom, chemin } of PAGES) {
   test.describe(nom, () => {
     test.beforeEach(async ({ page }) => {
