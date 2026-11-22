@@ -15,9 +15,18 @@ export const PICTOGRAMMES = {
   maison: 'M3 11l9-7 9 7M5 10v10h14V10M10 20v-6h4v6',
   personne: 'M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM4 21a8 8 0 0 1 16 0',
   enveloppe: 'M3 6h18v12H3zM3 6l9 7 9-7',
+  personnes: 'M8 5a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM16 5a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM2 20a6 6 0 0 1 12 0M10 20a6 6 0 0 1 12 0',
+  flamme: 'M12 3c3 3.5 6 6.5 6 10.5a6 6 0 0 1-12 0c0-2.5 1.5-4.5 3-6 0 2 1 3.5 2.5 4C11 9 11 6 12 3z',
 } as const;
 
 export type NomPictogramme = keyof typeof PICTOGRAMMES;
+
+/** Pictogramme d'un Groupe sans image, selon son Type. */
+export function pictogrammeDeGroupe(type: string | null): NomPictogramme {
+  if (type === 'Mouvement') return 'flamme';
+  if (type === 'Équipe paroissiale') return 'maison';
+  return 'personnes';
+}
 
 /** Pictogramme d'un contact selon sa démarche (« Baptême » → goutte) ; enveloppe à défaut. */
 export function pictogrammeDeDemarche(role: string): NomPictogramme {

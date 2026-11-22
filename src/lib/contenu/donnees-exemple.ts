@@ -13,7 +13,7 @@
  */
 import type { EnregistrementAirtable } from '../airtable/client';
 import type { DonneesAirtable } from '../airtable/client-en-memoire';
-import { ACTUALITES, EGLISES, INFOS_PRATIQUES, type TableAirtable } from '../airtable/schema';
+import { ACTUALITES, EGLISES, GROUPES, INFOS_PRATIQUES, type TableAirtable } from '../airtable/schema';
 import { PREFIXE_IMAGE_EXEMPLE } from './images';
 
 type Valeurs<T extends TableAirtable> = { [K in keyof T['champs']]?: unknown };
@@ -81,6 +81,16 @@ export function infoPratique(id: string, valeurs: Valeurs<typeof INFOS_PRATIQUES
   });
 }
 
+/** Groupe Actif, de Type Association ; les valeurs passées remplacent ces valeurs par défaut. */
+export function groupe(id: string, valeurs: Valeurs<typeof GROUPES> = {}): EnregistrementAirtable {
+  return enregistrement(GROUPES, id, {
+    nom: `Groupe ${id}`,
+    type: 'Association',
+    active: true,
+    ...valeurs,
+  });
+}
+
 export const DONNEES_EXEMPLE: DonneesAirtable = {
   // Valeurs d'exemple, pas les vraies coordonnées. Pas de photo du Curé : on
   // n'invente pas le portrait d'une personne (la photo d'Église couvre le
@@ -112,6 +122,40 @@ export const DONNEES_EXEMPLE: DonneesAirtable = {
     infoPratique('recExempleCatechisme', { rubrique: 'Contacts', libelle: 'Catéchisme', valeur: 'catechisme@example.org', ordre: 4 }),
     // Jamais affichée : inactive.
     infoPratique('recExempleInactive', { rubrique: 'Contacts', libelle: 'Contact masqué', valeur: 'masque@example.org', active: false }),
+  ],
+  // Groupes d'exemple ; la Chorale a une image (lieu de répétition) qui passe par le stockage des images.
+  groupes: [
+    groupe('recExempleChorale', {
+      nom: 'Chorale paroissiale',
+      type: 'Association',
+      description: 'Elle anime les messes du dimanche et les grandes fêtes.\nRépétition le jeudi soir.',
+      contact: 'chorale@example.org',
+      image: [pieceJointe('attExempleChorale', { url: imageExemple('eglise-saint-antoine.jpg'), filename: 'eglise-saint-antoine.jpg' })],
+      texteAlternatif: 'Nef de l’église Saint-Antoine, où répète la chorale',
+      ordre: 1,
+    }),
+    groupe('recExempleSecours', {
+      nom: 'Secours catholique',
+      type: 'Association',
+      description: 'Accueil et entraide pour les personnes en difficulté.',
+      siteWeb: 'https://secours.example.org/',
+      ordre: 2,
+    }),
+    groupe('recExempleScouts', {
+      nom: 'Scouts et guides',
+      type: 'Mouvement',
+      description: 'Pour les jeunes de 8 à 17 ans.',
+      contact: 'https://scouts.example.org/',
+      ordre: 3,
+    }),
+    groupe('recExempleLiturgie', {
+      nom: 'Équipe liturgique',
+      type: 'Équipe paroissiale',
+      description: 'Elle prépare les célébrations avec le Curé.',
+      ordre: 4,
+    }),
+    // Jamais affiché : inactif.
+    groupe('recExempleGroupeInactif', { nom: 'Groupe masqué', active: false, ordre: 0 }),
   ],
   eglises: [
     eglise('recEgliseSaintAntoine', {

@@ -1,15 +1,16 @@
 ---
 /**
  * La paroisse (Page fixe, modèle de sous-page de Prier et célébrer) :
- * présentation, Curé, presbytère, contacts des démarches, diocèse.
- * Curé, presbytère et contacts viennent des Infos pratiques.
+ * présentation, Curé, presbytère, contacts des démarches, Groupes, diocèse.
+ * Curé, presbytère et contacts viennent des Infos pratiques ; les Groupes
+ * (`#associations`) de la table Groupes, regroupés par Type.
  *
  * Ajouter une section : une entrée dans SECTIONS (sommaire, dans l'ordre de
- * la page) et un <SectionSousPage id="…"> au même rang. Les Groupes (#12)
- * prennent l'ancre `#associations`, entre `#contacts` et `#diocese`.
+ * la page) et un <SectionSousPage id="…"> au même rang.
  */
 import BandeauTitre from '../components/BandeauTitre.astro';
 import CarteContact from '../components/CarteContact.astro';
+import CarteGroupe from '../components/CarteGroupe.astro';
 import Pictogramme from '../components/Pictogramme.astro';
 import SectionSousPage from '../components/SectionSousPage.astro';
 import SommaireAncres, { type EntreeSommaire } from '../components/SommaireAncres.astro';
@@ -18,7 +19,7 @@ import { lienEmail, lienTelephone } from '../lib/contact';
 import { contenuDuSite } from '../lib/contenu/site';
 import { LIENS_EXTERNES, NOUS_CONTACTER } from '../lib/navigation';
 
-const { infosPratiques } = await contenuDuSite();
+const { infosPratiques, groupes } = await contenuDuSite();
 const { cure, presbytere, contacts } = infosPratiques;
 
 const SECTIONS: EntreeSommaire[] = [
@@ -26,6 +27,7 @@ const SECTIONS: EntreeSommaire[] = [
   { id: 'cure', titre: 'Le Curé' },
   { id: 'presbytere', titre: 'Le presbytère' },
   { id: 'contacts', titre: 'Contacts' },
+  { id: 'associations', titre: 'Associations et mouvements' },
   { id: 'diocese', titre: 'Le diocèse' },
 ];
 const titre = (id: string) => SECTIONS.find((s) => s.id === id)!.titre;
@@ -157,6 +159,33 @@ const titre = (id: string) => SECTIONS.find((s) => s.id === id)!.titre;
       ) : (
         <p class="text-center">
           Pour toute démarche, <a class="text-vert-profond underline" href={NOUS_CONTACTER.href}>contactez le presbytère</a>.
+        </p>
+      )
+    }
+  </SectionSousPage>
+
+  <SectionSousPage id="associations" titre={titre('associations')}>
+    <p class="mx-auto max-w-[68ch] text-center text-lg">
+      Associations, mouvements et équipes de la paroisse : chacun vous accueille pour y participer.
+    </p>
+    {
+      groupes.parType.length > 0 ? (
+        groupes.parType.map(({ titre: titreDuType, groupes: duType }) => (
+          <div class="flex flex-col gap-4">
+            <h3 class="text-center text-2xl text-vert-profond">{titreDuType}</h3>
+            <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {duType.map((groupe) => (
+                <li>
+                  <CarteGroupe groupe={groupe} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      ) : (
+        <p class="text-center">
+          Pour rejoindre une association ou un mouvement,{' '}
+          <a class="text-vert-profond underline" href={NOUS_CONTACTER.href}>contactez le presbytère</a>.
         </p>
       )
     }

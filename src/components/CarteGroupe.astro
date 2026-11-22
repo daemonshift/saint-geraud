@@ -1,0 +1,79 @@
+---
+/**
+ * Carte d'un Groupe (La paroisse, `#associations`) : image (logo ou lieu,
+ * avec son texte alternatif) ou pictogramme selon le Type, nom, description,
+ * contact du groupe ou du presbytère, lien facultatif vers son site.
+ */
+import { lienEmail, lienTelephone } from '../lib/contact';
+import type { Groupe } from '../lib/contenu';
+import { pictogrammeDeGroupe } from '../lib/pictogrammes';
+import Pictogramme from './Pictogramme.astro';
+
+interface Props {
+  groupe: Groupe;
+  niveauTitre?: 'h3' | 'h4';
+}
+
+const { groupe, niveauTitre: Titre = 'h4' } = Astro.props;
+const { contact } = groupe;
+// Le Contact peut déjà être le site du groupe : un seul lien.
+const siteWeb = groupe.siteWeb && groupe.siteWeb !== contact.site ? groupe.siteWeb : null;
+---
+
+<article id={`groupe-${groupe.id}`} class="flex h-full scroll-mt-6 flex-col items-center gap-3 rounded-xl border border-or-doux bg-blanc px-5 py-6 text-center lg:px-6 lg:py-8">
+  {
+    groupe.image ? (
+      <img
+        src={groupe.image.chemin}
+        alt={groupe.image.texteAlternatif}
+        width="120"
+        height="120"
+        loading="lazy"
+        class="size-22 rounded-full border-2 border-vert-sauge bg-blanc object-contain lg:size-30"
+      />
+    ) : (
+      <Pictogramme nom={pictogrammeDeGroupe(groupe.type)} />
+    )
+  }
+  <Titre class="mt-1 font-texte text-lg font-bold tracking-wider break-words text-or-fonce uppercase">{groupe.nom}</Titre>
+  {groupe.description && <p class="whitespace-pre-line text-gris-vert">{groupe.description}</p>}
+  <ul class="mt-auto flex w-full flex-col gap-2 pt-2">
+    {contact.duPresbytere && <li class="text-gris-vert">Contact : le presbytère</li>}
+    {
+      contact.email && (
+        <li>
+          <a class="bouton-principal w-full break-all" href={lienEmail(contact.email)}>
+            Écrire à {contact.email}
+          </a>
+        </li>
+      )
+    }
+    {
+      contact.telephone && (
+        <li>
+          <a class="bouton-secondaire w-full" href={lienTelephone(contact.telephone)}>
+            Appeler le {contact.telephone}
+          </a>
+        </li>
+      )
+    }
+    {
+      contact.site && (
+        <li>
+          <a class="bouton-principal w-full" href={contact.site}>
+            Contacter {groupe.nom} (site du groupe)
+          </a>
+        </li>
+      )
+    }
+    {
+      siteWeb && (
+        <li>
+          <a class="bouton-secondaire w-full" href={siteWeb}>
+            Site de {groupe.nom}
+          </a>
+        </li>
+      )
+    }
+  </ul>
+</article>
