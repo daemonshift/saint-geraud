@@ -1,16 +1,17 @@
 ---
 /**
- * Accueil (squelette, ticket #2). Les sections suivantes viennent avec leurs
- * tickets : carrousel des Actualités, widget messes.info. Nos églises : #8.
+ * Accueil. Carrousel des Actualités : #6. Nos églises : #8. Le widget
+ * messes.info vient avec son ticket.
  * L'encart Lettre d'information (#16) prend l'e-mail du presbytère (Infos pratiques).
  */
 import MiseEnPage from '../layouts/MiseEnPage.astro';
+import CarrouselActualites from '../components/CarrouselActualites.astro';
 import EncartLettreInformation from '../components/EncartLettreInformation.astro';
 import SectionNosEglises from '../components/SectionNosEglises.astro';
 import { contenuDuSite } from '../lib/contenu/site';
 import { HORAIRES_DES_MESSES, NOUS_CONTACTER } from '../lib/navigation';
 
-const { eglises, infosPratiques } = await contenuDuSite();
+const { actualites, eglises, infosPratiques } = await contenuDuSite();
 ---
 
 <MiseEnPage titre="Accueil">
@@ -34,6 +35,8 @@ const { eglises, infosPratiques } = await contenuDuSite();
       <li><a class="bouton-secondaire" href={NOUS_CONTACTER.href}>{NOUS_CONTACTER.libelle}</a></li>
     </ul>
   </section>
+
+  <CarrouselActualites actualites={actualites} />
 
   <SectionNosEglises eglises={eglises} />
 
