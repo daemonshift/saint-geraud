@@ -4,9 +4,9 @@
  * avec son texte alternatif) ou pictogramme selon le Type, nom, description,
  * contact du groupe ou du presbytère, lien facultatif vers son site.
  */
-import { lienEmail, lienTelephone } from '../lib/contact';
 import type { Groupe } from '../lib/contenu';
 import { pictogrammeDeGroupe } from '../lib/pictogrammes';
+import MoyensDeContact from './MoyensDeContact.astro';
 import Pictogramme from './Pictogramme.astro';
 
 interface Props {
@@ -37,26 +37,8 @@ const siteWeb = groupe.siteWeb && groupe.siteWeb !== contact.site ? groupe.siteW
   }
   <Titre class="mt-1 font-texte text-lg font-bold tracking-wider break-words text-or-fonce uppercase">{groupe.nom}</Titre>
   {groupe.description && <p class="whitespace-pre-line text-gris-vert">{groupe.description}</p>}
-  <ul class="mt-auto flex w-full flex-col gap-2 pt-2">
-    {contact.duPresbytere && <li class="text-gris-vert">Contact : le presbytère</li>}
-    {
-      contact.email && (
-        <li>
-          <a class="bouton-principal w-full break-all" href={lienEmail(contact.email)}>
-            Écrire à {contact.email}
-          </a>
-        </li>
-      )
-    }
-    {
-      contact.telephone && (
-        <li>
-          <a class="bouton-secondaire w-full" href={lienTelephone(contact.telephone)}>
-            Appeler le {contact.telephone}
-          </a>
-        </li>
-      )
-    }
+  <MoyensDeContact contact={contact}>
+    {contact.duPresbytere && <li slot="avant" class="text-gris-vert">Contact : le presbytère</li>}
     {
       contact.site && (
         <li>
@@ -70,10 +52,10 @@ const siteWeb = groupe.siteWeb && groupe.siteWeb !== contact.site ? groupe.siteW
       siteWeb && (
         <li>
           <a class="bouton-secondaire w-full" href={siteWeb}>
-            Site de {groupe.nom}
+            Découvrir {groupe.nom} (site du groupe)
           </a>
         </li>
       )
     }
-  </ul>
+  </MoyensDeContact>
 </article>

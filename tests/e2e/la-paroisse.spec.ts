@@ -77,7 +77,7 @@ test.describe('La paroisse', () => {
     await expect(secours).toContainText('Contact : le presbytère');
     await expect(secours.locator('a[href^="mailto:"]')).toHaveText('Écrire à paroisse@example.org');
     await expect(secours.locator('a[href^="tel:+33"]')).toHaveCount(1);
-    await expect(secours.getByRole('link', { name: 'Site de Secours catholique' })).toHaveAttribute(
+    await expect(secours.getByRole('link', { name: 'Découvrir Secours catholique (site du groupe)' })).toHaveAttribute(
       'href',
       'https://secours.example.org/',
     );

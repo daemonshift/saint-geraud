@@ -1,8 +1,11 @@
 ---
 /**
  * Les deux moyens de contact d'une démarche, en boutons : e-mail en clair
- * (`mailto:`) puis téléphone (`tel:`). Partagé par CarteContact (La paroisse)
- * et CartePrierEtCelebrer, pour un affichage identique.
+ * (`mailto:`) puis téléphone (`tel:`). Partagé par CarteContact (La paroisse),
+ * CartePrierEtCelebrer et CarteGroupe, pour un affichage identique.
+ *
+ * Slots : `avant` (éléments `<li>` placés avant l'e-mail) et le slot par
+ * défaut (éléments `<li>` placés après le téléphone).
  */
 import { lienEmail, lienTelephone } from '../lib/contact';
 import type { ContactDemarche } from '../lib/contenu';
@@ -15,6 +18,7 @@ const { contact } = Astro.props;
 ---
 
 <ul class="mt-auto flex w-full flex-col gap-2 pt-2">
+  <slot name="avant" />
   {
     contact.email && (
       <li>
@@ -33,4 +37,5 @@ const { contact } = Astro.props;
       </li>
     )
   }
+  <slot />
 </ul>
