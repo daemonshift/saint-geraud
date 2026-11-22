@@ -1,7 +1,7 @@
 ---
 titre: Accessibilité
 description: "Déclaration d’accessibilité du site de la paroisse Saint-Géraud des Vallées en Fumélois : objectif WCAG 2.1 niveau AA, site partiellement conforme."
-miseAJour: 2026-11-21
+miseAJour: 2026-11-22
 ---
 
 ## Notre objectif
@@ -14,13 +14,19 @@ Le site est **partiellement conforme** aux règles WCAG 2.1 niveau AA. Il n’a 
 
 ## Ce qui est déjà fait
 
-- tout le texte est affiché à 18 pixels au moins, et le bouton « Aa » l’agrandit encore ;
-- les boutons et les liens mesurent au moins 48 pixels de côté, pour être faciles à toucher ;
+- le texte est affiché à 18 pixels au moins (seule la mention « des Vallées en Fumélois », sous le nom de la paroisse, est plus petite), et le bouton « Aa » l’agrandit encore ; votre choix est retenu par votre navigateur ;
+- les boutons et les liens mesurent au moins 48 pixels de haut, pour être faciles à toucher, sauf les liens placés dans une phrase ;
 - les couleurs offrent un contraste suffisant ;
-- le site se parcourt entièrement au clavier, avec un lien « Aller au contenu » ;
-- le carrousel des Actualités ne défile jamais tout seul ;
-- la carte des églises est toujours accompagnée de la liste écrite des églises ;
-- chaque modification du site est contrôlée automatiquement (outil axe) avant sa mise en ligne.
+- le site se parcourt au clavier, avec un lien « Aller au contenu » ;
+- le carrousel des Actualités ne défile jamais tout seul : on avance avec ses flèches, au clavier ou au doigt ;
+- la carte des églises est accompagnée de la liste écrite des églises, complète sur la page Nos églises, avec leur adresse et leur accès PMR ;
+- chaque modification du code du site est contrôlée automatiquement (outil axe), sur des contenus d’exemple.
+
+## Limites connues
+
+- **Les horaires des messes** sont affichés par le widget de messes.info, un contenu extérieur que la paroisse ne maîtrise pas et dont l’accessibilité n’a pas été vérifiée. Le lien « Voir plus de messes sur messes.info » et les liens de chaque église donnent accès aux mêmes horaires.
+- **La carte des églises** se manipule mal au clavier et n’est pas lisible avec un lecteur d’écran : la liste écrite des églises donne les mêmes informations.
+- Les Actualités et les informations pratiques, saisies par l’équipe de communication, ne passent pas par le contrôle automatique : une image sans texte alternatif n’est simplement pas affichée.
 
 ## Signaler un problème
 
