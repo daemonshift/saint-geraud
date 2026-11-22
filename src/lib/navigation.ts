@@ -1,33 +1,36 @@
 /**
- * Rubriques du menu principal et adresses des pages : source unique, reprise
+ * Entrées du menu principal et adresses des pages : source unique, reprise
  * par l'en-tête, le pied de page et les tests. Un ticket qui crée une page
  * reprend l'adresse indiquée ici.
  */
 import { PAROISSE_SUR_MESSES_INFO } from './messes-info';
 
-export interface Rubrique {
+/** Lien du site : libellé affiché et adresse. */
+export interface EntreeDeMenu {
   libelle: string;
   href: string;
 }
 
-export const NOS_EGLISES: Rubrique = { libelle: 'Nos églises', href: '/nos-eglises' };
+export const NOS_EGLISES: EntreeDeMenu = { libelle: 'Nos églises', href: '/nos-eglises' };
 
-export const RUBRIQUES: Rubrique[] = [
+export const ACTUALITES: EntreeDeMenu = { libelle: 'Actualités', href: '/actualites' };
+
+export const ENTREES_DU_MENU: EntreeDeMenu[] = [
   { libelle: 'Accueil', href: '/' },
   { libelle: 'La paroisse', href: '/la-paroisse' },
   { libelle: 'Prier et célébrer', href: '/prier-et-celebrer' },
-  { libelle: 'Actualités', href: '/actualites' },
+  ACTUALITES,
   NOS_EGLISES,
 ];
 
 /** Mise en avant à part (bouton) : toujours visible, y compris en mobile sans ouvrir le menu. */
-export const HORAIRES_DES_MESSES: Rubrique = { libelle: 'Horaires des messes', href: '/horaires-des-messes' };
+export const HORAIRES_DES_MESSES: EntreeDeMenu = { libelle: 'Horaires des messes', href: '/horaires-des-messes' };
 
 /** Ancre du bloc « Nous contacter » du pied de page, présent sur toutes les pages. */
-export const NOUS_CONTACTER: Rubrique = { libelle: 'Nous contacter', href: '#nous-contacter' };
+export const NOUS_CONTACTER: EntreeDeMenu = { libelle: 'Nous contacter', href: '#nous-contacter' };
 
 /** Ancre de l'encart « Recevoir la Lettre d'information » de l'Accueil, joignable depuis toute page. */
-export const LETTRE_D_INFORMATION: Rubrique = { libelle: 'Lettre d’information', href: '/#lettre-d-information' };
+export const LETTRE_D_INFORMATION: EntreeDeMenu = { libelle: 'Lettre d’information', href: '/#lettre-d-information' };
 
 /** Formulaire papier d'Inscription à la Lettre d'information, servi depuis `public/`. */
 export const FORMULAIRE_LETTRE_D_INFORMATION = '/formulaire-lettre-d-information.pdf';
@@ -39,7 +42,7 @@ export const LIENS_EXTERNES = {
   messesInfo: PAROISSE_SUR_MESSES_INFO,
 };
 
-export const PAGES_LEGALES: Rubrique[] = [
+export const PAGES_LEGALES: EntreeDeMenu[] = [
   { libelle: 'Mentions légales', href: '/mentions-legales' },
   { libelle: 'Confidentialité', href: '/confidentialite' },
   { libelle: 'Accessibilité', href: '/accessibilite' },

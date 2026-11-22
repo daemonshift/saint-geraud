@@ -3,11 +3,12 @@
  * Carte de Prier et célébrer (texte en Markdown dans
  * src/content/prier-et-celebrer/) : médaillon, titre, sous-titre, texte,
  * puis le contact de la démarche (Infos pratiques, même source que La
- * paroisse ; à défaut le presbytère) ou un bouton vers une page du site.
+ * paroisse ; le presbytère si le fichier déclare `contactParDefaut: presbytere`)
+ * ou un bouton vers une page du site.
  * Sur mobile, un lien « Haut de page » termine la carte.
  */
 import { render, type CollectionEntry } from 'astro:content';
-import { contactOuPresbytere, type InfosPratiques } from '../lib/contenu';
+import { contactDeDemarche, type InfosPratiques } from '../lib/contenu';
 import MoyensDeContact from './MoyensDeContact.astro';
 import Pictogramme from './Pictogramme.astro';
 
@@ -17,8 +18,8 @@ interface Props {
 }
 
 const { carte, infosPratiques } = Astro.props;
-const { titre, sousTitre, pictogramme, contact: role, lien } = carte.data;
-const contact = role ? contactOuPresbytere(infosPratiques, role) : null;
+const { titre, sousTitre, pictogramme, contact: role, contactParDefaut, lien } = carte.data;
+const contact = role ? contactDeDemarche(infosPratiques, role, { parDefaut: contactParDefaut }) : null;
 const { Content } = await render(carte);
 ---
 

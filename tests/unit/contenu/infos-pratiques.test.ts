@@ -3,7 +3,7 @@ import { creerClientEnMemoire } from '../../../src/lib/airtable/client-en-memoir
 import type { EnregistrementAirtable } from '../../../src/lib/airtable/client';
 import { chargerContenuDuSite } from '../../../src/lib/contenu';
 import { infoPratique } from '../../../src/lib/contenu/donnees-exemple';
-import { contactOuPresbytere, contactPour } from '../../../src/lib/contenu/infos-pratiques';
+import { contactDeDemarche, contactPour } from '../../../src/lib/contenu/infos-pratiques';
 import { fauxStockageImages } from './outils';
 
 function charger(infosPratiques: EnregistrementAirtable[], images = fauxStockageImages()) {
@@ -144,14 +144,14 @@ describe('Infos pratiques', () => {
     expect(contactPour(infosPratiques.contacts, 'obsèques')?.id).toBe('recObseques');
   });
 
-  it('Contact d’une démarche sans contact propre : le presbytère, avec ses deux moyens', async () => {
+  it('Contact d’une démarche qui déclare le presbytère par défaut, sans contact propre : le presbytère, avec ses deux moyens', async () => {
     const { infosPratiques } = await charger([
       infoPratique('recTel', { rubrique: 'Presbytère', libelle: 'Téléphone', telephone: '05 53 00 00 00' }),
       infoPratique('recEmail', { rubrique: 'Presbytère', libelle: 'E-mail', valeur: 'paroisse@example.org' }),
       infoPratique('recBapteme', { rubrique: 'Contacts', libelle: 'Baptême', valeur: 'bapteme@example.org' }),
     ]);
-    expect(contactOuPresbytere(infosPratiques, 'Baptême').email).toBe('bapteme@example.org');
-    expect(contactOuPresbytere(infosPratiques, 'Confession')).toEqual({
+    expect(contactDeDemarche(infosPratiques, 'Baptême', { parDefaut: 'presbytere' }).email).toBe('bapteme@example.org');
+    expect(contactDeDemarche(infosPratiques, 'Confession', { parDefaut: 'presbytere' })).toEqual({
       id: 'presbytere',
       role: 'Presbytère',
       cle: 'presbytere',
@@ -159,5 +159,17 @@ describe('Infos pratiques', () => {
       telephone: '05 53 00 00 00',
       precision: '',
     });
+  });
+
+  it('Contact d’une démarche introuvable sans repli déclaré : erreur qui nomme le rôle et les Libellés disponibles', async () => {
+    const { infosPratiques } = await charger([
+      infoPratique('recEmail', { rubrique: 'Presbytère', libelle: 'E-mail', valeur: 'paroisse@example.org' }),
+      infoPratique('recBapteme', { rubrique: 'Contacts', libelle: 'Baptême', valeur: 'bapteme@example.org', ordre: 1 }),
+      infoPratique('recMariage', { rubrique: 'Contacts', libelle: 'Mariage', valeur: 'mariage@example.org', ordre: 2 }),
+    ]);
+    expect(contactDeDemarche(infosPratiques, 'baptême').id).toBe('recBapteme');
+    expect(() => contactDeDemarche(infosPratiques, 'Baptèmes')).toThrow(
+      'aucune Info pratique de Rubrique Contacts n’a le Libellé « Baptèmes » (Libellés disponibles : Baptême, Mariage)',
+    );
   });
 });

@@ -57,6 +57,7 @@ Base : `Paroisse Saint-Géraud` — `appFZ9EorUC2DY3yh` (espace de travail dédi
 Conventions de contenu :
 - Rubrique Presbytère : Adresse, Téléphone, E-mail, puis une ligne par jour de permanence (Libellé = jour, Valeur = horaires, Description = « Permanence d'accueil »).
 - Rubrique Contacts : une ligne par sacrement ou démarche ; chacune porte les deux moyens de contact (Valeur = e-mail, Téléphone = numéro). Le site affiche les deux.
+- Cartes de Prier et célébrer (`src/content/prier-et-celebrer/*.md`) : le champ `contact:` du fichier reprend **exactement** le Libellé de l'Info pratique (accents et casse ignorés), pour afficher le même contact que La paroisse. Si aucune Info pratique active ne porte ce Libellé, le build échoue en nommant le rôle et les Libellés disponibles, sauf si le fichier déclare `contactParDefaut: presbytere` (la carte renvoie alors au presbytère ; c'est le cas de Confession et Adoration). Renommer un Libellé dans Airtable impose donc de mettre à jour le fichier correspondant.
 
 ## Table `Groupes` — `tbltTtMAX4ME7fcQ9` (créée le 21/11/2026)
 

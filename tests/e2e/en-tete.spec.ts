@@ -1,6 +1,6 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 
-const RUBRIQUES = ['Accueil', 'La paroisse', 'Prier et célébrer', 'Actualités', 'Nos églises', 'Horaires des messes'];
+const ENTREES_DU_MENU = ['Accueil', 'La paroisse', 'Prier et célébrer', 'Actualités', 'Nos églises', 'Horaires des messes'];
 
 test.describe('Lien « Aller au contenu »', () => {
   test('est le premier élément focalisable et mène au contenu principal', async ({ page }) => {
@@ -27,13 +27,25 @@ test.describe('En-tête', () => {
 test.describe('Navigation sur ordinateur', () => {
   test.skip(({ viewport }) => (viewport?.width ?? 0) < 1024, 'ordinateur seulement');
 
-  test('affiche les six rubriques sans bouton Menu', async ({ page }) => {
+  test('affiche les six entrées du menu sans bouton Menu', async ({ page }) => {
     await page.goto('/');
     const nav = page.getByRole('navigation', { name: 'Menu principal' });
-    for (const rubrique of RUBRIQUES) {
-      await expect(nav.getByRole('link', { name: rubrique, exact: true })).toBeVisible();
+    for (const entree of ENTREES_DU_MENU) {
+      await expect(nav.getByRole('link', { name: entree, exact: true })).toBeVisible();
     }
     await expect(page.getByRole('button', { name: 'Menu' })).toBeHidden();
+  });
+
+  test('le bouton « Aa » reste sur la ligne du logotype', async ({ page }) => {
+    await page.goto('/');
+    const banniere = page.getByRole('banner');
+    const logotype = await banniere.getByRole('link', { name: /Paroisse Saint.Géraud/ }).boundingBox();
+    const aa = await banniere.getByRole('button', { name: 'Agrandir le texte' }).boundingBox();
+    expect(logotype && aa).toBeTruthy();
+    // Même ligne : le centre vertical du bouton tombe dans la hauteur du logotype.
+    const centreAa = aa!.y + aa!.height / 2;
+    expect(centreAa).toBeGreaterThan(logotype!.y);
+    expect(centreAa).toBeLessThan(logotype!.y + logotype!.height);
   });
 });
 
@@ -46,14 +58,14 @@ test.describe('Menu mobile', () => {
     await expect(page.getByRole('button', { name: 'Menu' })).toHaveAttribute('aria-expanded', 'false');
   });
 
-  test('s’ouvre au clic et présente les rubriques', async ({ page }) => {
+  test('s’ouvre au clic et présente les entrées du menu', async ({ page }) => {
     await page.goto('/');
     const bouton = page.getByRole('button', { name: 'Menu' });
     await bouton.click();
     await expect(bouton).toHaveAttribute('aria-expanded', 'true');
     const nav = page.getByRole('navigation', { name: 'Menu principal' });
-    for (const rubrique of RUBRIQUES) {
-      await expect(nav.getByRole('link', { name: rubrique, exact: true })).toBeVisible();
+    for (const entree of ENTREES_DU_MENU) {
+      await expect(nav.getByRole('link', { name: entree, exact: true })).toBeVisible();
     }
   });
 

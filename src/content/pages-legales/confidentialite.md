@@ -1,12 +1,14 @@
 ---
 titre: Confidentialité
-description: "Le site de la paroisse ne collecte aucune donnée personnelle. Mesure d’audience sans cookie, hébergement et contenus tiers expliqués simplement."
-miseAJour: 2026-11-21
+description: "Le site de la paroisse ne collecte aucune donnée personnelle. Mesure d’audience sans cookie, hébergement, widget des horaires et contenus tiers expliqués simplement."
+miseAJour: 2026-11-22
 ---
 
 ## Ce que le site ne fait pas
 
-Le site ne collecte aucune donnée personnelle. Il n’a aucun formulaire : pas de formulaire de contact, pas d’Inscription en ligne, pas de compte. Il ne dépose aucun cookie de suivi et n’affiche donc jamais de bannière cookies.
+Le site ne collecte aucune donnée personnelle. Il n’a aucun formulaire : pas de formulaire de contact, pas d’Inscription en ligne, pas de compte. De lui-même, il ne dépose aucun cookie : seul le widget des horaires des messes en dépose, et seulement si vous cliquez sur « Afficher les horaires » (voir plus bas). C’est pourquoi le site n’affiche pas de bannière cookies.
+
+Si vous agrandissez le texte avec le bouton « Aa », ce choix est retenu dans votre navigateur (stockage local, pas un cookie). Il ne quitte pas votre appareil et vous pouvez l’annuler en cliquant de nouveau sur « Aa ».
 
 Pour joindre la paroisse, vous l’appelez ou vous lui écrivez avec votre propre messagerie. Ce que vous lui écrivez ne passe pas par le site.
 
@@ -31,7 +33,7 @@ Vercel Inc. est une société établie aux États-Unis. Les données de la mesur
 Certaines pages affichent des contenus venant d’autres sites. Votre navigateur les demande directement à ces sites, qui reçoivent alors votre adresse IP :
 
 - **la carte des églises** : son fond de carte vient des serveurs d’OpenStreetMap, sans cookie ;
-- **les horaires des messes** : ils sont affichés par le widget de messes.info, le site des horaires de messe de l’Église catholique en France. Ce widget dépose des cookies de mesure d’audience (Google Analytics) et contacte les serveurs de Google : il ne se charge donc que lorsque vous cliquez sur « Afficher les horaires ». Sans ce clic, aucune requête ne part vers messes.info.
+- **les horaires des messes** : ils sont affichés par le widget de messes.info, le site des horaires de messe de l’Église catholique en France. Il ne se charge que lorsque vous cliquez sur « Afficher les horaires » ; sans ce clic, aucune requête ne part vers messes.info. Une fois chargé, ce widget fait appel aux services de Google (Google Tag Manager, Google Analytics) et à l’outil de consentement Didomi, qui déposent des cookies sur ce site (notamment `_ga`, `_gid` et `didomi_token`) et reçoivent votre adresse IP. Ces cookies relèvent de messes.info et de ses prestataires, pas de la paroisse : vous pouvez les effacer depuis les réglages de votre navigateur.
 
 Les liens vers d’autres sites (diocèse, messes.info, itinéraires) l’annoncent dans leur texte. Une fois sur ces sites, ce sont leurs propres règles de confidentialité qui s’appliquent.
 

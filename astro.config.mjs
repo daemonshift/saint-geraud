@@ -22,7 +22,10 @@ export default defineConfig({
     // Vercel Web Analytics : seule mesure d'audience autorisée (ADR 0003).
     webAnalytics: { enabled: true },
   }),
-  trailingSlash: 'ignore',
+  // Adresses sans barre finale (comme le plan du site) : sur Vercel, `/page/`
+  // est redirigée (308) vers `/page`, ce qui fait aussi aboutir la forme avec
+  // barre d'une Actualité Archivée à sa redirection.
+  trailingSlash: 'never',
   vite: {
     plugins: [tailwindcss()],
   },

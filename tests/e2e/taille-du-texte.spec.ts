@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page } from './fixtures';
 import { PAGES } from './pages';
 
 /** Taille calculée du texte courant (corps de page), en pixels. */

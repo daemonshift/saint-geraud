@@ -21,6 +21,8 @@ describe('Choix de la source selon l’environnement', () => {
         'Messe de la nuit de Noël',
         'Inscriptions au catéchisme',
         'Kermesse paroissiale',
+        'Concert de la chorale',
+        'Pèlerinage diocésain à Lourdes',
       ]);
     },
   );

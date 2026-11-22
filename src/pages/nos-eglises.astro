@@ -7,9 +7,11 @@
  */
 import BandeauTitre from '../components/BandeauTitre.astro';
 import CarteEglises from '../components/CarteEglises.astro';
+import LienHorairesMessesInfo from '../components/LienHorairesMessesInfo.astro';
+import LienItineraire from '../components/LienItineraire.astro';
 import MiseEnPage from '../layouts/MiseEnPage.astro';
 import { contenuDuSite } from '../lib/contenu/site';
-import { ancreEglise, lienItineraire } from '../lib/navigation';
+import { ancreEglise } from '../lib/navigation';
 
 const { eglises } = await contenuDuSite();
 ---
@@ -64,15 +66,11 @@ const { eglises } = await contenuDuSite();
                 <ul class="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                   {eglise.lienMessesInfo && (
                     <li>
-                      <a class="bouton-principal" href={eglise.lienMessesInfo}>
-                        Horaires des messes (site messes.info)<span class="sr-only">, {eglise.nom}</span>
-                      </a>
+                      <LienHorairesMessesInfo class="bouton-principal" href={eglise.lienMessesInfo} nom={eglise.nom} />
                     </li>
                   )}
                   <li>
-                    <a class="bouton-secondaire" href={lienItineraire(eglise)}>
-                      Itinéraire (Google Maps)<span class="sr-only">, {eglise.nom}</span>
-                    </a>
+                    <LienItineraire class="bouton-secondaire" position={eglise} nom={eglise.nom} />
                   </li>
                 </ul>
               </li>

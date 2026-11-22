@@ -1,8 +1,8 @@
-import { expect, test, type Locator } from '@playwright/test';
+import { expect, test, type Locator } from './fixtures';
 
 /**
  * Actualités du site construit avec les données d'exemple
- * (src/lib/contenu/donnees-exemple.ts) : trois En ligne, un Brouillon, une
+ * (src/lib/contenu/donnees-exemple.ts) : cinq En ligne, un Brouillon, une
  * Programmée et une Archivée.
  */
 test.describe('Liste des Actualités', () => {
@@ -14,6 +14,8 @@ test.describe('Liste des Actualités', () => {
       'Messe de la nuit de Noël',
       'Inscriptions au catéchisme',
       'Kermesse paroissiale',
+      'Concert de la chorale',
+      'Pèlerinage diocésain à Lourdes',
     ]);
     const premiere = cartes.first();
     await expect(premiere).toContainText('Événement');

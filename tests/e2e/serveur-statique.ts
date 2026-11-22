@@ -5,7 +5,8 @@
  *
  * Il applique aussi, avant les fichiers, les redirections que le build écrit
  * pour Vercel dans `.vercel/output/config.json` (routes avec `status` 3xx et
- * en-tête `Location`, comme celles des Actualités Archivées) : les tests
+ * en-tête `Location`, comme celles des Actualités Archivées ou le retrait de
+ * la barre finale, avec ses références `$1`…) : les tests
  * portent sur la configuration réellement produite, pas sur une copie.
  *
  * Usage : node tests/e2e/serveur-statique.ts [dossier] [port]
@@ -79,7 +80,9 @@ createServer(async (req, res) => {
   const adresse = (req.url ?? '/').split('?')[0];
   const redirection = redirections.find((r) => r.motif.test(adresse));
   if (redirection) {
-    res.writeHead(redirection.status, { location: redirection.location });
+    const captures = adresse.match(redirection.motif) ?? [];
+    const location = redirection.location.replace(/\$(\d+)/g, (_, n: string) => captures[Number(n)] ?? '');
+    res.writeHead(redirection.status, { location });
     res.end();
     return;
   }

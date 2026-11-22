@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page } from './fixtures';
 
 /**
  * Actualités terminées et retirées, sur le site construit avec les données
@@ -22,6 +22,17 @@ test.describe('Actualité Archivée', () => {
     const reponse = await request.get('/actualites/recExempleArchivee', { maxRedirects: 0 });
     expect(reponse.status()).toBe(302);
     expect(reponse.headers()['location']).toBe('/actualites/terminee');
+  });
+
+  test('son adresse avec une barre finale mène aussi à « Actualité terminée »', async ({ page, request }) => {
+    // La barre finale est retirée (308) avant la redirection de l'Archivée.
+    const reponse = await request.get('/actualites/recExempleArchivee/', { maxRedirects: 0 });
+    expect(reponse.status()).toBe(308);
+    expect(reponse.headers()['location']).toBe('/actualites/recExempleArchivee');
+
+    await page.goto('/actualites/recExempleArchivee/');
+    await expect(page).toHaveURL(/\/actualites\/terminee$/);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Actualité terminée');
   });
 
   test('le visiteur arrive sur « Actualité terminée », sans le titre de l’Actualité', async ({ page }) => {
@@ -63,8 +74,10 @@ test('plan du site : les seules Actualités En ligne avec leur lastmod, ni redir
   const adresses = [...xml.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => new URL(m[1]).pathname);
   expect(adresses.filter((a) => a.startsWith('/actualites/')).sort()).toEqual([
     '/actualites/recExempleCatechisme',
+    '/actualites/recExempleConcert',
     '/actualites/recExempleKermesse',
     '/actualites/recExempleMesseDeNoel',
+    '/actualites/recExemplePelerinage',
   ]);
   expect(adresses).toEqual(expect.arrayContaining(['/', '/actualites']));
   expect(xml).toMatch(/\/actualites\/recExempleKermesse<\/loc><lastmod>2026-01-01T08:00:00\.000Z<\/lastmod>/);
