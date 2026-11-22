@@ -24,6 +24,17 @@ test.describe('Actualité Archivée', () => {
     expect(reponse.headers()['location']).toBe('/actualites/terminee');
   });
 
+  test('son adresse avec une barre finale mène aussi à « Actualité terminée »', async ({ page, request }) => {
+    // La barre finale est retirée (308) avant la redirection de l'Archivée.
+    const reponse = await request.get('/actualites/recExempleArchivee/', { maxRedirects: 0 });
+    expect(reponse.status()).toBe(308);
+    expect(reponse.headers()['location']).toBe('/actualites/recExempleArchivee');
+
+    await page.goto('/actualites/recExempleArchivee/');
+    await expect(page).toHaveURL(/\/actualites\/terminee$/);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Actualité terminée');
+  });
+
   test('le visiteur arrive sur « Actualité terminée », sans le titre de l’Actualité', async ({ page }) => {
     await page.goto('/actualites/recExempleArchivee');
     await expect(page).toHaveURL(/\/actualites\/terminee$/);
