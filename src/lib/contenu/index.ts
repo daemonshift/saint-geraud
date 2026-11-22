@@ -11,5 +11,5 @@
  * `contenuDuSite()` (site.ts), qui choisit le client selon l'environnement.
  */
 export { chargerContenuDuSite, type DependancesContenu, type Horloge, type StockageImages } from './charger';
-export { contactOuPresbytere, contactPour } from './infos-pratiques';
+export { contactDeDemarche, contactPour } from './infos-pratiques';
 export type * from './modele';

@@ -7,6 +7,8 @@ section: priere
 ordre: 3
 pictogramme: bougie
 contact: Adoration
+# Sans Info pratique « Adoration », la carte renvoie au presbytère.
+contactParDefaut: presbytere
 ---
 
 Des temps d’adoration du Saint-Sacrement sont proposés dans la paroisse. Le presbytère vous indique les jours et les lieux.

@@ -130,19 +130,35 @@ export function contactPour(contacts: ContactDemarche[], role: string): ContactD
 }
 
 /**
- * Contact d'une démarche (« Confession ») ; à défaut d'Info pratique propre,
- * le presbytère, pour qu'une carte propose toujours e-mail et téléphone.
+ * Contact d'une démarche (« Confession »), cherché par Libellé dans la Rubrique
+ * Contacts. Sans Info pratique propre :
+ * - `parDefaut: 'presbytere'` (déclaré par le fichier Markdown de la carte) :
+ *   le presbytère, pour que la carte propose toujours e-mail et téléphone ;
+ * - sinon, erreur de build qui nomme le rôle et les Libellés disponibles,
+ *   plutôt qu'un repli silencieux qui ferait diverger Prier et célébrer et
+ *   La paroisse.
  */
-export function contactOuPresbytere(infosPratiques: InfosPratiques, role: string): ContactDemarche {
+export function contactDeDemarche(
+  infosPratiques: InfosPratiques,
+  role: string,
+  { parDefaut }: { parDefaut?: 'presbytere' } = {},
+): ContactDemarche {
   const { contacts, presbytere } = infosPratiques;
-  return (
-    contactPour(contacts, role) ?? {
+  const contact = contactPour(contacts, role);
+  if (contact) return contact;
+  if (parDefaut === 'presbytere') {
+    return {
       id: 'presbytere',
       role: 'Presbytère',
       cle: 'presbytere',
       email: presbytere.email,
       telephone: presbytere.telephone,
       precision: '',
-    }
+    };
+  }
+  const disponibles = contacts.map((c) => c.role).join(', ') || 'aucun';
+  throw new Error(
+    `Contact de démarche : aucune Info pratique de Rubrique Contacts n’a le Libellé « ${role} » (Libellés disponibles : ${disponibles}). ` +
+      'Corriger le Libellé dans Airtable ou le champ « contact » du fichier Markdown, ou déclarer « contactParDefaut: presbytere ».',
   );
 }

@@ -39,13 +39,17 @@ const prierEtCelebrer = defineCollection({
       pictogramme: z.enum(Object.keys(PICTOGRAMMES) as [NomPictogramme, ...NomPictogramme[]]),
       /**
        * Libellé de l'Info pratique de Rubrique Contacts (« Baptême ») : même
-       * contact que sur La paroisse ; à défaut, le presbytère.
+       * contact que sur La paroisse. Introuvable : le build échoue, sauf si
+       * `contactParDefaut: presbytere` est déclaré.
        */
       contact: z.string().optional(),
+      /** Repli explicite quand l'Info pratique `contact` n'existe pas : le presbytère. */
+      contactParDefaut: z.literal('presbytere').optional(),
       /** Bouton vers une page du site, à la place du contact. */
       lien: z.object({ libelle: z.string(), href: z.string().startsWith('/') }).optional(),
     })
-    .refine((carte) => !(carte.contact && carte.lien), 'Une carte a un contact ou un lien, pas les deux.'),
+    .refine((carte) => !(carte.contact && carte.lien), 'Une carte a un contact ou un lien, pas les deux.')
+    .refine((carte) => !carte.contactParDefaut || carte.contact, '« contactParDefaut » suppose un « contact ».'),
 });
 
 export const collections = { pagesLegales, prierEtCelebrer };
