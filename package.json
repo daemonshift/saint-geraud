@@ -12,7 +12,7 @@
     "check": "astro check && npm run check:couleurs",
     "check:couleurs": "node scripts/controles/couleurs.ts",
     "check:domaines": "node scripts/controles/domaines.ts",
-    "test": "vitest run",
+    "test": "vitest run && vitest run -c vitest.composants.config.ts",
     "test:e2e": "playwright test",
     "prepare": "git config core.hooksPath .githooks 2>/dev/null || true"
   },
