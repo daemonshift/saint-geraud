@@ -5,9 +5,11 @@
  * messes.info renvoie à sa fiche sur Nos églises.
  */
 import BandeauTitre from '../components/BandeauTitre.astro';
+import LienHorairesMessesInfo from '../components/LienHorairesMessesInfo.astro';
 import WidgetMessesInfo from '../components/WidgetMessesInfo.astro';
 import MiseEnPage from '../layouts/MiseEnPage.astro';
 import { contenuDuSite } from '../lib/contenu/site';
+import { PROVENANCE_DES_HORAIRES } from '../lib/messes-info';
 import { HORAIRES_DES_MESSES, lienEglise } from '../lib/navigation';
 
 const { eglises } = await contenuDuSite();
@@ -22,9 +24,7 @@ const { eglises } = await contenuDuSite();
   <div class="conteneur flex flex-col gap-12 py-10 lg:py-14">
     <section aria-labelledby="titre-horaires-paroisse" class="flex flex-col gap-4">
       <h2 id="titre-horaires-paroisse" class="text-3xl tracking-wide uppercase">Horaires de la paroisse</h2>
-      <p class="max-w-[68ch]">
-        Les horaires sont publiés par le diocèse d’Agen sur messes.info et se mettent à jour automatiquement.
-      </p>
+      <p class="max-w-[68ch]">{PROVENANCE_DES_HORAIRES}</p>
       <WidgetMessesInfo />
     </section>
 
@@ -40,9 +40,7 @@ const { eglises } = await contenuDuSite();
                 <h3 class="text-2xl leading-tight">{eglise.nom}</h3>
                 <p class="font-semibold text-gris-vert">{eglise.commune}</p>
                 {eglise.lienMessesInfo ? (
-                  <a class="bouton-principal mt-auto" href={eglise.lienMessesInfo}>
-                    Horaires des messes (site messes.info)<span class="sr-only">, {eglise.nom}</span>
-                  </a>
+                  <LienHorairesMessesInfo class="bouton-principal mt-auto" href={eglise.lienMessesInfo} nom={eglise.nom} />
                 ) : (
                   <a class="bouton-secondaire mt-auto" href={lienEglise(eglise.id)}>
                     Voir l’église<span class="sr-only">, {eglise.nom}</span>

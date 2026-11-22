@@ -18,3 +18,9 @@ export const SCRIPT_WIDGET_MESSES_INFO = 'https://messes.info/Widget/Widget.noca
 
 /** Recherche passée au widget : les seuls horaires de la paroisse. */
 export const RECHERCHE_WIDGET_MESSES_INFO = `community:${COMMUNAUTE_MESSES_INFO}`;
+
+/** Libellé du lien vers les horaires d'une Église sur messes.info (Nos églises, sa carte, Horaires des messes). */
+export const LIBELLE_HORAIRES_MESSES_INFO = 'Horaires des messes (site messes.info)';
+
+/** Phrase qui présente la source des horaires (Accueil, Horaires des messes). */
+export const PROVENANCE_DES_HORAIRES = 'Les horaires sont publiés par le diocèse d’Agen sur messes.info et se mettent à jour automatiquement.';

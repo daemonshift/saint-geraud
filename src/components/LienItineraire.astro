@@ -1,0 +1,17 @@
+---
+/**
+ * Lien « Itinéraire (Google Maps) » vers une Église ; le nom de l'Église
+ * complète le libellé pour les lecteurs d'écran.
+ */
+import { lienItineraire } from '../lib/navigation';
+
+interface Props {
+  position: { latitude: number; longitude: number };
+  nom: string;
+  class?: string;
+}
+
+const { position, nom, class: classe } = Astro.props;
+---
+
+<a class={classe} href={lienItineraire(position)}>Itinéraire (Google Maps)<span class="sr-only">, {nom}</span></a>

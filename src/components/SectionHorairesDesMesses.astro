@@ -4,6 +4,7 @@
  * d'introduction à gauche, widget messes.info à droite en ordinateur ; une
  * colonne en mobile.
  */
+import { PROVENANCE_DES_HORAIRES } from '../lib/messes-info';
 import WidgetMessesInfo from './WidgetMessesInfo.astro';
 ---
 
@@ -15,7 +16,7 @@ import WidgetMessesInfo from './WidgetMessesInfo.astro';
   <div class="conteneur grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] lg:gap-12">
     <div class="flex flex-col gap-4">
       <h2 id="titre-horaires-des-messes" class="text-3xl tracking-wide uppercase lg:text-4xl">Horaires des messes</h2>
-      <p>Les horaires sont publiés par le diocèse d’Agen sur messes.info et se mettent à jour automatiquement.</p>
+      <p>{PROVENANCE_DES_HORAIRES}</p>
     </div>
     <WidgetMessesInfo />
   </div>

@@ -9,7 +9,8 @@
  * d'événement ni Église liée.
  */
 import type { Actualite } from '../lib/contenu';
-import { lienEglise, lienItineraire } from '../lib/navigation';
+import { lienEglise } from '../lib/navigation';
+import LienItineraire from './LienItineraire.astro';
 
 interface Props {
   actualite: Actualite;
@@ -84,9 +85,7 @@ const lien = 'inline-flex min-h-12 items-center font-bold text-vert-profond unde
               )}
               {eglise.position && (
                 <li>
-                  <a class={lien} href={lienItineraire(eglise.position)}>
-                    Itinéraire (Google Maps)<span class="sr-only">, {eglise.nom}</span>
-                  </a>
+                  <LienItineraire class={lien} position={eglise.position} nom={eglise.nom} />
                 </li>
               )}
             </ul>

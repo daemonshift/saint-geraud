@@ -1,0 +1,17 @@
+---
+/**
+ * Lien vers les horaires d'une Église sur messes.info, annoncé comme externe ;
+ * le nom de l'Église complète le libellé pour les lecteurs d'écran.
+ */
+import { LIBELLE_HORAIRES_MESSES_INFO } from '../lib/messes-info';
+
+interface Props {
+  href: string;
+  nom: string;
+  class?: string;
+}
+
+const { href, nom, class: classe } = Astro.props;
+---
+
+<a class={classe} href={href}>{LIBELLE_HORAIRES_MESSES_INFO}<span class="sr-only">, {nom}</span></a>
