@@ -1,11 +1,12 @@
 ---
 /**
- * Accueil. Carrousel des Actualités : #6. Nos églises : #8. Le widget
- * messes.info vient avec son ticket.
+ * Accueil. Carrousel des Actualités : #6. Horaires des messes (widget
+ * messes.info chargé au clic) : #10. Nos églises : #8.
  * L'encart Lettre d'information (#16) prend l'e-mail du presbytère (Infos pratiques).
  */
 import MiseEnPage from '../layouts/MiseEnPage.astro';
 import CarrouselActualites from '../components/CarrouselActualites.astro';
+import SectionHorairesDesMesses from '../components/SectionHorairesDesMesses.astro';
 import EncartLettreInformation from '../components/EncartLettreInformation.astro';
 import SectionNosEglises from '../components/SectionNosEglises.astro';
 import { contenuDuSite } from '../lib/contenu/site';
@@ -37,6 +38,8 @@ const { actualites, eglises, infosPratiques } = await contenuDuSite();
   </section>
 
   <CarrouselActualites actualites={actualites} />
+
+  <SectionHorairesDesMesses />
 
   <SectionNosEglises eglises={eglises} />
 

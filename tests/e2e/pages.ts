@@ -11,6 +11,7 @@ export const PAGES: { nom: string; chemin: string }[] = [
   { nom: 'Actualité terminée', chemin: '/actualites/terminee' },
   { nom: 'Page 404', chemin: '/actualites/recInconnu' },
   { nom: 'Nos églises', chemin: '/nos-eglises' },
+  { nom: 'Horaires des messes', chemin: '/horaires-des-messes' },
   { nom: 'La paroisse', chemin: '/la-paroisse' },
   { nom: 'Mentions légales', chemin: '/mentions-legales' },
   { nom: 'Confidentialité', chemin: '/confidentialite' },
