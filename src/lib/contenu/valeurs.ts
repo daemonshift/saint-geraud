@@ -24,3 +24,11 @@ export function liens(e: EnregistrementAirtable, champ: ChampAirtable): string[]
   const v = e.fields[champ.id];
   return Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : [];
 }
+
+/** Lignes non vides d'un texte saisi sur plusieurs lignes (adresse postale). */
+export function lignesAdresse(adresse: string): string[] {
+  return adresse
+    .split('\n')
+    .map((ligne) => ligne.trim())
+    .filter(Boolean);
+}

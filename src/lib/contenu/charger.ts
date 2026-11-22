@@ -21,14 +21,15 @@ export interface DependancesContenu {
 }
 
 export async function chargerContenuDuSite({ client, horloge, images }: DependancesContenu): Promise<ContenuDuSite> {
-  const aujourdhui = jourAParis(horloge());
+  const maintenant = horloge();
+  const aujourdhui = jourAParis(maintenant);
   controlerSchema(await client.lireSchema(), TABLES);
   const [actualites, eglises] = await Promise.all([lireTable(client, ACTUALITES.id), lireTable(client, EGLISES.id)]);
   const eglisesParId = new Map(eglises.map((e) => [e.id, versEgliseLiee(e)]));
 
   return {
     actualites: trierActualites(
-      actualites.filter((e) => estEnLigne(e, aujourdhui)).map((e) => versActualite(e, eglisesParId)),
+      actualites.filter((e) => estEnLigne(e, aujourdhui)).map((e) => versActualite(e, eglisesParId, maintenant)),
     ),
     actualitesArchivees: actualites.filter((e) => estArchivee(e, aujourdhui)).map((e) => ({ id: e.id })),
     eglises: await eglisesAffichees(eglises, images),

@@ -5,11 +5,35 @@
 
 export type Categorie = 'Annonce' | 'Événement' | 'Sacrements' | 'Vie paroissiale';
 
-/** Église liée à une Actualité (lieu affiché sur la carte et le détail). */
+/** Église liée à une Actualité (lieu affiché sur la carte et le bloc « En pratique » du détail). */
 export interface EgliseLiee {
   id: string;
   nom: string;
   commune: string;
+  /** Lignes de l'adresse postale ; vide si absente. */
+  adresse: string[];
+  accesPmr: boolean;
+  /** Coordonnées (itinéraire), ou null si non renseignées. */
+  position: { latitude: number; longitude: number } | null;
+  /** Vrai si l'Église est affichée sur Nos églises (Active, avec coordonnées) : son ancre existe. */
+  surNosEglises: boolean;
+}
+
+/** Données d'agenda d'une Actualité dont la Date de l'événement est remplie (fichier `.ics` généré au build). */
+export interface EvenementAgenda {
+  /** Identifiant stable de l'événement (UID iCalendar), fondé sur l'identifiant de l'Actualité. */
+  uid: string;
+  debut: Date;
+  /** Airtable n'a pas de fin d'événement : une heure après le début. */
+  fin: Date;
+  /** Dernière modification de l'Actualité (instant du build à défaut). */
+  horodatage: Date;
+  titre: string;
+  description: string;
+  /** « Église Saint-Antoine, Place de l'Église, 47500 Fumel » (plusieurs Églises séparées par « ; »), ou null. */
+  lieu: string | null;
+  /** Adresse du fichier `.ics` sur le site. */
+  fichier: string;
 }
 
 export interface Actualite {
@@ -34,6 +58,8 @@ export interface Actualite {
   eglises: EgliseLiee[];
   /** Lieu affiché : « Église Saint-Antoine, Fumel » (plusieurs Églises séparées par « · »), ou null. */
   lieu: string | null;
+  /** Données d'agenda, seulement si la Date de l'événement est remplie. */
+  agenda: EvenementAgenda | null;
 }
 
 /** Actualité Archivée : seul son identifiant sert, pour rediriger son ancienne adresse ; son titre n'est jamais repris. */

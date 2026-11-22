@@ -47,6 +47,11 @@ export function lienActualite(id: string): string {
   return `/actualites/${id}`;
 }
 
+/** Fichier d'agenda (`.ics`) d'une Actualité qui annonce un événement, généré au build. */
+export function lienAgenda(id: string): string {
+  return `${lienActualite(id)}.ics`;
+}
+
 /** Page vers laquelle redirige (302) l'adresse d'une Actualité Archivée. Route statique : prioritaire sur `/actualites/[id]`. */
 export const ACTUALITE_TERMINEE = '/actualites/terminee';
 
