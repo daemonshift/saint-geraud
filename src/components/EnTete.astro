@@ -11,6 +11,7 @@
  */
 import { Image } from 'astro:assets';
 import logo from '../assets/logo-saint-geraud.jpg';
+import logoDiocese from '../assets/logo-diocese-agen.png';
 import { HORAIRES_DES_MESSES, LETTRE_D_INFORMATION, LIENS_EXTERNES, NOUS_CONTACTER, ENTREES_DU_MENU, estPageCourante } from '../lib/navigation';
 
 const chemin = Astro.url.pathname;
@@ -20,7 +21,10 @@ const courant = (href: string) => (estPageCourante(href, chemin) ? 'page' : unde
 <header class="relative z-20 border-b border-or-doux bg-blanc">
   <div class="hidden bg-vert-profond text-ivoire lg:block">
     <div class="conteneur flex justify-end gap-6">
-      <a class="flex min-h-12 items-center text-ivoire" href={LIENS_EXTERNES.diocese}>Diocèse d’Agen (site du diocèse)</a>
+      <a class="flex min-h-12 items-center gap-2 text-ivoire" href={LIENS_EXTERNES.diocese}>
+        <Image src={logoDiocese} alt="" width={40} height={39} class="h-10 w-auto shrink-0" />
+        Diocèse d’Agen
+      </a>
       <a class="flex min-h-12 items-center text-ivoire" href={LETTRE_D_INFORMATION.href}>{LETTRE_D_INFORMATION.libelle}</a>
       <a class="flex min-h-12 items-center text-ivoire" href={NOUS_CONTACTER.href}>{NOUS_CONTACTER.libelle}</a>
     </div>
@@ -87,7 +91,10 @@ const courant = (href: string) => (estPageCourante(href, chemin) ? 'page' : unde
           <a href={LETTRE_D_INFORMATION.href} class="flex min-h-12 items-center text-encre">{LETTRE_D_INFORMATION.libelle}</a>
         </li>
         <li class="lg:hidden">
-          <a href={LIENS_EXTERNES.diocese} class="flex min-h-12 items-center text-encre">Diocèse d’Agen (site du diocèse)</a>
+          <a href={LIENS_EXTERNES.diocese} class="flex min-h-12 items-center gap-2 text-encre">
+            <Image src={logoDiocese} alt="" width={40} height={39} class="h-10 w-auto shrink-0" />
+            Diocèse d’Agen
+          </a>
         </li>
       </ul>
     </nav>
