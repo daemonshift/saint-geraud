@@ -1,10 +1,12 @@
 ---
 /**
  * Détail d'une Actualité En ligne : une page par Actualité, à l'adresse
- * `/actualites/{identifiant Airtable}`. Le bloc « En pratique » arrive avec le
- * ticket #9, l'image avec le #5.
+ * `/actualites/{identifiant Airtable}`, avec le bloc « En pratique » (colonne
+ * de droite en ordinateur, sous la date de publication en mobile). Son fichier
+ * d'agenda est servi par `[id].ics.ts`. L'image arrive avec le #5.
  */
 import type { GetStaticPaths } from 'astro';
+import EnPratique from '../../components/EnPratique.astro';
 import MiseEnPage from '../../layouts/MiseEnPage.astro';
 import type { Actualite } from '../../lib/contenu';
 import { contenuDuSite } from '../../lib/contenu/site';
@@ -35,39 +37,26 @@ const lienFil = 'inline-flex min-h-12 items-center text-vert-profond underline';
       </ol>
     </nav>
 
-    <article class="mt-6 flex max-w-[68ch] flex-col gap-5">
-      {
-        actualite.categorie && (
-          <p class="self-start rounded-full bg-vert-profond px-3 py-0.5 font-bold tracking-[0.06em] text-ivoire uppercase">
-            {actualite.categorie}
-          </p>
-        )
-      }
-      <h1 class="text-4xl lg:text-5xl">{actualite.titre}</h1>
-      <p class="text-gris-vert">Publiée le {actualite.datePublicationEnLettres}</p>
-      {
-        (actualite.evenement || actualite.lieu) && (
-          <dl class="flex flex-col gap-1">
-            {actualite.evenement && (
-              <div>
-                <dt class="inline font-bold">Date : </dt>
-                <dd class="inline">{actualite.evenement.enLettres}</dd>
-              </div>
-            )}
-            {actualite.lieu && (
-              <div>
-                <dt class="inline font-bold">Lieu : </dt>
-                <dd class="inline">{actualite.lieu}</dd>
-              </div>
-            )}
-          </dl>
-        )
-      }
-      {actualite.resume && <p class="text-xl">{actualite.resume}</p>}
-      <div class="texte-actualite flex flex-col gap-4" set:html={markdownEnHtml(actualite.texte)} />
-      <p class="mt-4">
-        <a class="inline-flex min-h-12 items-center font-bold text-vert-profond underline" href="/actualites">← Toutes les actualités</a>
-      </p>
+    <article class="mt-6 grid gap-x-12 gap-y-5 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:items-start">
+      <header class="flex max-w-[68ch] flex-col gap-5 lg:col-start-1">
+        {
+          actualite.categorie && (
+            <p class="self-start rounded-full bg-vert-profond px-3 py-0.5 font-bold tracking-[0.06em] text-ivoire uppercase">
+              {actualite.categorie}
+            </p>
+          )
+        }
+        <h1 class="text-4xl lg:text-5xl">{actualite.titre}</h1>
+        <p class="text-gris-vert">Publiée le {actualite.datePublicationEnLettres}</p>
+      </header>
+      <EnPratique actualite={actualite} class="lg:col-start-2 lg:row-span-2 lg:row-start-1" />
+      <div data-corps class="flex max-w-[68ch] flex-col gap-5 lg:col-start-1">
+        {actualite.resume && <p class="text-xl">{actualite.resume}</p>}
+        <div class="texte-actualite flex flex-col gap-4" set:html={markdownEnHtml(actualite.texte)} />
+        <p class="mt-4">
+          <a class="inline-flex min-h-12 items-center font-bold text-vert-profond underline" href="/actualites">← Toutes les actualités</a>
+        </p>
+      </div>
     </article>
   </div>
 </MiseEnPage>

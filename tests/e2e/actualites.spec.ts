@@ -50,12 +50,12 @@ test.describe('Détail d’une Actualité', () => {
     await expect(article).toContainText('Publiée le lundi 5 janvier 2026');
     await expect(article).toContainText('jeudi 24 décembre 2099, 23 h 30');
     await expect(article.locator('strong', { hasText: 'messe de la nuit de Noël' })).toBeVisible();
-    await expect(article.getByRole('listitem')).toHaveCount(2);
+    await expect(article.locator('.texte-actualite').getByRole('listitem')).toHaveCount(2);
   });
 
   test('limite la largeur de lecture', async ({ page }) => {
-    const largeur = await page.locator('#contenu article').evaluate((el) => el.getBoundingClientRect().width);
-    const taille = await page.locator('#contenu article p').last().evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
+    const largeur = await page.locator('#contenu [data-corps]').evaluate((el) => el.getBoundingClientRect().width);
+    const taille = await page.locator('#contenu [data-corps] p').last().evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
     // 68 caractères ≈ 68 × 0,5 em au plus en Source Sans 3 : bien moins que 1 200 px.
     expect(largeur).toBeLessThanOrEqual(68 * taille);
   });
