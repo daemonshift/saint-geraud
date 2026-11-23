@@ -4,7 +4,7 @@ titre: Messes
 sousTitre: Dimanche et semaine
 section: priere
 ordre: 1
-pictogramme: croix
+pictogramme: calice
 lien:
   libelle: Voir les horaires
   href: /horaires-des-messes

@@ -5,7 +5,7 @@ titre: Adoration
 sousTitre: Devant le Saint-Sacrement
 section: priere
 ordre: 3
-pictogramme: bougie
+pictogramme: ostensoir
 contact: Adoration
 # Sans Info pratique « Adoration », la carte renvoie au presbytère.
 contactParDefaut: presbytere
