@@ -5,7 +5,7 @@ titre: La confession
 sousTitre: Sacrement de réconciliation
 section: priere
 ordre: 2
-pictogramme: main
+pictogramme: cles
 contact: Confession
 # Sans Info pratique « Confession », la carte renvoie au presbytère.
 contactParDefaut: presbytere

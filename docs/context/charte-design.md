@@ -43,7 +43,7 @@ Chacune n'a que l'usage indiqué. Aucune autre valeur hexadécimale n'est autori
 
 ## Patterns repris de saintetiennedumont.fr
 - Carrousel actus accueil : cartes image + titre serif capitales, flèches, bouton « Voir toutes les actualités ». Différences : 3 visibles (1 sur mobile), pas d'autoplay (WCAG 2.2.2), badge catégorie, date/lieu issus d'Airtable.
-- Sous-pages : bandeau titre, sections H2, grille 3 cartes (médaillon rond, H3 doré capitales, sous-titre, texte, bouton). Médaillon = pictogramme (aucune photo de personnes, sauf le curé dans la section « Le curé »). Ajout : sommaire d'ancres `#confession` etc. « La paroisse » suit ce modèle ; les Groupes y sont des cartes avec un pictogramme par Type.
+- Sous-pages : bandeau titre, sections H2, grille 3 cartes (médaillon rond, H3 doré capitales, sous-titre, texte, bouton). Médaillon = illustration en couleur de la charte, `src/lib/pictogrammes.ts` (aucune photo de personnes, sauf le curé dans la section « Le curé »). Ajout : sommaire d'ancres `#confession` etc. « La paroisse » suit ce modèle ; les Groupes y sont des cartes avec un pictogramme par Type.
 
 ## Pages maquettées
 Ordinateur : Accueil · Prier et célébrer · Détail d'une actualité · Charte.

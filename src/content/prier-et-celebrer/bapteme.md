@@ -5,7 +5,7 @@ titre: Baptême
 sousTitre: Enfants et adultes
 section: sacrements
 ordre: 1
-pictogramme: goutte
+pictogramme: coquille
 contact: Baptême
 ---
 

@@ -4,7 +4,7 @@ titre: Obsèques
 sousTitre: Accompagnement des familles
 section: sacrements
 ordre: 3
-pictogramme: horloge
+pictogramme: cierge
 contact: Obsèques
 ---
 
